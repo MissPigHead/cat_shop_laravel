@@ -6,11 +6,9 @@
       <div class="container my-3">
         <div class="row justify-content-center">
           <div class="owl-carousel owl-theme">
-            <div class="item"><img src="../image/banner/Banner01.jpg" alt="cat pic"></div>
-            <div class="item"><img src="../image/banner/Banner02.jpg" alt="cat pic"></div>
+            <div class="item"><img src="image/Banner01.jpg" alt="cat pic"></div>
+            <div class="item"><img src="image/Banner02.jpg" alt="cat pic"></div>
           </div>
-          <!-- <div class="owl-carousel owl-theme">
-          </div> -->
         </div>
       </div>
     </section>
