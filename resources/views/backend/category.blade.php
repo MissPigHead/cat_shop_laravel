@@ -1,36 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="../image/favicon.ico" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
-  <link href="../css/css.css" rel="stylesheet" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <title>Backend</title>
-</head>
-<body>
-  <header class="container p-0">
-    <div class="row m-0 h-100 align-items-center">
-      <div class="col-3 row justify-content-center align-items-center">
-        <img src="../image/00cat-256.png" alt="logo" class="logo">
-        <h2 class="font-weight-bolder text-pink">貓貓商城</h2>
-      </div>
-    </div>
-  </header>
-  <main class="container p-0">
-    <div class="row m-0">
-      <div class="col-3 sideBar">
-        <a href="index.html"><div>Dashboard</div></a>
-        <a href="category.html"><div>商品目錄管理</div></a>
-        <a href="products.html"><div>商品管理</div></a>
-        <a href="members.html"><div>會員管理</div></a>
-        <a href="orders.html"><div>訂單管理</div></a>
-        <a href="news.html"><div>最新消息管理</div></a>
-        <a href="banner.html"><div>輪播圖卡設置</div></a>
-      </div>
+@extends('layouts.backend')
+@section('title','商品目錄')
+@section('content')
       <div class="col-9 content">
         <!-- 新增區 -->
         <form>
@@ -309,13 +279,4 @@
           </tbody>
         </table>
       </div>
-    </div>
-  </main>
-  <footer class="container">
-    <div class="row justify-content-center">
-      <p>Copyright © Lingling Chang a.k.a. MissPigHead 2021</p>
-    </div>
-  </footer>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</body>
-</html>
+@endsection

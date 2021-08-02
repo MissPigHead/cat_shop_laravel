@@ -1,4 +1,4 @@
-@extends('frontend.frame')
+@extends('layouts.frontend')
 @section('title','喵喵商城首頁')
 @section('content')
   <main>
@@ -100,4 +100,4 @@
       </div>
     </section>
   </main>
-@stop
+@endsection
