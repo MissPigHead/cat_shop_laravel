@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Kalam:wght@400;700&family=Pacifico&family=Pangolin&family=Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700&display=swap');
+
+/* font-family: 'Courgette', cursive;
+font-family: 'Kalam', cursive;
+font-family: 'Pacifico', cursive;
+font-family: 'Pangolin', cursive;
+font-family: 'Permanent Marker', cursive;
+font-family: 'Noto Sans TC', sans-serif;  */
+
+:root{
+  --yellow01: #fcefb4;
+  --yellow02: #fefbeb;
+  --gray01: #afafaf;
+  --pink01:#f72585;
+}
+html{
+  font-size: 14px;
+}
+body{
+  margin: 0;
+  padding: 0;
+  color: darkblue;
+  background: #f4f5f6;
+  font-family: "Cairo",'Noto Sans TC', sans-serif;;
+  overflow-y: hidden;
+}
+header,footer{
+  width: 100%;
+  background: var(--yellow01);
+}
+.text-Pacifico{
+  font-family: 'Pacifico', cursive;
+}
+
+main{
+  height: calc(100vh - 8rem); /* 運算符號與值 需要有空格 才能生效 */
+  overflow-y: auto;
+}
+.bg-body{
+  background: #fafcfe;
+}
+
+#banner img{
+  max-height: 400px;
+  width: 100%; 
+  border-radius: 5px;
+  padding: 0 15px;
+  object-fit: cover;
+  object-position: 50% 50%;
+} 
+/* .sideBar>a{
+  color: darkblue;
+  text-decoration: none;
+}
+.sideBar>a:hover{
+  color: blue
+}
+
+.sideBar div{
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.5rem 0;
+  margin: 1rem;
+  border-radius: 1rem;
+  background: var(--yellow01);
+} 
+.content{
+  margin: 1rem 0 0 0;
+  height: calc(100vh - 11rem);
+  overflow-y: auto;
+}
+.content .col h2{
+  margin-top: -2rem;
+}
+.chart-area{
+  min-height: 20rem;
+}*/
+.text-gray{
+  color: var(--gray01);
+}
+.text-pink{
+  color: var(--pink01);
+}
+.bg-yellow01{
+  background: var(--yellow01);
+}
+
+th, td{
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle!important;
+}
+.w-4rem{
+  width: 4rem;
+}
+#orderTable {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  /* white-space: nowrap; */
+}
+.newsText{
+  /* line-height: 2; */
+  font-weight: 300;
+}
