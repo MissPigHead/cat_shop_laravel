@@ -36,4 +36,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $guarded = []; 
+    // $guarded / $fillable 相反作用
+    // 在批量賦值時，若有$guarded 就需要在seeder 裡面
+    // 加入 User::unguard();
+    // 建立完資料後再 User::reguard();
 }
