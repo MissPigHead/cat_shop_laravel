@@ -12,12 +12,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">首頁</a>
+              <a class="nav-link" href="/">首頁</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">商品目錄</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="products.html">所有商品</a>
+                <a class="dropdown-item" href="/products">所有商品</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="productDetail.html">食品</a>
                 <a class="dropdown-item" href="productDetail.html">貓砂</a>
@@ -26,7 +26,7 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="rules.html">購物說明</a>
+              <a class="nav-link" href="purchaseRules">購物說明</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="news.html">育貓新知</a>
