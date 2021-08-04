@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\News; // 之後應該要整理到 App\Models\News;
+use App\Models\News; // 之後應該要整理到 App\Models\News;
 
 class NewsSeeder extends Seeder
 {
@@ -12,7 +12,7 @@ class NewsSeeder extends Seeder
      */
     public function run()
     {
-        News::truncate(); // 清空所有表格資料
+        // News::truncate(); // 清空所有表格資料
         // News::unguard(); 
         // 若在Model中有 $guarded 的資料 用 Model::unguard() 暫時解除該屬性 處理批量賦值
         factory(News::class, 30)->create();
