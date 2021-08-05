@@ -29,12 +29,34 @@
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-info">確認</button>
+                <button type="button" class="btn btn-info" id="submitNews">確認</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
               </div>
             </div>
           </div>
         </div>
+
+
+        <script>
+          $('#submitNews').click(function(){
+            data={
+              title: $('#title').val(),
+              article: $('#article').val(),
+              _token: '{{csrf_token()}}' 
+              // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
+            }
+            $.ajax({
+              url: "/api/news",
+              method: "POST",
+              dataType: "json",
+              data: data,
+              success: function(res){console.log("PASS",res)},
+              error: function(err){console.log(err)},
+            })
+          })
+        </script>
+
+
         <!-- 顯示區 -->
         <table class="mt-4 table  table-bordered table-hover">
           <thead class="thead-dark">
@@ -117,9 +139,5 @@
             </tr>
           </tbody>
         </table>
-
-
-
-
       </div>    
 @endsection

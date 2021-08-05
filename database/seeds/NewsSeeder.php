@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\News; // 之後應該要整理到 App\Models\News;
+use App\Models\News;
 
 class NewsSeeder extends Seeder
 {
