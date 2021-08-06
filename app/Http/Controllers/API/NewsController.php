@@ -29,8 +29,7 @@ class NewsController extends Controller
         $news= new News;
         $news->title=$request->title;
         $news->article=$request->article;
-        $news->show=true;
-        $news->pass=true;
+        $news->show=false;
         $news->save();
     }
 
@@ -42,7 +41,8 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        //
+        $news = News::findOrFail($id);
+        return $news;
     }
 
     /**
@@ -54,7 +54,8 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $news = News::find($id);
+        $news->update($request->all());
     }
 
     /**
@@ -65,14 +66,6 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        //
-        try {
-            $post = Post::findOrFail($id);
-            $post->delete();
-        } catch (Throwable $e) {
-            //刪除失敗
-            return $this->makeJson(0,null,'刪除文章失敗');
-        }
-        return $this->makeJson(1,null,'刪除文章成功');
+        News::destroy($id);
     }
 }
