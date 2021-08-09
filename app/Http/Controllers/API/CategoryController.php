@@ -26,7 +26,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category= new Category();
+        $category->title=$request->title;
+        $category->parent=$request->parent;
+        $category->show=false;
+        $category->order=Category::where('parent',($request->parent))->count()+1;
+        $category->save();
     }
 
     /**
@@ -61,5 +66,11 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function child(Request $request, $id)
+    {
+      $childCategories=Category::where('parent',$id)->orderBy('order','desc')->get();
+      return $childCategories;
     }
 }
