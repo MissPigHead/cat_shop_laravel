@@ -86,31 +86,47 @@
     <thead class="thead-dark">
       <tr>
         <!-- <tr class="table-active font-weight-bolder"> -->
-        <th scope="col" class="col-2">主目錄</th>
-        <th scope="col" class="col-2">子目錄</th>
-        <th scope="col" class="col-1">id</th>
-        <th scope="col" class="col-1">parent</th>
-        <th scope="col" class="col-1">order</th>
-        <th scope="col" class="col-1">show</th>
-        <th scope="col" class="col-1">狀態</th>
-        <th scope="col" class="col-3">操作</th>
+        <th scope="col" class="col-3">主目錄</th>
+        <th scope="col" class="col-3">
+          <button type="button" class="btn btn-outline-light py-1" onclick="collapseChild('all')" id="collapseAll" data-open=1>
+            收合所有子目錄
+          </button>
+        </th>
+        <th scope="col" class="col-1">前台顯示狀態</th>
+        <th scope="col" class="col-5">操作</th>
       </tr>
     </thead>
+
+    <script>
+      function collapseChild(data) {
+        if (data == 'all') {
+          let open = $('#collapseAll').attr("data-open")
+          if (open) {
+            document.getElementById("collapseAll").dataset.open = ''
+            // jq 的.data() 只能讀取 無法修改 需要改用js
+            $('#collapseAll').text('展開所有子目錄')
+            $('tr.child').addClass('d-none')
+          } else {
+            document.getElementById("collapseAll").dataset.open = 1
+            $('#collapseAll').text('收合所有子目錄')
+            $('tr.child').removeClass('d-none')
+          }
+        } else {
+          $(`tr.${data}`).toggleClass('d-none')
+        }
+      }
+    </script>
+
     <tbody>
       @foreach ($parentCategories as $parentCategory)
         <tr class="{{ $parentCategory->show ? 'bg-white' : 'bg-light' }} parent" id="p{{ $parentCategory->id }}">
-          <td>{{ $parentCategory->title }} </td>
-          <td></td>
-          <td>{{ $parentCategory->id }} </td>
-          <td>{{ $parentCategory->parent }} </td>
-          <td>{{ $parentCategory->order }} </td>
-          <td>{{ $parentCategory->show }} </td>
-          {{-- <td>
-            <button type="button" class="btn btn-outline-secondary"
-              onclick="switchChild( {{ $parentCategory->id }} )">
-              展開子目錄
+          <td class="font-weight-bold">{{ $parentCategory->title }} </td>
+          <td>
+            <button type="button" class="btn btn-outline-light py-1 text-gray"
+              onclick="collapseChild('p{{ $parentCategory->id }}')">
+              展開或收合此項子目錄
             </button>
-          </td> --}}
+          </td>
           <td>{{ $parentCategory->show ? '顯示中' : '已隱藏' }}
           </td>
           <td>
@@ -156,17 +172,13 @@
             method: "GET",
             dataType: "json", // 注意抓回資料型態
             success: function(result) {
-                let order=result.length
+              let order = result.length
               $.each(result, function() {
                 data = $(this)[0]
                 code = `
-                  <tr class='${data.show?'bg-white':'bg-light'} child' id='c${data.id}'>
+                  <tr class='${data.show?'bg-white':'bg-light'} child p${data.parent}'>
                     <td></td>
                     <td>${ data.title } </td>
-                    <td>${ data.id } </td>
-                    <td>${ data.parent } </td>
-                    <td>${ data.order } </td>
-                    <td>${ data.show } </td>
                     <td>${data.show ? '顯示中' : '已隱藏'}
                     </td>
                     <td>
@@ -280,27 +292,27 @@
           })
         }
 
-        function move(id, order,direction) {
-          if (order == 'min' && direction=='up') {
+        function move(id, order, direction) {
+          if (order == 'min' && direction == 'up') {
             console.log('1st & up')
             alert("This is the first one, can't move up further!")
-          }else if(order == 'max' && direction=='down'){
+          } else if (order == 'max' && direction == 'down') {
             console.log('last & down')
             alert("This is the last one, can't move down further!")
           } else {
             let skip
-            if(direction=='up') skip=order-2
-            else if(direction=='down') skip=order
+            if (direction == 'up') skip = order - 2
+            else if (direction == 'down') skip = order
 
             let data = {
-                id:id,
-                order:order,
-                skip:skip,
-                _token: '{{ csrf_token() }}'
+              id: id,
+              order: order,
+              skip: skip,
+              _token: '{{ csrf_token() }}'
             }
             console.log(data)
             $.ajax({
-              url: "/api/category/" + id+"/move",
+              url: "/api/category/" + id + "/move",
               method: "PATCH",
               dataType: "text",
               data: data,
@@ -317,7 +329,6 @@
             })
           }
         }
-
       </script>
     </tbody>
   </table>
