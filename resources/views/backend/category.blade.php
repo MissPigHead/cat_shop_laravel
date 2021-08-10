@@ -120,11 +120,11 @@
               <i class="{{ $parentCategory->show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }}"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary" title='向上移動顯示順序'
-              onclick="moveUp({{ $parentCategory->id }},'{{ $loop->first ? 'min' : $loop->iteration }}','up')">
+              onclick="move({{ $parentCategory->id }},'{{ $loop->first ? 'min' : $loop->iteration }}','up')">
               <i class="fas fa-caret-up"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary" title='向下移動顯示順序'
-              onclick="moveUp({{ $parentCategory->id }},'{{ $loop->last ? 'max' : $loop->iteration }}','down')">
+              onclick="move({{ $parentCategory->id }},'{{ $loop->last ? 'max' : $loop->iteration }}','down')">
               <i class="fas fa-caret-down"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal"
@@ -156,6 +156,7 @@
             method: "GET",
             dataType: "json", // 注意抓回資料型態
             success: function(result) {
+                let order=result.length
               $.each(result, function() {
                 data = $(this)[0]
                 code = `
@@ -174,10 +175,10 @@
                         onclick='show(${ data.id },${ data.show ? 0 : 1 })'>
                         <i class='${ data.show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary' title='向上移動顯示順序'>
+                      <button type='button' class='btn btn-outline-secondary' title='向上移動顯示順序' onclick='move(${ data.id },"${ order==1?'min':order }","up")'>
                         <i class='fas fa-caret-up'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序'>
+                      <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序' onclick='move(${ data.id },"${ order==result.length?'max':order }","down")'>
                         <i class='fas fa-caret-down'></i>
                       </button>
                       <button type='button' class='btn btn-outline-secondary' title='編輯目錄名稱'>
@@ -190,6 +191,7 @@
                   </tr>
                 `
                 $(`#p${id}`).after(code)
+                order--
               })
             }
           })
@@ -278,7 +280,7 @@
           })
         }
 
-        function moveUp(id, order,direction) {
+        function move(id, order,direction) {
           if (order == 'min' && direction=='up') {
             console.log('1st & up')
             alert("This is the first one, can't move up further!")
@@ -317,40 +319,6 @@
         }
 
       </script>
-
-
-
-        {{-- function moveDown(id, order) {
-          if (order == 'max') {
-            console.log('lasst')
-            alert("This is the last one, can't move down further!")
-          } else {
-            let data = {
-                id:id,
-                order:order,
-                _token: '{{ csrf_token() }}'
-            }
-            console.log('others',data)
-
-            $.ajax({
-              url: "/api/category/" + id+"/movedown",
-              method: "PATCH",
-              dataType: "text",
-              data: data,
-              success: function(result) {
-                console.log(result)
-                alert('修改成功')
-                location.reload()
-              },
-              error: function(result) {
-                console.log(result)
-                alert('修改失敗，請通知管理員！')
-                location.reload()
-              }
-            })
-          }
-        } --}}
-
     </tbody>
   </table>
   <!-- 修改用Modal -->
