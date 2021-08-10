@@ -139,7 +139,7 @@
             <i class="fas fa-edit"></i>
           </button><br>
           <button type="button" class="btn btn-outline-secondary w-100" title="刪除資料"
-            onclick="destroy({{ $news->id }})">
+            onclick="deleteNews({{ $news->id }})">
             <i class="fas fa-trash-alt"></i>
           </button>
           </td>
@@ -227,9 +227,9 @@
       })
     }
 
-    function destroy(id) {
-      var destroy = confirm("確認刪除？")
-      if (destroy) {
+    function deleteNews(id) {
+      let deleteNews = confirm("確認刪除？")
+      if (deleteNews) {
         $.ajax({
           url: "/api/news/" + id,
           method: "DELETE",

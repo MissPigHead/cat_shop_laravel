@@ -42,7 +42,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+      $category = Category::findOrFail($id);
+      return $category;
     }
 
     /**
@@ -54,7 +55,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $category = Category::find($id);
+      $category->update($request->all());
     }
 
     /**
@@ -65,7 +67,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::destroy($id);
+        Category::where('parent',$id)->delete();
+
     }
     
     public function child(Request $request, $id)

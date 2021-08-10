@@ -28,7 +28,7 @@
 
   <script>
     // 辨識要新增主目錄或子目錄
-    function addCategory(parent) { 
+    function addCategory(parent) {
       if (parent == 'p') {
         if ($('#addParent').val() == "") {
           alert('請選擇輸入主目錄名稱')
@@ -96,15 +96,7 @@
         <th scope="col" class="col-3">操作</th>
       </tr>
     </thead>
-    <script>
-      function switchChild(id) {
-        console.log(id)
-        getChildCategory(id)
-      }
-    </script>
-
     <tbody>
-
       @foreach ($parentCategories as $parentCategory)
         <tr class="{{ $parentCategory->show ? 'bg-white' : 'bg-light' }} parent" id="p{{ $parentCategory->id }}">
           <td>{{ $parentCategory->title }} </td>
@@ -123,26 +115,39 @@
           </td>
           <td>
             <button type="button" class="btn btn-outline-secondary"
-              title="{{ $parentCategory->show ? '隱藏該目錄' : '顯示該目錄' }}">
-              <i class="{{ $parentCategory->show ? 'fas fa-toggle-off' : 'fas fa-toggle-on' }}"></i>
+              title="{{ $parentCategory->show ? '隱藏該目錄' : '顯示該目錄' }}"
+              onclick="show({{ $parentCategory->id }},{{ $parentCategory->show ? 0 : 1 }})">
+              <i class="{{ $parentCategory->show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }}"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary">
+            <button type="button" class="btn btn-outline-secondary" title='向上移動顯示順序' onclick="moveUp('{{ $loop->first?'min':$loop->iteration }}')">
               <i class="fas fa-caret-up"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary">
+            <button type="button" class="btn btn-outline-secondary" title='向下移動顯示順序' onclick="moveDown('{{ $loop->last?'max':$loop->iteration }}')">
               <i class="fas fa-caret-down"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary">
+            <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal"
+              data-target="#updateCategoryTitle" onclick="getCategoryTitle({{ $parentCategory->id }})">
               <i class="fas fa-edit"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary">
+            <button type="button" class="btn btn-outline-secondary" title='刪除此主目錄及底下子目錄'
+              onclick="deleteCategory({{ $parentCategory->id }},'p')">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
         </tr>
+
+        <script>
+          console.log(`{{ $parentCategory->title }}`)
+        </script>
+
       @endforeach
 
       <script>
+        $('.parent').each(function() {
+          id = $(this).attr('id').substr(1)
+          getChildCategory(id)
+        })
+
         function getChildCategory(id) {
           $.ajax({
             url: "/api/category/" + id + "/child",
@@ -163,19 +168,20 @@
                     </td>
                     <td>
                       <button type='button' class='btn btn-outline-secondary'
-                        title='${ data.show ? '隱藏該目錄' : '顯示該目錄' }'>
-                        <i class='${ data.show ? 'fas fa-toggle-off' : 'fas fa-toggle-on' }'></i>
+                        title='${ data.show ? '隱藏該目錄' : '顯示該目錄' }'
+                        onclick='show(${ data.id },${ data.show ? 0 : 1 })'>
+                        <i class='${ data.show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary'>
+                      <button type='button' class='btn btn-outline-secondary' title='向上移動顯示順序'>
                         <i class='fas fa-caret-up'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary'>
+                      <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序'>
                         <i class='fas fa-caret-down'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary'>
+                      <button type='button' class='btn btn-outline-secondary' title='編輯目錄名稱'>
                         <i class='fas fa-edit'></i>
                       </button>
-                      <button type='button' class='btn btn-outline-secondary'>
+                      <button type='button' class='btn btn-outline-secondary' title='刪除此子目錄' onclick='deleteCategory(${ data.id })'>
                         <i class='fas fa-trash-alt'></i>
                       </button>
                     </td>
@@ -187,13 +193,110 @@
           })
         }
 
-        $('.parent').each(function() {
-          id = $(this).attr('id').substr(1)
-          getChildCategory(id)
-        })
+        function deleteCategory(id, type) {
+          if (type == 'p') {
+            type = '該項主目錄，及其底下子目錄'
+          } else {
+            type = '該項子目錄'
+          }
+          let deleteCategory = confirm(`確認刪除？${type}`)
+          if (deleteCategory) {
+            $.ajax({
+              url: "/api/category/" + id,
+              method: "DELETE",
+              dataType: "text",
+              data: {
+                _token: '{{ csrf_token() }}',
+              },
+              success: function(result) {
+                alert('刪除成功')
+                location.reload()
+              },
+              error: function(result) {
+                alert('刪除失敗，請通知管理員！')
+                location.reload()
+              }
+            })
+          }
+        }
+
+        function show(id, show) {
+          console.log(id, show)
+          $.ajax({
+            url: "/api/category/" + id,
+            method: "PATCH",
+            dataType: "text",
+            data: {
+              show: show,
+              _token: '{{ csrf_token() }}',
+            },
+            success: function(result) {
+              alert('修改成功')
+              location.reload()
+            },
+            error: function(result, XMLHttpResponse, textStatus, errorThrown) {
+              alert('修改失敗，請通知管理員！')
+              location.reload()
+            }
+          })
+        }
+
+        function getCategoryTitle(id) {
+          $.ajax({
+            url: "/api/category/" + id,
+            method: "GET",
+            dataType: "json", // 注意抓回資料型態
+            success: function(result) {
+              $('#updateTitle').val(result.title)
+              $('#updateCategoryTitle input[type=hidden]').val(result.id)
+            }
+          })
+        }
+
+        function updateCategoryTitle() {
+          id = $('#updateCategoryTitle input[type=hidden]').val()
+          data = {
+            title: $('#updateTitle').val(),
+            _token: '{{ csrf_token() }}'
+            // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
+          }
+          $.ajax({
+            url: "/api/category/" + id,
+            method: "PATCH",
+            dataType: "text",
+            data: data,
+            success: function(result) {
+              alert('修改成功')
+              location.reload()
+            },
+            error: function(result) {
+              alert('修改失敗，請通知管理員！')
+              location.reload()
+            }
+          })
+        }
+
       </script>
 
     </tbody>
   </table>
+  <!-- 修改用Modal -->
+  <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateCategoryLabel">請輸入新的目錄名稱</h5>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control" id="updateTitle">
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" value="">
+          <button type="button" class="btn btn-info" onclick="updateCategoryTitle()">確認</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
