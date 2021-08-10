@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('news', 'API\NewsController');
 Route::apiResource('category', 'API\CategoryController');
 Route::get('category/{id}/child', 'API\CategoryController@child');
+Route::patch('category/{id}/move', 'API\CategoryController@move');

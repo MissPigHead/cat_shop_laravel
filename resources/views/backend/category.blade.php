@@ -119,10 +119,12 @@
               onclick="show({{ $parentCategory->id }},{{ $parentCategory->show ? 0 : 1 }})">
               <i class="{{ $parentCategory->show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }}"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary" title='向上移動顯示順序' onclick="moveUp('{{ $loop->first?'min':$loop->iteration }}')">
+            <button type="button" class="btn btn-outline-secondary" title='向上移動顯示順序'
+              onclick="moveUp({{ $parentCategory->id }},'{{ $loop->first ? 'min' : $loop->iteration }}','up')">
               <i class="fas fa-caret-up"></i>
             </button>
-            <button type="button" class="btn btn-outline-secondary" title='向下移動顯示順序' onclick="moveDown('{{ $loop->last?'max':$loop->iteration }}')">
+            <button type="button" class="btn btn-outline-secondary" title='向下移動顯示順序'
+              onclick="moveUp({{ $parentCategory->id }},'{{ $loop->last ? 'max' : $loop->iteration }}','down')">
               <i class="fas fa-caret-down"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal"
@@ -254,8 +256,8 @@
         }
 
         function updateCategoryTitle() {
-          id = $('#updateCategoryTitle input[type=hidden]').val()
-          data = {
+          let id = $('#updateCategoryTitle input[type=hidden]').val()
+          let data = {
             title: $('#updateTitle').val(),
             _token: '{{ csrf_token() }}'
             // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
@@ -276,12 +278,84 @@
           })
         }
 
+        function moveUp(id, order,direction) {
+          if (order == 'min' && direction=='up') {
+            console.log('1st & up')
+            alert("This is the first one, can't move up further!")
+          }else if(order == 'max' && direction=='down'){
+            console.log('last & down')
+            alert("This is the last one, can't move down further!")
+          } else {
+            let skip
+            if(direction=='up') skip=order-2
+            else if(direction=='down') skip=order
+
+            let data = {
+                id:id,
+                order:order,
+                skip:skip,
+                _token: '{{ csrf_token() }}'
+            }
+            console.log(data)
+            $.ajax({
+              url: "/api/category/" + id+"/move",
+              method: "PATCH",
+              dataType: "text",
+              data: data,
+              success: function(result) {
+                console.log(result)
+                alert('修改成功')
+                location.reload()
+              },
+              error: function(result) {
+                console.log(result)
+                alert('修改失敗，請通知管理員！')
+                location.reload()
+              }
+            })
+          }
+        }
+
       </script>
+
+
+
+        {{-- function moveDown(id, order) {
+          if (order == 'max') {
+            console.log('lasst')
+            alert("This is the last one, can't move down further!")
+          } else {
+            let data = {
+                id:id,
+                order:order,
+                _token: '{{ csrf_token() }}'
+            }
+            console.log('others',data)
+
+            $.ajax({
+              url: "/api/category/" + id+"/movedown",
+              method: "PATCH",
+              dataType: "text",
+              data: data,
+              success: function(result) {
+                console.log(result)
+                alert('修改成功')
+                location.reload()
+              },
+              error: function(result) {
+                console.log(result)
+                alert('修改失敗，請通知管理員！')
+                location.reload()
+              }
+            })
+          }
+        } --}}
 
     </tbody>
   </table>
   <!-- 修改用Modal -->
-  <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel" aria-hidden="true">
+  <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
         <div class="modal-header">

@@ -68,13 +68,31 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::destroy($id);
-        Category::where('parent',$id)->delete();
-
+        Category::where('parent',$id)->delete(); // 連同子目錄一併刪除
     }
     
-    public function child(Request $request, $id)
+    public function child($id)
     {
       $childCategories=Category::where('parent',$id)->orderBy('order','desc')->get();
       return $childCategories;
     }
+
+    public function move(Request $request, $id)
+    {
+      $originCate=Category::find($id);
+      $originCateOrder=$originCate->order;
+
+      $preCateID=Category::where('parent',$originCate->parent)->orderBy('order','asc')->skip($request->skip)->take(1)->value('id');
+      
+      $preCate=Category::find($preCateID);
+      $preCateOrder=$preCate->order;
+      // $preCate=Category::where('parent',$originCate->parent)->orderBy('order','asc')->skip($request->order-2)->take(1)->get();
+      // 這個方法取回的資料是物件陣列=Collection；上面的方法取回的是Model，不一樣！！
+      // Model: {"id":3,"title":"Parent2","parent":0,"show":1}
+      // Collection: [{"id":3,"title":"Parent2","parent":0,"show":1}]
+
+      $originCate->update(['order'=>$preCateOrder]);
+      $preCate->update(['order'=>$originCateOrder]);
+    }
 }
+
