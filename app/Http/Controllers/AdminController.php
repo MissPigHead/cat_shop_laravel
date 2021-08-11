@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category as AppCategory;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Category;
@@ -27,6 +28,13 @@ class AdminController extends Controller
         $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
         $data = [
           'parentCategories' => $parentCategories,
+        ];
+        break;
+        
+      case ('banner'):
+        $banners = Banner::orderBy('order', 'asc')->get();
+        $data = [
+          'banners' => $banners,
         ];
         break;
 
