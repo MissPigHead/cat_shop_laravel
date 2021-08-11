@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Taipei',
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'zh_TW',
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'zh_TW',
 
     /*
     |--------------------------------------------------------------------------
@@ -107,8 +107,6 @@ return [
     */
 
     'faker_locale' => 'zh_TW',
-    // 'faker_locale' => 'en_US',
-    // 這裡從英文換成中文
 
     /*
     |--------------------------------------------------------------------------
@@ -163,7 +161,9 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        // 下面這行是 intervention/image 套件
+        Intervention\Image\ImageServiceProvider::class,
+      
         /*
          * Package Service Providers...
          */
@@ -227,6 +227,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        // 下面這行是 intervention/image 套件
+        'Image' => Intervention\Image\Facades\Image::class
 
     ],
 
