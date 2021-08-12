@@ -85,3 +85,8 @@ th, td{
   text-align: center;
   vertical-align: middle!important;
 }
+.btn-w-35-h-30{
+  height: 30px;
+  width: 35px;
+  padding: auto;
+}
