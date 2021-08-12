@@ -30,7 +30,7 @@ class CategoryController extends Controller
         $category->title=$request->title;
         $category->parent=$request->parent;
         $category->show=false;
-        $category->order=Category::where('parent',($request->parent))->count()+1;
+        $category->order=Category::where('parent',($request->parent))->max('order')+1;
         $category->save();
     }
 

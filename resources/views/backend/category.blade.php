@@ -25,62 +25,6 @@
     </div>
     <button type="button" class="btn btn-info" onclick="addCategory('c')">新增</button>
   </div>
-
-  <script>
-    // 辨識要新增主目錄或子目錄
-    function addCategory(parent) {
-      if (parent == 'p') {
-        if ($('#addParent').val() == "") {
-          alert('請選擇輸入主目錄名稱')
-        } else {
-          data = {
-            title: $('#addParent').val(),
-            parent: 0,
-            _token: '{{ csrf_token() }}'
-          }
-          console.log(data)
-          postCategory(data)
-        }
-      } else {
-        if ($('#addChild_Parent').val() == null) {
-          alert('請選擇上層主目錄')
-        } else if ($('#addChild').val() == "") {
-          alert('請選擇輸入子目錄名稱')
-        } else {
-          data = {
-            title: $('#addChild').val(),
-            parent: $('#addChild_Parent').val(),
-            _token: '{{ csrf_token() }}'
-          }
-          console.log(data)
-          postCategory(data)
-        }
-      }
-    }
-
-    // 將資料傳給API
-    function postCategory(data) {
-      $.ajax({
-        url: "/api/category",
-        method: "POST",
-        dataType: "text", // "json"：ajax呼叫成功，但返回資料非json，所以返回 error+狀態碼200
-        data: data,
-        success: function(result) {
-          console.log("非同步呼叫返回成功");
-          alert('新增成功')
-          location.reload()
-        },
-        error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-          console.log(result)
-          console.log("非同步呼叫返回失敗");
-          alert('新增失敗，請通知管理員！')
-          location.reload()
-        }
-      })
-    }
-  </script>
-
-
   <!-- 顯示區 -->
   <table class="mt-4 table table-hover">
     <thead class="thead-dark">
@@ -88,7 +32,8 @@
         <!-- <tr class="table-active font-weight-bolder"> -->
         <th scope="col" class="col-3">主目錄</th>
         <th scope="col" class="col-3">
-          <button type="button" class="btn btn-outline-light py-1" onclick="collapseChild('all')" id="collapseAll" data-open=1>
+          <button type="button" class="btn btn-outline-light py-1" onclick="collapseChild('all')" id="collapseAll"
+            data-open=1>
             收合所有子目錄
           </button>
         </th>
@@ -96,27 +41,6 @@
         <th scope="col" class="col-5">操作</th>
       </tr>
     </thead>
-
-    <script>
-      function collapseChild(data) {
-        if (data == 'all') {
-          let open = $('#collapseAll').attr("data-open")
-          if (open) {
-            document.getElementById("collapseAll").dataset.open = ''
-            // jq 的.data() 只能讀取 無法修改 需要改用js
-            $('#collapseAll').text('展開所有子目錄')
-            $('tr.child').addClass('d-none')
-          } else {
-            document.getElementById("collapseAll").dataset.open = 1
-            $('#collapseAll').text('收合所有子目錄')
-            $('tr.child').removeClass('d-none')
-          }
-        } else {
-          $(`tr.${data}`).toggleClass('d-none')
-        }
-      }
-    </script>
-
     <tbody>
       @foreach ($parentCategories as $parentCategory)
         <tr class="{{ $parentCategory->show ? 'bg-white' : 'bg-light' }} parent" id="p{{ $parentCategory->id }}">
@@ -153,29 +77,114 @@
             </button>
           </td>
         </tr>
-
-        <script>
-          console.log(`{{ $parentCategory->title }}`)
-        </script>
-
       @endforeach
+    </tbody>
+  </table>
+  <!-- 修改用Modal -->
+  <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateCategoryLabel">請輸入新的目錄名稱</h5>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control" id="updateTitle">
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" value="">
+          <button type="button" class="btn btn-info" onclick="updateCategoryTitle()">確認</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <script>
-        $('.parent').each(function() {
-          id = $(this).attr('id').substr(1)
-          getChildCategory(id)
-        })
+<script>
+  $('.parent').each(function() { // 開啟頁面時 將各個子目錄放到對應主目錄下
+    id = $(this).attr('id').substr(1)
+    getChildCategory(id)
+  })
 
-        function getChildCategory(id) {
-          $.ajax({
-            url: "/api/category/" + id + "/child",
-            method: "GET",
-            dataType: "json", // 注意抓回資料型態
-            success: function(result) {
-              let order = result.length
-              $.each(result, function() {
-                data = $(this)[0]
-                code = `
+  function collapseChild(data) { // 收合或展開子目錄
+    if (data == 'all') {
+      let open = $('#collapseAll').attr("data-open")
+      if (open) {
+        document.getElementById("collapseAll").dataset.open = ''
+        // jq 的.data() 只能讀取 無法修改 需要改用js
+        $('#collapseAll').text('展開所有子目錄')
+        $('tr.child').addClass('d-none')
+      } else {
+        document.getElementById("collapseAll").dataset.open = 1
+        $('#collapseAll').text('收合所有子目錄')
+        $('tr.child').removeClass('d-none')
+      }
+    } else {
+      $(`tr.${data}`).toggleClass('d-none')
+    }
+  }
+
+  function addCategory(parent) { // 辨識要新增主目錄或子目錄 然後新增進資料庫
+    if (parent == 'p') {
+      if ($('#addParent').val() == "") {
+        alert('請選擇輸入主目錄名稱')
+      } else {
+        data = {
+          title: $('#addParent').val(),
+          parent: 0,
+          _token: '{{ csrf_token() }}'
+        }
+        console.log(data)
+        postCategory(data)
+      }
+    } else if (parent == 'c'){
+      if ($('#addChild_Parent').val() == null) {
+        alert('請選擇上層主目錄')
+      } else if ($('#addChild').val() == "") {
+        alert('請選擇輸入子目錄名稱')
+      } else {
+        data = {
+          title: $('#addChild').val(),
+          parent: $('#addChild_Parent').val(),
+          _token: '{{ csrf_token() }}'
+        }
+        console.log(data)
+        postCategory(data)
+      }
+    }
+  }
+
+  function postCategory(data) { // ajax 將資料傳給API
+    $.ajax({
+      url: "/api/category",
+      method: "POST",
+      dataType: "text", // "json"：ajax呼叫成功，但返回資料非json，所以返回 error+狀態碼200
+      data: data,
+      success: function(result) {
+        console.log("非同步呼叫返回成功");
+        alert('新增成功')
+        location.reload()
+      },
+      error: function(result, XMLHttpResponse, textStatus, errorThrown) {
+        console.log(result)
+        console.log("非同步呼叫返回失敗");
+        alert('新增失敗，請通知管理員！')
+        location.reload()
+      }
+    })
+  }
+
+  function getChildCategory(id) { // ajax 取回子目錄的資料
+    $.ajax({
+      url: "/api/category/" + id + "/child",
+      method: "GET",
+      dataType: "json", // 注意抓回資料型態
+      success: function(result) {
+        let order = result.length
+        $.each(result, function() {
+          data = $(this)[0]
+          code = `
                   <tr class='${data.show?'bg-white':'bg-light'} child p${data.parent}'>
                     <td></td>
                     <td>${ data.title } </td>
@@ -202,154 +211,133 @@
                     </td>
                   </tr>
                 `
-                $(`#p${id}`).after(code)
-                order--
-              })
-            }
-          })
-        }
+          $(`#p${id}`).after(code)
+          order--
+        })
+      }
+    })
+  }
 
-        function deleteCategory(id, type) {
-          if (type == 'p') {
-            type = '該項主目錄，及其底下子目錄'
-          } else {
-            type = '該項子目錄'
-          }
-          let deleteCategory = confirm(`確認刪除？${type}`)
-          if (deleteCategory) {
-            $.ajax({
-              url: "/api/category/" + id,
-              method: "DELETE",
-              dataType: "text",
-              data: {
-                _token: '{{ csrf_token() }}',
-              },
-              success: function(result) {
-                alert('刪除成功')
-                location.reload()
-              },
-              error: function(result) {
-                alert('刪除失敗，請通知管理員！')
-                location.reload()
-              }
-            })
-          }
+  function deleteCategory(id, type) { // ajax 刪除特定目錄
+    if (type == 'p') {
+      type = '該項主目錄，及其底下子目錄'
+    } else {
+      type = '該項子目錄'
+    }
+    let deleteCategory = confirm(`確認刪除？${type}`)
+    if (deleteCategory) {
+      $.ajax({
+        url: "/api/category/" + id,
+        method: "DELETE",
+        dataType: "text",
+        data: {
+          _token: '{{ csrf_token() }}',
+        },
+        success: function(result) {
+          alert('刪除成功')
+          location.reload()
+        },
+        error: function(result) {
+          alert('刪除失敗，請通知管理員！')
+          location.reload()
         }
+      })
+    }
+  }
 
-        function show(id, show) {
-          console.log(id, show)
-          $.ajax({
-            url: "/api/category/" + id,
-            method: "PATCH",
-            dataType: "text",
-            data: {
-              show: show,
-              _token: '{{ csrf_token() }}',
-            },
-            success: function(result) {
-              alert('修改成功')
-              location.reload()
-            },
-            error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-              alert('修改失敗，請通知管理員！')
-              location.reload()
-            }
-          })
+  function show(id, show) { // ajax 更新是否在前台顯示目錄
+    console.log(id, show)
+    $.ajax({
+      url: "/api/category/" + id,
+      method: "PATCH",
+      dataType: "text",
+      data: {
+        show: show,
+        _token: '{{ csrf_token() }}',
+      },
+      success: function(result) {
+        alert('修改成功')
+        location.reload()
+      },
+      error: function(result, XMLHttpResponse, textStatus, errorThrown) {
+        alert('修改失敗，請通知管理員！')
+        location.reload()
+      }
+    })
+  }
+
+  function getCategoryTitle(id) { // ajax 取回欲編輯的目錄資料
+    $.ajax({
+      url: "/api/category/" + id,
+      method: "GET",
+      dataType: "json", // 注意抓回資料型態
+      success: function(result) {
+        $('#updateTitle').val(result.title)
+        $('#updateCategoryTitle input[type=hidden]').val(result.id)
+      }
+    })
+  }
+
+  function updateCategoryTitle() { // ajax 更新欲編輯的目錄資料
+    let id = $('#updateCategoryTitle input[type=hidden]').val()
+    let data = {
+      title: $('#updateTitle').val(),
+      _token: '{{ csrf_token() }}'
+      // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
+    }
+    $.ajax({
+      url: "/api/category/" + id,
+      method: "PATCH",
+      dataType: "text",
+      data: data,
+      success: function(result) {
+        alert('修改成功')
+        location.reload()
+      },
+      error: function(result) {
+        alert('修改失敗，請通知管理員！')
+        location.reload()
+      }
+    })
+  }
+
+  function move(id, order, direction) { // ajax 更改顯示順序 上下移動
+    if (order == 'min' && direction == 'up') {
+      console.log('1st & up')
+      alert("This is the first one, can't move up further!")
+    } else if (order == 'max' && direction == 'down') {
+      console.log('last & down')
+      alert("This is the last one, can't move down further!")
+    } else {
+      let skip
+      if (direction == 'up') skip = order - 2
+      else if (direction == 'down') skip = order
+
+      let data = {
+        id: id,
+        order: order,
+        skip: skip,
+        _token: '{{ csrf_token() }}'
+      }
+      console.log(data)
+      $.ajax({
+        url: "/api/category/" + id + "/move",
+        method: "PATCH",
+        dataType: "text",
+        data: data,
+        success: function(result) {
+          console.log(result)
+          alert('修改成功')
+          location.reload()
+        },
+        error: function(result) {
+          console.log(result)
+          alert('修改失敗，請通知管理員！')
+          location.reload()
         }
+      })
+    }
+  }
+</script>
 
-        function getCategoryTitle(id) {
-          $.ajax({
-            url: "/api/category/" + id,
-            method: "GET",
-            dataType: "json", // 注意抓回資料型態
-            success: function(result) {
-              $('#updateTitle').val(result.title)
-              $('#updateCategoryTitle input[type=hidden]').val(result.id)
-            }
-          })
-        }
-
-        function updateCategoryTitle() {
-          let id = $('#updateCategoryTitle input[type=hidden]').val()
-          let data = {
-            title: $('#updateTitle').val(),
-            _token: '{{ csrf_token() }}'
-            // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
-          }
-          $.ajax({
-            url: "/api/category/" + id,
-            method: "PATCH",
-            dataType: "text",
-            data: data,
-            success: function(result) {
-              alert('修改成功')
-              location.reload()
-            },
-            error: function(result) {
-              alert('修改失敗，請通知管理員！')
-              location.reload()
-            }
-          })
-        }
-
-        function move(id, order, direction) {
-          if (order == 'min' && direction == 'up') {
-            console.log('1st & up')
-            alert("This is the first one, can't move up further!")
-          } else if (order == 'max' && direction == 'down') {
-            console.log('last & down')
-            alert("This is the last one, can't move down further!")
-          } else {
-            let skip
-            if (direction == 'up') skip = order - 2
-            else if (direction == 'down') skip = order
-
-            let data = {
-              id: id,
-              order: order,
-              skip: skip,
-              _token: '{{ csrf_token() }}'
-            }
-            console.log(data)
-            $.ajax({
-              url: "/api/category/" + id + "/move",
-              method: "PATCH",
-              dataType: "text",
-              data: data,
-              success: function(result) {
-                console.log(result)
-                alert('修改成功')
-                location.reload()
-              },
-              error: function(result) {
-                console.log(result)
-                alert('修改失敗，請通知管理員！')
-                location.reload()
-              }
-            })
-          }
-        }
-      </script>
-    </tbody>
-  </table>
-  <!-- 修改用Modal -->
-  <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateCategoryLabel">請輸入新的目錄名稱</h5>
-        </div>
-        <div class="modal-body">
-          <input type="text" class="form-control" id="updateTitle">
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" value="">
-          <button type="button" class="btn btn-info" onclick="updateCategoryTitle()">確認</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
