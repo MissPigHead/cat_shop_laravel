@@ -14,4 +14,8 @@ class News extends Model
     protected $fillable = [
         'title', 'article', 'image_path','show'
     ];
+
+    protected $attributes = [
+        'show' => false,
+    ];
 }
