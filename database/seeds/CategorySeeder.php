@@ -18,10 +18,11 @@ class CategorySeeder extends Seeder
             if ($i < 4 || $i == 10 || $i == 20) {
                 $category->parent = 0;
                 $category->title = "Parent" . $i;
+                $category->order = $i;
             } else {
                 $category->title = "Child" . $i;
+                $category->order = Category::where('parent', $category->parent)->count() + 1;
             }
-            $category->order = Category::where('parent', $category->parent)->count() + 1;
             $category->save();
         }
     }
