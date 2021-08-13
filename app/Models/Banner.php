@@ -12,6 +12,10 @@ class Banner extends Model
      * @var array
      */
     protected $fillable = [
-      'text', 'image_path', 'show', 'order'
-  ];
+        'text', 'image_path', 'show', 'order'
+    ];
+
+    protected $attributes = [
+        'show' => false,
+    ];
 }
