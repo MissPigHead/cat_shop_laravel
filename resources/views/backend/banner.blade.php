@@ -84,22 +84,32 @@
   <div class="modal fade" id="updateBanner" tabindex="-1" aria-labelledby="updateBannerLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
-        <div class="modal-body">
-          <label for="updateText" class="col-form-label">修改備註文字</label>
-          <input type="text" class="form-control" name="text" id="updateText">
-          <img src="" class="w-100 my-2" id="previewUpdate">
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" name="id" id="targetID">
-          <button type="button" class="btn btn-info" onclick="updateBannerText()">上傳</button>
-          <button type="reset" class="btn btn-light">重填</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-        </div>
+        <form>
+          <div class="modal-body">
+            <label for="updateText" class="col-form-label">修改備註文字</label>
+            <input type="text" class="form-control" name="text" id="updateText">
+            <img src="" class="w-100 my-2" id="previewUpdate">
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" name="id" id="targetID">
+            <button type="button" class="btn btn-info" onclick="updateBannerText()">上傳</button>
+            <button type="reset" class="btn btn-light">重填</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
 <script>
+  $('[type=reset]').click(function(e) { // 顯示上傳圖片的提醒字
+    $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
+  })
+
+  $('[data-target="#addBanner"]').click(function(e) { // ！！！還是有cache 將input的資料全部吃在那邊....可以不要嗎！？
+    $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
+  })
+
   $('input[type=file]').on('change', function(e) { // 預覽上傳的圖片
     const file = this.files[0];
 
@@ -126,7 +136,7 @@
   }
 
   function updateBannerText() { // 要update 的banner 資訊寫入資料庫
-    let id=$('#targetID').val()
+    let id = $('#targetID').val()
     let data = {
       text: $('#updateText').val(),
       _token: '{{ csrf_token() }}',
