@@ -24,9 +24,11 @@
               <label for="textBanner">請輸入圖片備註文字</label>
               <input type="text" class="form-control" name="text" id="textBanner" placeholder="此欄位可不填寫">
             </div>
+            <img class="w-100" id="previewNew">
           </div>
           <div class="modal-footer">
             <button type="submin" class="btn btn-info">上傳</button>
+            <button type="reset" class="btn btn-light">重填</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </form>
@@ -47,13 +49,13 @@
     <tbody>
       @foreach ($banners as $banner)
         <tr>
-          <td><img src="/{{ $banner->image_path }}" height="180"></td>
+          <td><img src="{{ $banner->image_path }}" height="180"></td>
           <td>{{ $banner->text }}</td>
 
           <td>{{ $banner->show ? '顯示中' : '已隱藏' }}</td>
           <td>
             <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1"
-              title="{{ $banner->show ? '隱藏該目錄' : '顯示該目錄' }}"
+              title="在前台{{ $banner->show ? '隱藏' : '顯示' }}該圖"
               onclick="show({{ $banner->id }},{{ $banner->show ? 0 : 1 }})">
               <i class="{{ $banner->show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }}"></i>
             </button><br>
@@ -65,11 +67,11 @@
               onclick="move({{ $banner->id }},'{{ $loop->last ? 'max' : $loop->iteration }}','down')">
               <i class="fas fa-caret-down"></i>
             </button><br>
-            <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1" title='編輯目錄名稱'
-              data-toggle="modal" data-target="#updateBanner" onclick="updateBanner({{ $banner->id }})">
+            <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1" title='修改備註文字'
+              data-toggle="modal" data-target="#updateBanner" onclick="updateModal({{ $banner->id }})">
               <i class="fas fa-edit"></i>
             </button><br>
-            <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1" title='刪除此主目錄及底下子目錄'
+            <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1" title='刪除此圖'
               onclick="deleteBanner({{ $banner->id }},'p')">
               <i class="fas fa-trash-alt"></i>
             </button>
@@ -82,15 +84,15 @@
   <div class="modal fade" id="updateBanner" tabindex="-1" aria-labelledby="updateBannerLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateBannerLabel">請輸入新的目錄名稱</h5>
-        </div>
         <div class="modal-body">
-          <input type="text" class="form-control" id="updateTitle">
+          <label for="updateText" class="col-form-label">修改備註文字</label>
+          <input type="text" class="form-control" name="text" id="updateText">
+          <img src="" class="w-100 my-2" id="previewUpdate">
         </div>
         <div class="modal-footer">
-          <input type="hidden" value="">
-          <button type="button" class="btn btn-info" onclick="updateCategoryTitle()">確認</button>
+          <input type="hidden" name="id" id="targetID">
+          <button type="button" class="btn btn-info" onclick="updateBannerText()">上傳</button>
+          <button type="reset" class="btn btn-light">重填</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
         </div>
       </div>
@@ -98,6 +100,54 @@
   </div>
 </div>
 <script>
+  $('input[type=file]').on('change', function(e) { // 預覽上傳的圖片
+    const file = this.files[0];
+
+    const fr = new FileReader();
+    fr.onload = function(e) {
+      $('#previewNew').attr('src', e.target.result);
+    };
+
+    fr.readAsDataURL(file);
+    // 使用 readAsDataURL 將圖片轉成 Base64 少這句就讀不出來了
+  });
+
+  function updateModal(id) { // 要update 的banner 資訊寫入Modal 顯示給user 確認
+    $('#targetID').val(id)
+    $.ajax({
+      url: "/api/banner/" + id,
+      method: "GET",
+      dataType: "json",
+      success: function(result) {
+        $("#updateText").attr('placeholder', result.text)
+        $("#previewUpdate").attr('src', result.image_path)
+      },
+    })
+  }
+
+  function updateBannerText() { // 要update 的banner 資訊寫入資料庫
+    let id=$('#targetID').val()
+    let data = {
+      text: $('#updateText').val(),
+      _token: '{{ csrf_token() }}',
+    }
+    console.log(data)
+    $.ajax({
+      url: "/api/banner/" + id,
+      method: "PATCH",
+      dataType: "text",
+      data: data,
+      success: function(result) {
+        alert('修改成功')
+        location.reload()
+      },
+      error: function(result) {
+        alert('修改失敗，請通知管理員！')
+        location.reload()
+      }
+    })
+  }
+
   function show(id, show) { // ajax 更新是否在前台顯示該圖片
     console.log(id, show)
     $.ajax({
@@ -119,7 +169,7 @@
     })
   }
 
-  function deleteBanner(id) {
+  function deleteBanner(id) { // 刪除
     let ans = confirm(`確認刪除？圖片{{ $banner->text }}`)
     if (ans) {
       $.ajax({
