@@ -1,13 +1,6 @@
 @extends('layouts.backend')
 @section('title', '育貓新知區')
 @section('content')
-<pre>
-@php
-    if(!empty($r)){
-        var_dump($r);
-    }
-    @endphp
-    </pre>
 <div class="col-9 content">
   <!-- 新增區 -->
   <div class="row justify-content-center">
@@ -40,7 +33,7 @@
               <label for="image" class="col-2 col-form-label">圖片</label>
               <div class="col-9">
                 <input type="file" name="image" id="imageNew">
-                <p class="small text-dark">*可留空，最多1張</p>
+                <p class="small text-dark">*可留空或選擇1張圖片</p>
               </div>
             </div>
             <img class="w-100" id="previewNew">
@@ -58,9 +51,8 @@
   <div class="modal fade" id="updateNews" tabindex="-1" aria-labelledby="updateNewsLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <form id="updateForm" method="POST" enctype="multipart/form-data">
+        <form id="updateForm" method="POST" enctype="multipart/form-data" action="/api/news/edit">
           @csrf
-          {{-- @method('PATCH') --}}
           <div class="modal-header">
             <h5 class="modal-title" id="updateNewsLabel">編輯文章</h5>
           </div>
@@ -80,25 +72,19 @@
             <div class="form-group row">
               <label for="article" class="col-2 col-form-label">圖片</label>
               <div class="col-9">
-                <button type="button" class="btn btn-secondary" id="chooseImage" onclick="addInput()">修改圖片</button>
+                <button type="button" class="btn btn-info" id="chooseImage" onclick="addInput()">修改圖片</button>
+                <input type="file" class="my-2 d-none w-100" name="image" id="imageUpdate">
+                <button type="button" class="btn btn-light text-secondary d-none" id="originalImage" onclick="">使用原存檔圖片</button>
               </div>
             </div>
-            <img src="" class="w-100 my-2" id="previewUpdate">
+            <img src="" class="w-100 my-2" id="previewUpdate"><span></span>
           </div>
           <div class="modal-footer">
-              <input type="hidden" name="id" value>
-            <button type="submin" class="btn btn-info">上傳</button>
-            {{-- <input type="submit" class="btn btn-info" value="確認"> --}}
-            <button type="reset" class="btn btn-light">重填</button>
+            <input type="hidden" name="id" value>
+            <button type="submin" class="btn btn-info">確認</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </form>
-        <script>
-          function addInput(e) {
-            $("#chooseImage").after(`<input type="file" name="image" id="imageUpdate">`)
-            $("#chooseImage").addClass('d-none')
-          }
-        </script>
       </div>
     </div>
   </div>
@@ -152,82 +138,109 @@
     </tbody>
   </table>
   <script>
-    function getNews(id) { // 將要進行編輯的news 塞入Modal 中
+    $('[type=reset]').click(function(e) { // 新增用Modal: reset 時移除預覽圖片
+      $('#imageNew + p').removeClass('d-none') // 顯示上傳圖片的提醒字
+      $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
+    })
+
+    $('#imageNew').on('change', function(e) { // 新增用Modal: 預覽圖片
+      if ($('#imageNew').val()) { // 有圖才預覽
+        const file = this.files[0];
+        const fr = new FileReader();
+        fr.onload = function(e) {
+          $('#imageNew + p').addClass('d-none')
+          $('#previewNew').attr('src', e.target.result);
+        };
+        fr.readAsDataURL(file);
+      } else { // 沒圖就出現提示
+        $('#previewNew').attr('src', '');
+        $('#imageNew + p').removeClass('d-none')
+      }
+    });
+
+    function addInput() { // 修改用Modal: 按下修改圖片
+      $("#chooseImage").addClass('d-none') // 修改圖片
+      $('#imageUpdate').removeClass('d-none') // 顯示 input file
+      $('#originalImage').removeClass('d-none') // 使用原圖
+      $('#deleteImage').removeClass('d-none') // 刪除圖片
+    }
+
+    function deleteImg(id) { // 修改用Modal: 按下刪除圖片
+      $("#deleteImage").addClass('d-none') // 刪除圖片
+      $('#originalImage').removeClass('d-none') // 使用原圖
+      $('#chooseImage').removeClass('d-none') // 新增圖片
+      $('#previewUpdate').attr('src', '') // 預覽 --> 移除
+      $('#imageUpdate').addClass('d-none') // input file
+      $('#imageUpdate').val('') // input file
+    }
+
+    function originalImg(src) { // 修改用Modal: 使用原圖片
+      if (src) {
+        $("#deleteImage").removeClass('d-none') // 刪除圖片 --> 顯示
+      }
+      $('#originalImage').addClass('d-none') // 使用原圖 --> 移除
+      $("#chooseImage").removeClass('d-none') // 新增圖片 --> 顯示
+      $('#imageUpdate').val('') // 移除 input file
+      $('#imageUpdate').addClass('d-none') // 移除 input file
+
+      $('#previewUpdate').attr('src', src) // 預覽 --> 原圖
+    }
+
+    $("#imageUpdate").on('change', function(e) { // 修改用Modal: 預覽圖
+      if ($("#imageUpdate").val()) {
+        const file = this.files[0];
+        const fr = new FileReader();
+        fr.onload = function(e) {
+          $('#previewUpdate').attr('src', e.target.result);
+        };
+        fr.readAsDataURL(file);
+        $("#previewUpdate~span").addClass('d-none') // 移除沒有圖片的提示
+      } else {
+        $('#previewUpdate').attr('src', '');
+        $("#previewUpdate~span").removeClass('d-none')
+      }
+    })
+
+    function getNews(id) { // 修改用Modal: 將要進行編輯的news 資訊塞入Modal
+      // 將Modal 內的元件回到預設狀態
+      $("#chooseImage").removeClass('d-none')
+      $('#imageUpdate').addClass('d-none')
+      $('#originalImage').addClass('d-none')
+      $("#deleteImage").remove()
+      $("#previewUpdate~span").text('')
+      $('#previewUpdate').attr('src', '')
+
+      // ajax 取回要編輯的物件資訊
       $.ajax({
         url: "/api/news/" + id,
         method: "GET",
         dataType: "json", // 注意抓回資料型態
         success: function(result) {
-        //   $('#updateForm').attr('action', '/api/news/' + result.id + "/edit")
-          $('#updateForm').attr('action', '/api/news/edit')
-          $('#updateTitle').val(result.title)
-          $('#updateArticle').val(result.article)
-          $('#previewUpdate').attr('data-id', result.id) // Modal的這裡藏id
-          $('#updateForm input[type=hidden]').val(result.id) // Modal的這裡藏id
-          $('#previewUpdate').attr('src', result.image_path)
+          $('#updateTitle').val(result.title) // 預寫title
+          $('#updateArticle').val(result.article) // 預寫article
+          $('#updateForm input[type=hidden]').val(result.id) // 修改Modal這裡藏id
+
+          if (result.image_path) { // 有image_path資料: 預覽 + 修改 + 刪除圖片
+            $('#previewUpdate').attr('src', result.image_path)
+            $("#chooseImage").text('修改圖片')
+            $('#originalImage').text('使用原存檔圖片')
+            $('#imageUpdate').after(`
+                <button type="button" class="btn btn-secondary" id="deleteImage">刪除圖片</button>`)
+            $('#deleteImage').attr('onclick', `deleteImg(${result.id})`) // 刪除圖片的按鈕
+          } else { // 沒image_path資料: 增加提示 + 新增圖片 - 刪除圖片
+            result.image_path = ""
+            $("#previewUpdate~span").text('目前沒有圖片')
+            $("#chooseImage").text('新增圖片')
+            $('#originalImage').text('本文不使用配圖')
+            $('#deleteImage').addClass('d-none')
+          }
+
+          $('#originalImage').attr('onclick', `originalImg('${result.image_path}')`) // 使用原圖的按鈕
         }
       })
     }
 
-    $('[data-toggle=modal]').click(function(e) { // 開Modal 時顯示上傳圖片的提醒字
-      $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
-      $('#previewUpdate').attr('src', '')
-      $("#imageUpdate").remove()
-      $('#imageNew + p').removeClass('d-none')
-      $("#chooseImage").removeClass('d-none')
-    })
-
-    $('[type=reset]').click(function(e) { // 按reset 的時候清乾淨preview 圖片
-      $('#imageNew + p').removeClass('d-none') // 顯示上傳圖片的提醒字
-      $("#chooseImage").removeClass('d-none')
-      $("#imageUpdate").remove()
-      $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
-      $('#previewUpdate').attr('src', '')
-    })
-
-    $('#imageNew').on('change', function(e) { // 預覽上傳的圖片
-      $('#imageNew + p').addClass('d-none')
-      const file = this.files[0];
-      const fr = new FileReader();
-      fr.onload = function(e) {
-        $('#previewNew').attr('src', e.target.result);
-      };
-      fr.readAsDataURL(file);
-      // 使用 readAsDataURL 將圖片轉成 Base64 少這句就讀不出來了
-    });
-
-    function postNews() {
-      data = {
-        title: $('#title').val(),
-        article: $('#article').val(),
-        _token: '{{ csrf_token() }}'
-        // Laravel強制要求要防範CSRF( Cross-site request forgery)攻擊 往資料庫送資料時要記得加！
-      }
-      $.ajax({
-        url: "/api/news",
-        method: "POST",
-        dataType: "text", // "json"：ajax呼叫成功，但返回資料非json，所以進入error，且狀態碼200
-        data: data,
-        success: function(result) {
-          console.log("非同步呼叫返回成功,result:" + result);
-          alert('新增成功')
-          location.reload()
-        },
-        error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-          console.log(result)
-          console.log("1 非同步呼叫返回失敗,XMLHttpResponse.readyState:" + XMLHttpResponse.readyState);
-          console.log("2 非同步呼叫返回失敗,XMLHttpResponse.status:" + XMLHttpResponse.status);
-          console.log("3 非同步呼叫返回失敗,textStatus:" + textStatus);
-          console.log("4 非同步呼叫返回失敗,errorThrown:" + errorThrown);
-          alert('新增失敗，請截圖提供給管理員，謝謝！\r\nXMLHttpResponse.readyState:' + XMLHttpResponse
-            .readyState + '\r\nXMLHttpResponse.status:' + XMLHttpResponse.status +
-            '\r\ntextStatus:' + textStatus + '\r\nerrorThrown:' + errorThrown)
-          location.reload()
-        }
-      })
-    }
-
-    function show(id) {
+    function show(id) { // update: show=1 更新是否顯示
       $.ajax({
         url: "/api/news/" + id,
         method: "PATCH",
@@ -247,7 +260,7 @@
       })
     }
 
-    function hide(id) {
+    function hide(id) { // update: show=0 更新是否顯示
       $.ajax({
         url: "/api/news/" + id,
         method: "PATCH",
@@ -267,7 +280,7 @@
       })
     }
 
-    function deleteNews(id) {
+    function deleteNews(id) { // 刪除文章
       let deleteNews = confirm("確認刪除？")
       if (deleteNews) {
         $.ajax({

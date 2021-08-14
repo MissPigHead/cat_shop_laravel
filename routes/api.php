@@ -23,4 +23,4 @@ Route::apiResource('banner', 'API\BannerController');
 Route::get('category/{id}/child', 'API\CategoryController@child');
 Route::patch('category/{id}/move', 'API\CategoryController@move');
 Route::patch('banner/{id}/move', 'API\BannerController@move');
-Route::post('news/edit', 'API\NewsController@updateWithFile');
+Route::post('news/edit', 'API\NewsController@updateWithFile')->name('news.edit');

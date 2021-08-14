@@ -29,19 +29,22 @@ class NewsController extends Controller
     {
         $news=News::make($request->all());
 
-        $dir_sub = "news";
-        $storage_path = "public/" . $dir_sub;
-        $request->validate([
-            'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
-        ]); // 驗證失敗的部分，還沒寫
-        $file_name = time() . $request->image->getClientOriginalName();
-        $request->image->storeAs($storage_path, $file_name);
-        // 以上是將image 存到public 指定路徑
+        if($request->hasFile('image')){
+            $dir_sub = "news";
+            $storage_path = "public/" . $dir_sub;
+            $request->validate([
+                'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
+            ]); // 驗證失敗的部分，還沒寫
+            $file_name = time() . $request->image->getClientOriginalName();
+            $request->image->storeAs($storage_path, $file_name);
+            // 以上是將image 存到public 指定路徑
 
-        // 以下是寫入資料庫內容
-        $public_path = "/storage/" . $dir_sub . "/" . $file_name;
+            // 以下是寫入資料庫內容
+            $public_path = "/storage/" . $dir_sub . "/" . $file_name;
 
-        $news->image_path=$public_path;
+            $news->image_path=$public_path;
+        }
+
         $news->save();
         return redirect('/admin/news');
     }
