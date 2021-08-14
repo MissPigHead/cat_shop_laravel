@@ -58,10 +58,9 @@
   <div class="modal fade" id="updateNews" tabindex="-1" aria-labelledby="updateNewsLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <form id="updateForm" method="POST">
+        <form id="updateForm" method="POST" enctype="multipart/form-data">
           @csrf
           {{-- @method('PATCH') --}}
-          <input type="hidden" name="_method" value="PATCH">
           <div class="modal-header">
             <h5 class="modal-title" id="updateNewsLabel">編輯文章</h5>
           </div>
@@ -87,6 +86,7 @@
             <img src="" class="w-100 my-2" id="previewUpdate">
           </div>
           <div class="modal-footer">
+              <input type="hidden" name="id" value>
             <button type="submin" class="btn btn-info">上傳</button>
             {{-- <input type="submit" class="btn btn-info" value="確認"> --}}
             <button type="reset" class="btn btn-light">重填</button>
@@ -158,10 +158,12 @@
         method: "GET",
         dataType: "json", // 注意抓回資料型態
         success: function(result) {
-          $('#updateForm').attr('action', '/api/news/' + result.id + "/edit")
+        //   $('#updateForm').attr('action', '/api/news/' + result.id + "/edit")
+          $('#updateForm').attr('action', '/api/news/edit')
           $('#updateTitle').val(result.title)
           $('#updateArticle').val(result.article)
           $('#previewUpdate').attr('data-id', result.id) // Modal的這裡藏id
+          $('#updateForm input[type=hidden]').val(result.id) // Modal的這裡藏id
           $('#previewUpdate').attr('src', result.image_path)
         }
       })

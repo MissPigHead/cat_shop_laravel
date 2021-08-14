@@ -66,40 +66,6 @@ class NewsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-
-     public function edit(Request $request, $id)
-    {
-        $news = News::find($id);
-        $news->title=$request->title;
-        $news->article=$request->article;
-
-        // if($request->hasFile('image')){
-        //     $news->image_path="yes";
-        // }else{
-        //     $news->image_path=$request->image;
-        // }
-        // $dir_sub = "news";
-        // $storage_path = "public/" . $dir_sub;
-        // $file_name = time() . $request->image;
-        // $request->file('image')->storeAs($storage_path, $file_name);
-        // // // 以上是將image 存到public 指定路徑
-
-        // // // 以下是寫入資料庫內容
-        // // $public_path = "/storage/" . $dir_sub . "/" . $file_name;
-
-        // // $news->image_path=$public_path;
-        //     $news->image_path=$request->image;
-
-        // $news->save();
-
-        $data=[
-            'r'=>$request->all(),
-            'news'=> $news,
-        ];
-        // return view('backend.news', $data);
-        dd($data);
-    }
-
      public function update(Request $request, $id)
     {
         $news = News::find($id);
@@ -115,5 +81,37 @@ class NewsController extends Controller
     public function destroy($id)
     {
         News::destroy($id);
+    }
+
+    public function updateWithFile(Request $request)
+    {
+        $dir_sub = "news";
+
+        $storage_path = "public/" . $dir_sub;
+
+        $request->validate([
+            'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
+        ]); // 驗證失敗的部分，還沒寫
+
+        $file_name = time() . $request->image->getClientOriginalName();
+
+        $request->image->storeAs($storage_path, $file_name);
+        // 以上是將image 存到public 指定路徑
+
+        // 以下是寫入資料庫內容
+        $public_path = "/storage/" . $dir_sub . "/" . $file_name;
+
+        $request->image_path=$public_path;
+
+        $re=$request->input();
+        $re['image_path']=$public_path;
+
+        $news=News::find($re['id']);
+        unset($re['_token']);
+        unset($re['id']);
+
+        $news->update($re);
+
+        return redirect('/admin/news');
     }
 }
