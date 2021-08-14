@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\News;
+use Facade\FlareClient\Http\Response;
 
 class NewsController extends Controller
 {
@@ -65,6 +66,39 @@ class NewsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+
+     public function edit(Request $request, $id)
+    {
+        $news = News::find($id);
+        $news->title=$request->title;
+        $news->article=$request->article;
+
+        // if($request->hasFile('image')){
+        //     $news->image_path="yes";
+        // }else{
+        //     $news->image_path=$request->image;
+        // }
+        // $dir_sub = "news";
+        // $storage_path = "public/" . $dir_sub;
+        // $file_name = time() . $request->image;
+        // $request->file('image')->storeAs($storage_path, $file_name);
+        // // // 以上是將image 存到public 指定路徑
+
+        // // // 以下是寫入資料庫內容
+        // // $public_path = "/storage/" . $dir_sub . "/" . $file_name;
+
+        // // $news->image_path=$public_path;
+        //     $news->image_path=$request->image;
+
+        // $news->save();
+
+        $data=[
+            'r'=>$request->all(),
+            'news'=> $news,
+        ];
+        // return view('backend.news', $data);
+        dd($data);
+    }
 
      public function update(Request $request, $id)
     {
