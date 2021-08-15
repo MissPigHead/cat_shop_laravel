@@ -15,7 +15,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
+        $data = [
+          'parentCategories' => $parentCategories,
+        ];
+        return view('backend.category', $data);
     }
 
     /**
@@ -70,7 +74,7 @@ class CategoryController extends Controller
         Category::destroy($id);
         Category::where('parent',$id)->delete(); // 連同子目錄一併刪除
     }
-    
+
     public function child($id)
     {
       $childCategories=Category::where('parent',$id)->orderBy('order','desc')->get();
@@ -83,7 +87,7 @@ class CategoryController extends Controller
       $originCateOrder=$originCate->order;
 
       $preCateID=Category::where('parent',$originCate->parent)->orderBy('order','asc')->skip($request->skip)->take(1)->value('id');
-      
+
       $preCate=Category::find($preCateID);
       $preCateOrder=$preCate->order;
       // $preCate=Category::where('parent',$originCate->parent)->orderBy('order','asc')->skip($request->order-2)->take(1)->get();

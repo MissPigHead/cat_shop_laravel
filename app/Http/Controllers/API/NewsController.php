@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\News;
 use Facade\FlareClient\Http\Response;
 
+
 class NewsController extends Controller
 {
     /**
@@ -16,7 +17,9 @@ class NewsController extends Controller
      */
     public function index()
     {
-        //
+        $news = News::orderBy('updated_at', 'desc')->get();
+        $data = ['news' => $news];
+        return view('backend.news', $data);
     }
 
     /**
@@ -27,26 +30,28 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        $news=News::make($request->all());
+        // $news=News::make($request->all());
 
-        if($request->hasFile('image')){
-            $dir_sub = "news";
-            $storage_path = "public/" . $dir_sub;
-            $request->validate([
-                'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
-            ]); // 驗證失敗的部分，還沒寫
-            $file_name = time() . $request->image->getClientOriginalName();
-            $request->image->storeAs($storage_path, $file_name);
-            // 以上是將image 存到public 指定路徑
+        // if($request->hasFile('image')){
+        //     $dir_sub = "news";
+        //     $storage_path = "public/" . $dir_sub;
+        //     $request->validate([
+        //         'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
+        //     ]); // 驗證失敗的部分，還沒寫
+        //     $file_name = time() . $request->image->getClientOriginalName();
+        //     $request->image->storeAs($storage_path, $file_name);
+        //     // 以上是將image 存到public 指定路徑
 
-            // 以下是寫入資料庫內容
-            $public_path = "/storage/" . $dir_sub . "/" . $file_name;
+        //     // 以下是寫入資料庫內容
+        //     $public_path = "/storage/" . $dir_sub . "/" . $file_name;
 
-            $news->image_path=$public_path;
-        }
+        //     $news->image_path=$public_path;
+        // }
 
-        $news->save();
-        return redirect('/admin/news');
+        // $news->save();
+        // return redirect('/admin/news');
+
+        return back()->withError('There was an error');
     }
 
     /**
@@ -69,7 +74,7 @@ class NewsController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $news = News::find($id);
         $news->update($request->all());
@@ -92,24 +97,27 @@ class NewsController extends Controller
 
         $storage_path = "public/" . $dir_sub;
 
-        $request->validate([
-            'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
-        ]); // 驗證失敗的部分，還沒寫
+        // $request->validate([
+        //     'image' => 'required|mimes:jpg,jpeg,bmp,png|max:2048',
+        // ]);
+        // 驗證的部分，還沒寫
+        // 更新圖片 是否刪除舊圖片 如何刪除或辨識
 
-        $file_name = time() . $request->image->getClientOriginalName();
+        // $file_name = time() . $request->image->getClientOriginalName(); // 原始檔名
+        $file_name = time() . $request->image->hashName(); // 雜湊名稱
 
         $request->image->storeAs($storage_path, $file_name);
         // 以上是將image 存到public 指定路徑
 
-        // 以下是寫入資料庫內容
         $public_path = "/storage/" . $dir_sub . "/" . $file_name;
+        // 以上是寫入資料庫內容
 
-        $request->image_path=$public_path;
+        $request->image_path = $public_path;
 
-        $re=$request->input();
-        $re['image_path']=$public_path;
+        $re = $request->input();
+        $re['image_path'] = $public_path;
 
-        $news=News::find($re['id']);
+        $news = News::find($re['id']);
         unset($re['_token']);
         unset($re['id']);
 

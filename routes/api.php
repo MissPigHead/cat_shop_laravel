@@ -17,9 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('news', 'API\NewsController');
-Route::apiResource('category', 'API\CategoryController');
-Route::apiResource('banner', 'API\BannerController');
+Route::apiResource('news', 'API\NewsController')->except(['index']);
+Route::apiResource('category', 'API\CategoryController')->except(['index']);
+Route::apiResource('banner', 'API\BannerController')->except(['index']);
 Route::get('category/{id}/child', 'API\CategoryController@child');
 Route::patch('category/{id}/move', 'API\CategoryController@move');
 Route::patch('banner/{id}/move', 'API\BannerController@move');

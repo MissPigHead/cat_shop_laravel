@@ -2,10 +2,31 @@
 @section('title', '育貓新知區')
 @section('content')
 <div class="col-9 content">
+  @php
+    if (!empty($_SESSION)) {
+        echo '<pre>';
+        var_dump($_SESSION);
+        echo '</pre>';
+    }
+  @endphp
+
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <ul>
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+
+  @includeIf($errors->any(),'view.name', ['some' => 'data'])
+
   <!-- 新增區 -->
   <div class="row justify-content-center">
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#storeNews">新增文章</button>
   </div>
+
   <!-- 新增用Modal -->
   <div class="modal fade" id="storeNews" tabindex="-1" aria-labelledby="storeNewsLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -74,7 +95,8 @@
               <div class="col-9">
                 <button type="button" class="btn btn-info" id="chooseImage" onclick="addInput()">修改圖片</button>
                 <input type="file" class="my-2 d-none w-100" name="image" id="imageUpdate">
-                <button type="button" class="btn btn-light text-secondary d-none" id="originalImage" onclick="">使用原存檔圖片</button>
+                <button type="button" class="btn btn-light text-secondary d-none" id="originalImage"
+                  onclick="">使用原存檔圖片</button>
               </div>
             </div>
             <img src="" class="w-100 my-2" id="previewUpdate"><span></span>
