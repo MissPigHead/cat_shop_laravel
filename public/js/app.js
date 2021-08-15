@@ -1,3 +1,6 @@
+/* sweet alert 2*/
+const swal = (window.swal = require("sweetalert2"));
+
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
