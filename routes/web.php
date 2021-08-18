@@ -54,3 +54,7 @@ Route::get('/', function () {
 //     Route::get('/', 'AdminController@index');
 //     // Route::name('API')
 //     Route::get('/{content}', 'AdminController@content')->name('.{content}');
+
+
+Route::get('/sweetalert/{type}','NotificationController@notification');
+

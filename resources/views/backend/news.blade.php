@@ -1,6 +1,11 @@
 @extends('layouts.backend')
 @section('title', '育貓新知區')
 @section('content')
+
+@if ($errors->any())
+@include('swal')
+@endif
+
 <div class="col-9 content">
   <!-- 新增區 -->
   <div class="row justify-content-center">
