@@ -2,26 +2,6 @@
 @section('title', '育貓新知區')
 @section('content')
 <div class="col-9 content">
-  @php
-    if (!empty($_SESSION)) {
-        echo '<pre>';
-        var_dump($_SESSION);
-        echo '</pre>';
-    }
-  @endphp
-
-  @if ($errors->any())
-    <div class="alert alert-danger">
-      <ul>
-        @foreach ($errors->all() as $error)
-          <li>{{ $error }}</li>
-        @endforeach
-      </ul>
-    </div>
-  @endif
-
-  @includeIf($errors->any(),'view.name', ['some' => 'data'])
-
   <!-- 新增區 -->
   <div class="row justify-content-center">
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#storeNews">新增文章</button>
@@ -41,13 +21,13 @@
             <div class="form-group row">
               <label for="title" class="col-2 col-form-label">標題</label>
               <div class="col-9">
-                <input type="text" class="form-control" name="title">
+                <input type="text" class="form-control" name="title" value="{{ old('title') ?: '' }}">
               </div>
             </div>
             <div class="form-group row">
               <label for="article" class="col-2 col-form-label">內容</label>
               <div class="col-9">
-                <textarea class="form-control" name="article" rows="5"></textarea>
+                <textarea class="form-control" name="article" rows="5">{{ old('article') ?: '' }}</textarea>
               </div>
             </div>
             <div class="form-group row">
@@ -98,14 +78,15 @@
 
 
                 <div class="btn-group-toggle ml-3" data-toggle="buttons">
-                    <label class="btn btn-light text-secondary">
-                      <input type="radio" name="original_image" id="originalImage" checked><span> 使用原存檔圖片</span>
-                    </label>
-                  </div>
+                  <label class="btn btn-light text-secondary">
+                    <input type="radio" name="original_image" id="originalImage" checked><span> 使用原存檔圖片</span>
+                  </label>
+                </div>
 
               </div>
             </div>
-            <img src="" class="w-100 my-2" id="previewUpdate"><p id="noImageRecord"></p>
+            <img src="" class="w-100 my-2" id="previewUpdate">
+            <p id="noImageRecord"></p>
           </div>
           <div class="modal-footer">
             <input type="hidden" name="id" value>
@@ -198,7 +179,7 @@
     function deleteImg(id) { // 修改用Modal: 按下刪除圖片
       $("#deleteImage").hide() // 刪除圖片
       $('#originalImage').parent().parent().show() // 使用原圖
-      $("#originalImage").prop('checked',false)
+      $("#originalImage").prop('checked', false)
       $('#chooseImage').show() // 新增圖片
       $('#previewUpdate').attr('src', '') // 預覽 --> 移除
       $('#imageUpdate').hide() // input file
@@ -209,8 +190,8 @@
       if (src) {
         $("#deleteImage").show() // 刪除圖片 --> 顯示
       }
-      $('#originalImage').parent().parent().hide()// 使用原圖 --> 移除
-      $("#originalImage").prop('checked',true)
+      $('#originalImage').parent().parent().hide() // 使用原圖 --> 移除
+      $("#originalImage").prop('checked', true)
       $("#chooseImage").show() // 新增圖片 --> 顯示
       $('#imageUpdate').val('') // 移除 input file
       $('#imageUpdate').hide() // 移除 input file
@@ -227,11 +208,11 @@
         };
         fr.readAsDataURL(file);
         $("#noImageRecord").hide() // 移除沒有圖片的提示
-        $("#originalImage").prop('checked',false)
+        $("#originalImage").prop('checked', false)
       } else {
         $('#previewUpdate').attr('src', '');
         $("#noImageRecord").show()
-        $("#originalImage").prop('checked',true) // 未上傳圖片時，預設使用原圖，只有按下delete才刪除
+        $("#originalImage").prop('checked', true) // 未上傳圖片時，預設使用原圖，只有按下delete才刪除
       }
     })
 
@@ -260,7 +241,7 @@
             $('#imageUpdate').after(`
             <button type="button" class="btn btn-secondary ml-3" id="deleteImage">刪除圖片</button>`)
             $('#deleteImage').attr('onclick', `deleteImg(${result.id})`) // 刪除圖片的按鈕
-        } else { // 沒image_path資料: 增加提示 + 新增圖片 - 刪除圖片
+          } else { // 沒image_path資料: 增加提示 + 新增圖片 - 刪除圖片
             result.image_path = ""
             $("#noImageRecord").text('本文未上傳圖片')
             $("#chooseImage").text('新增圖片')
