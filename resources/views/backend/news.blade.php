@@ -17,7 +17,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
-        <form method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data" id="NewForm">
           @csrf
           <div class="modal-header">
             <h5 class="modal-title" id="storeNewsLabel">新增文章</h5>
@@ -46,7 +46,6 @@
           </div>
           <div class="modal-footer">
             <button type="submin" class="btn btn-info">上傳</button>
-            <button type="reset" class="btn btn-light">重填</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </form>
@@ -153,11 +152,6 @@
   </table>
   <script>
     $('#imageUpdate').hide()
-
-    $('[type=reset]').click(function(e) { // 新增用Modal: reset 時移除預覽圖片
-      $('#imageNew + p').show() // 顯示上傳圖片的提醒字
-      $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
-    })
 
     $('#imageNew').on('change', function(e) { // 新增用Modal: 預覽圖片
       if ($('#imageNew').val()) { // 有圖才預覽
