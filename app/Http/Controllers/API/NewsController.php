@@ -15,20 +15,24 @@ class NewsController extends Controller
     public function index() // 取全部
     {
         $news = News::orderBy('updated_at', 'desc')->get();
-        $data = ['news' => $news];
-        return view('backend.news', $data);
+        return view('backend.news', ['news' => $news]);
     }
 
     public function store(NewsRequest $request) // 儲存資料
     {
-        $news = News::make($request->all());
-        if ($request->hasFile('image')) {
-            $news->image_path = $this->saveFile($request->image); // 存圖片
+        $data = $request->all();
+        if ($data) {
+            $news = News::make($request->all());
+            if ($request->hasFile('image')) {
+                $news->image_path = $this->saveFile($request->image); // 存圖片
+            } else {
+                $news->image_path = '';
+            }
+            $news->save();
+            return back();
         } else {
-            $news->image_path = '';
+            return back()->withInput();
         }
-        $news->save();
-        return back()->withInput();
     }
 
     public function show($id) // 取得id資料
@@ -48,7 +52,7 @@ class NewsController extends Controller
         News::destroy($id);
     }
 
-    public function updateWithFile(NewsRequest $request) // 先存圖片 再更新資料 是用POST！
+    public function updateWithFile(NewsRequest $request) // 先存圖片 再更新資料 這個update是用POST！
     {
         /* 撈出要更新的資料 */
         $re = $request->input();
@@ -66,7 +70,7 @@ class NewsController extends Controller
         } else { // 無上傳圖片
             if ($news->image_path) { // 有舊圖片
                 if ($request->original_image) { // 沿用舊圖不變化
-                    $$re['image_path'] = $news->image_path;
+                    $re['image_path'] = $news->image_path;
                 } else { // 刪除舊圖，不再使用圖片
                     if (File::exists($news->image_path)) {
                         Storage::move("public" . substr($news->image_path, 8), "user_delete" . substr($news->image_path, 8));
