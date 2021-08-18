@@ -228,6 +228,7 @@
       $('#originalImage').parent().parent().hide()
       $("#deleteImage").remove()
       $('#previewUpdate').attr('src', '')
+      $("#imageUpdate").val('') // 避免Cache 上次圖片值
 
       $.ajax({ // ajax 取回要編輯的物件資訊
         url: "/api/news/" + id,
