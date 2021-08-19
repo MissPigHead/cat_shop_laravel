@@ -160,6 +160,7 @@ return [
         'first_name'            => '名',
         'gender'                => '性別',
         'hour'                  => '時',
+        'image'                 => '圖片',
         'last_name'             => '姓',
         'minute'                => '分',
         'mobile'                => '手機',
