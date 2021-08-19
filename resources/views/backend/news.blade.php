@@ -3,7 +3,7 @@
 @section('content')
 
 @if ($errors->any())
-@include('swal')
+  @include('swal')
 @endif
 
 <div class="col-9 content">
@@ -265,12 +265,10 @@
           _token: '{{ csrf_token() }}',
         },
         success: function(result) {
-          alert('修改成功')
           location.reload()
         },
         error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-          alert('修改失敗，請通知管理員！')
-          location.reload()
+          console.log(result)
         }
       })
     }
@@ -285,12 +283,10 @@
           _token: '{{ csrf_token() }}',
         },
         success: function(result) {
-          alert('修改成功')
           location.reload()
         },
         error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-          alert('修改失敗，請通知管理員！')
-          location.reload()
+          console.log(result)
         }
       })
     }
@@ -306,12 +302,10 @@
             _token: '{{ csrf_token() }}',
           },
           success: function(result) {
-            alert('刪除成功')
             location.reload()
           },
           error: function(result, XMLHttpResponse, textStatus, errorThrown) {
-            alert('刪除失敗，請通知管理員！')
-            location.reload()
+            console.log(result)
           }
         })
       }
