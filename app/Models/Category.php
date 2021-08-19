@@ -14,4 +14,8 @@ class Category extends Model
     protected $fillable = [
         'title', 'parent', 'show', 'order'
     ];
+
+    protected $attributes = [
+        'show' => false,
+    ];
 }
