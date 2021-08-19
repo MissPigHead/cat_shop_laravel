@@ -1,6 +1,11 @@
 @extends('layouts.backend')
 @section('title', 'Banner廣告')
 @section('content')
+
+@if ($errors->any())
+  @include('swal')
+@endif
+
 <div class="col-9 content">
   <!--新增取區 -->
   <div class="row justify-content-center">
@@ -22,13 +27,13 @@
             </div>
             <div class="form-group">
               <label for="textBanner">請輸入圖片備註文字</label>
-              <input type="text" class="form-control" name="text" id="textBanner" placeholder="此欄位可不填寫">
+              <input type="text" class="form-control" name="text" id="textBanner" value="{{ old('text') ?: '' }}"
+                placeholder="此欄位可不填寫">
             </div>
             <img class="w-100" id="previewNew">
           </div>
           <div class="modal-footer">
             <button type="submin" class="btn btn-info">上傳</button>
-            <button type="reset" class="btn btn-light">重填</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </form>
@@ -39,7 +44,6 @@
   <table class="mt-4 table  table-bordered table-hover">
     <thead class="thead-dark">
       <tr>
-        <!-- <tr class="table-active font-weight-bolder"> -->
         <th scope="col" class="col-8">圖片</th>
         <th scope="col" class="col-2">備註文字</th>
         <th scope="col" class="col-1">狀態</th>
@@ -72,7 +76,7 @@
               <i class="fas fa-edit"></i>
             </button><br>
             <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1" title='刪除此圖'
-              onclick="deleteBanner({{ $banner->id }},'p')">
+              onclick="deleteBanner({{ $banner->id }})">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -93,7 +97,6 @@
           <div class="modal-footer">
             <input type="hidden" name="id" id="targetID">
             <button type="button" class="btn btn-info" onclick="updateBannerText()">上傳</button>
-            <button type="reset" class="btn btn-light">重填</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </form>
@@ -103,63 +106,66 @@
 </div>
 <script>
   $('[type=reset]').click(function(e) { // 顯示上傳圖片的提醒字
-    $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
+    $('#previewNew').attr('src', '') // 清空預覽圖
+
   })
 
-  $('[data-target="#addBanner"]').click(function(e) { // ！！！還是有cache 將input的資料全部吃在那邊....可以不要嗎！？
-    $('#previewNew').attr('src', '') // 清乾淨之前preview 的資料
+  $('[data-target="#addBanner"]').click(function(e) {
+    $('#previewNew').attr('src', '') // 清空預覽圖
   })
 
   $('input[type=file]').on('change', function(e) { // 預覽上傳的圖片
-    const file = this.files[0];
-
-    const fr = new FileReader();
-    fr.onload = function(e) {
-      $('#previewNew').attr('src', e.target.result);
-    };
-
-    fr.readAsDataURL(file);
-    // 使用 readAsDataURL 將圖片轉成 Base64 少這句就讀不出來了
+    if ($('#imageBanner').val()) { // 有圖才預覽
+      const file = this.files[0];
+      const fr = new FileReader();
+      fr.onload = function(e) {
+        $('#previewNew').attr('src', e.target.result);
+      };
+      fr.readAsDataURL(file); // 使用 readAsDataURL 將圖片轉成 Base64 少這句就讀不出來了
+    } else { // 沒圖就出現提示
+      $('#previewNew').attr('src', '');
+    }
   });
 
-  function updateModal(id) { // 要update 的banner 資訊寫入Modal 顯示給user 確認
+  function updateModal(id) { // banner 資訊寫入Modal 顯示給user 確認
     $('#targetID').val(id)
     $.ajax({
       url: "/api/banner/" + id,
       method: "GET",
       dataType: "json",
       success: function(result) {
-        $("#updateText").attr('placeholder', result.text)
+        $("#updateText").val(result.text)
         $("#previewUpdate").attr('src', result.image_path)
       },
     })
   }
 
-  function updateBannerText() { // 要update 的banner 資訊寫入資料庫
+  function updateBannerText() { // 寫入資料庫
     let id = $('#targetID').val()
     let data = {
       text: $('#updateText').val(),
       _token: '{{ csrf_token() }}',
     }
-    console.log(data)
     $.ajax({
       url: "/api/banner/" + id,
       method: "PATCH",
-      dataType: "text",
+      dataType: "json",
       data: data,
-      success: function(result) {
-        alert('修改成功')
-        location.reload()
-      },
-      error: function(result) {
-        alert('修改失敗，請通知管理員！')
-        location.reload()
+      error: function(result) { // ajax 回傳json 不是text 所以用error status code 辨識
+        if (result.status == 200) {
+          location.reload()
+        } else if (result.status == 422) {
+          console.log(result.responseJSON)
+          $.each(result.responseJSON.errors, ($k, $v) => {
+            console.log($k, $v[0])
+            Swal.fire($v[0])
+          })
+        }
       }
     })
   }
 
   function show(id, show) { // ajax 更新是否在前台顯示該圖片
-    console.log(id, show)
     $.ajax({
       url: "/api/banner/" + id,
       method: "PATCH",
@@ -169,72 +175,68 @@
         _token: '{{ csrf_token() }}',
       },
       success: function(result) {
-        alert('修改成功')
         location.reload()
       },
       error: function(result) {
-        alert('修改失敗，請通知管理員！')
-        location.reload()
+        console.log(result)
       }
     })
   }
 
   function deleteBanner(id) { // 刪除
-    let ans = confirm(`確認刪除？圖片{{ $banner->text }}`)
-    if (ans) {
-      $.ajax({
-        url: "/api/banner/" + id,
-        method: "DELETE",
-        dataType: "text",
-        data: {
-          _token: '{{ csrf_token() }}',
-        },
-        success: function(result) {
-          alert('刪除成功')
-          location.reload()
-        },
-        error: function(result) {
-          // console.log(result.responseText)
-          alert('刪除失敗，請通知管理員！')
-          location.reload()
-        }
-      })
-    }
+    Swal.fire({
+      title: '確認刪除這張圖片？',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#6cb2eb',
+      cancelButtonColor: '#afafaf',
+      cancelButtonText: '取消',
+      confirmButtonText: '確定刪除'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: "/api/banner/" + id,
+          method: "DELETE",
+          dataType: "text",
+          data: {
+            _token: '{{ csrf_token() }}',
+          },
+          success: function(result) {
+            location.reload()
+          },
+          error: function(result) {
+            console.log(result)
+          }
+        })
+      }
+    })
   }
 
   function move(id, order, direction) { // ajax 更改顯示順序 上下移動
     if (order == 'min' && direction == 'up') {
-      console.log('1st & up')
-      alert("This is the first one, can't move up further!")
+      Swal.fire("已經在第一位，無法往前")
     } else if (order == 'max' && direction == 'down') {
-      console.log('last & down')
-      alert("This is the last one, can't move down further!")
+      Swal.fire("已經在最末位，無法往後")
     } else {
       let skip
       if (direction == 'up') skip = order - 2
       else if (direction == 'down') skip = order
-
       let data = {
         id: id,
         order: order,
         skip: skip,
         _token: '{{ csrf_token() }}'
       }
-
-      console.log(data)
       $.ajax({
         url: "/api/banner/" + id + "/move",
         method: "PATCH",
         dataType: "text",
         data: data,
         success: function(result) {
-          alert('修改成功')
           location.reload()
         },
         error: function(result) {
-          // console.log(result.responseText)
-          alert('修改失敗，請通知管理員！')
-          location.reload()
+          console.log(result)
         }
       })
     }
