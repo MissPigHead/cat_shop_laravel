@@ -5,70 +5,35 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
-        $data = [
-          'parentCategories' => $parentCategories,
-        ];
-        return view('backend.category', $data);
+        return view('backend.category',['parentCategories' => $parentCategories]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $category= new Category();
-        $category->title=$request->title;
-        $category->parent=$request->parent;
-        $category->show=false;
+        $category=Category::make($request->all());
         $category->order=Category::where('parent',($request->parent))->max('order')+1;
         $category->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
       $category = Category::findOrFail($id);
       return $category;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
       $category = Category::find($id);
       $category->update($request->all());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         Category::destroy($id);
@@ -90,10 +55,6 @@ class CategoryController extends Controller
 
       $preCate=Category::find($preCateID);
       $preCateOrder=$preCate->order;
-      // $preCate=Category::where('parent',$originCate->parent)->orderBy('order','asc')->skip($request->order-2)->take(1)->get();
-      // 這個方法取回的資料是物件陣列=Collection；上面的方法取回的是Model，不一樣！！
-      // Model: {"id":3,"title":"Parent2","parent":0,"show":1}
-      // Collection: [{"id":3,"title":"Parent2","parent":0,"show":1}]
 
       $originCate->update(['order'=>$preCateOrder]);
       $preCate->update(['order'=>$originCateOrder]);

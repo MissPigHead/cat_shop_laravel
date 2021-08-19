@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Http\Requests\BannerRequest;
-use Illuminate\Auth\Events\Validated;
-use Illuminate\Support\Facades\Validator;
 
 class BannerController extends Controller
 {
@@ -37,9 +35,8 @@ class BannerController extends Controller
         return $banner;
     }
 
-    public function update(Request $request, $id)
+    public function update(BannerRequest $request, $id)
     {
-        $request->validate(['text' => 'max:20'], ['text.max' => '備註文字最多20個字']);
         $banner = Banner::find($id);
         $banner->update($request->all());
     }
