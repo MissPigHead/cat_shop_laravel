@@ -16,15 +16,17 @@ Route::get('/', function () {
     return view('frontend.main');
 });
 
-Route::name('admin') -> prefix('admin') -> middleware('can:admin') -> group(function () {  // 後台，使用middleware 控制權限
+Route::name('admin') -> prefix('admin')
+// -> middleware('can:admin')
+-> group(function () {  // 後台，使用middleware 控制權限
     Route::get('/', 'AdminController@index');
     Route::namespace('API') -> group(function () {
         Route::get('/news', 'NewsController@index')->name('.news');
         Route::get('/banner', 'BannerController@index')->name('.banner');
         Route::get('/category', 'CategoryController@index')->name('.category');
-        // Route::get('/order', 'OrderController@index')->name('.order');
-        // Route::get('/user', 'UserController@index')->name('.user');
-        // Route::get('/product', 'ProductController@index')->name('.product');
+        Route::get('/order', 'OrderController@index')->name('.order');
+        Route::get('/user', 'UserController@index')->name('.user');
+        Route::get('/product', 'ProductController@index')->name('.product');
     });
 });
 
