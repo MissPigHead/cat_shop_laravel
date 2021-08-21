@@ -6,14 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'title', 'parent', 'show', 'order'
-    ];
+    protected $guarded = [];
 
     protected $attributes = [
         'show' => false,
