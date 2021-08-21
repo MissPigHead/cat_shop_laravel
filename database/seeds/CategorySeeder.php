@@ -13,9 +13,9 @@ class CategorySeeder extends Seeder
     public function run()
     {
         Category::truncate(); // 清空所有表格資料
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $category = factory(Category::class)->make();
-            if ($i < 4 || $i == 10 || $i == 20) {
+            if ($i < 4 || $i == 15) {
                 $category->parent = 0;
                 $category->title = "Parent" . $i;
                 $category->order = $i;

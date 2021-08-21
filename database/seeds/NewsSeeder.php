@@ -12,11 +12,7 @@ class NewsSeeder extends Seeder
      */
     public function run()
     {
-        News::truncate(); // 清空所有表格資料
-        // News::unguard(); 
-        // 若在Model中有 $guarded 的資料 用 Model::unguard() 暫時解除該屬性 處理批量賦值
+        News::truncate();
         factory(News::class, 30)->create();
-        // News::reguard(); 
-        // 記得要加上 Model::reguard() 恢復原本$guaded 的屬性 
     }
 }
