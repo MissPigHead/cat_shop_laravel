@@ -16,11 +16,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('role')->default(User::ROLE_USER); // 加入角色欄位
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('name')->commet('帳號');
+            $table->string('role')->default(User::ROLE_USER)->comment('權限'); // 加入角色欄位
+            $table->string('email')->unique()->comment('信箱');
+            $table->timestamp('email_verified_at')->nullable()->comment('信箱認證時間');
+            $table->string('password')->comment('密碼');
             $table->rememberToken();
             $table->timestamps();
         });

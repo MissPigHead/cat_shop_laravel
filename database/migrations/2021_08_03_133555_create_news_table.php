@@ -15,10 +15,10 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
-            $table->mediumText('article'); // 字數比string多，若字數更多還可使用longText
-            $table->string('image_path')->nullable();
-            $table->boolean('show');
+            $table->string('title')->comment('標題');
+            $table->mediumText('article')->comment('文章內容'); // 字數比string多，若字數更多還可使用longText
+            $table->string('image_path')->nullable()->comment('配圖路徑');
+            $table->boolean('show')->comment('是否顯示');
             $table->timestamps();
         });
     }

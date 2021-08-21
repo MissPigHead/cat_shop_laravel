@@ -15,10 +15,10 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
-            $table->integer('parent');
-            $table->boolean('show');
-            $table->integer('order');
+            $table->string('title')->comment('目錄名稱');
+            $table->integer('parent')->comment('主目錄');
+            $table->boolean('show')->comment('是否顯示');
+            $table->integer('order')->comment('顯示順序');
             $table->timestamps();
         });
     }
