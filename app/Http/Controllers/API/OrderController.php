@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -14,7 +15,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return "Order";
+        return view('backend.order');
     }
 
     /**
