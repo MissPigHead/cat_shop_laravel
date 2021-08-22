@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\OrderDetail;
-use App\Models\Product;
 
 class OrderDetailSeeder extends Seeder
 {
