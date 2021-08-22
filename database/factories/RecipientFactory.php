@@ -7,10 +7,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Recipient::class, function (Faker $faker) {
     return [
-        'user_id'=> $faker->randomDigitNot(0),
+        'user_id'=> rand(1, 10),
         'name'=> $faker->name,
-        'mobile_no'=> $faker->phoneNumber,
-        'zip_code'=> $faker->postcode,
+        'phone_no'=> $faker->phoneNumber,
+        'postcode'=> $faker->postcode,
         'addr'=> $faker->address,
     ];
 });

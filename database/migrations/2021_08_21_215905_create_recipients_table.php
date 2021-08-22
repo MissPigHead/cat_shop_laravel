@@ -16,11 +16,9 @@ class CreateRecipientsTable extends Migration
         Schema::create('recipients', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id')->commet('用戶');
-            $table->string('name')->commet('收件人名稱');
-            $table->string('title')->commet('稱謂')->nullable();
-            $table->string('tel_no')->commet('座機電話')->nullable();
-            $table->string('mobile_no')->commet('手機電話');
-            $table->string('zip_code')->commet('郵遞區號');
+            $table->string('name')->commet('收件者');
+            $table->string('phone_no')->commet('電話');
+            $table->string('postcode')->commet('郵遞區號');
             $table->string('addr')->commet('地址');
             $table->timestamps();
         });

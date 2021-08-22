@@ -13,6 +13,6 @@ class RecipientSeeder extends Seeder
     public function run()
     {
         Recipient::truncate();
-        factory(Recipient::class, 10)->create();
+        factory(Recipient::class, 20)->create();
     }
 }
