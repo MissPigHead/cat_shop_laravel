@@ -90,3 +90,6 @@ th, td{
   width: 35px;
   padding: auto;
 }
+.table-fix{
+    table-layout:fixed;
+}

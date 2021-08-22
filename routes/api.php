@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('news', 'API\NewsController')->except(['index']);
 Route::apiResource('category', 'API\CategoryController')->except(['index']);
 Route::apiResource('banner', 'API\BannerController')->except(['index']);
+Route::apiResource('user', 'API\UserController')->except(['index']);
 Route::get('category/{id}/child', 'API\CategoryController@child');
 Route::patch('category/{id}/move', 'API\CategoryController@move');
 Route::patch('banner/{id}/move', 'API\BannerController@move');
