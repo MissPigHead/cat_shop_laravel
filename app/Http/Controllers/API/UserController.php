@@ -15,7 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('backend.user');
+        $users=User::all();
+        $data=[
+            'users' => $users,
+        ];
+        return view('backend.user', $data);
     }
 
     /**
@@ -26,7 +30,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -37,7 +40,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->recipient;
+        return $user;
     }
 
     /**

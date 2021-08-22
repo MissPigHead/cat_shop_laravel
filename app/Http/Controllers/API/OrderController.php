@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +16,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return view('backend.order');
+        $od=OrderDetail::find(1);
+        echo "<pre>";
+        $od->products->each(function($product){
+            print_r($product);
+        });
+        echo "</pre>";
+        // return view('backend.order');
     }
 
     /**
