@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\User;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,11 +17,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users=User::all();
-        $data=[
-            'users' => $users,
-        ];
-        return view('backend.user', $data);
+        // $users = User::all();
+        $users = User::orderBy('created_at', 'asc')->get();
+        $users->each(function ($user) {
+            $user->total_spent;
+        });
+        return view('backend.user', ['users' => $users]);
     }
 
     /**
@@ -42,6 +45,9 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->recipient;
+        $user->total_spent;
+        $user->order;
+        // $user->recipient->order;
         return $user;
     }
 
@@ -66,5 +72,12 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getOrder($id)
+    {
+        $user = User::findOrFail($id);
+        $user->order;
+
     }
 }

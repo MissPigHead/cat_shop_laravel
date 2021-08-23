@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Recipient;
+use App\Models\Order;
 
 class User extends Authenticatable
 {
@@ -16,7 +17,7 @@ class User extends Authenticatable
     const ROLE_USER = 'user';
 
     protected $fillable = [
-        'name', 'email', 'password','role','birthday','phone_no'
+        'name', 'email', 'password', 'role', 'birthday', 'phone_no'
     ];
 
     protected $hidden = [
@@ -30,5 +31,15 @@ class User extends Authenticatable
     public function recipient()
     {
         return $this->hasMany(Recipient::class);
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function getTotalSpentAttribute()
+    {
+        return $this->attributes['total_spent'] = Order::where('user_id', $this->id)->sum('amount_total');
     }
 }
