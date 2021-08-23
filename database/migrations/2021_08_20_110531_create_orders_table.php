@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('description')->nullable()->commet('訂單備註');
             $table->integer('amount_discount')->default(0)->commet('折扣金額');
             $table->integer('amount_total')->commet('總金額');
-            $table->softDeletes(0)->commet('軟刪除');
+            $table->softDeletes('delete_mark')->commet('軟刪除');
             $table->timestamps();
         });
     }
