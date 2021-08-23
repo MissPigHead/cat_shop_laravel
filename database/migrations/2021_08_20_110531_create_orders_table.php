@@ -15,7 +15,8 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('recipient_id')->commet('收件人');
+            $table->integer('user_id')->commet('訂購者');
+            $table->integer('recipient_id')->commet('收件者');
             $table->integer('amount_raw')->commet('原始金額');
             // $table->integer('invoice_type')->commet('發票類型');
             // $table->string('uniform_no')->commet('發票統編');
