@@ -16,13 +16,24 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $od=OrderDetail::find(1);
-        echo "<pre>";
-        $od->products->each(function($product){
-            print_r($product);
+        $ord=Order::find(1);
+        $ord->order_details;
+        $ord->order_details->each(function($order_detail){
+            $order_detail->product_name;
         });
-        echo "</pre>";
-        // return view('backend.order');
+        dd($ord);
+
+        // $od=OrderDetail::find(10);
+        // $od->product_name;
+        // dd($od);
+
+        // echo "<pre>";
+        // $od->products->each(function($product){
+        //     print_r($product);
+        // });
+        // echo "</pre>";
+
+        return view('backend.order');
     }
 
     /**
@@ -43,7 +54,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -54,7 +64,13 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $order=Order::findOrFail($id);
+        $order->order_details;
+        $order->order_details->each(function($order_detail){
+            $order_detail->product_name;
+        });
+
+        return $order;
     }
 
     /**
