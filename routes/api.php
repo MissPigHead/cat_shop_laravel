@@ -17,11 +17,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('news', 'API\NewsController')->except(['index']);
-Route::apiResource('category', 'API\CategoryController')->except(['index']);
-Route::apiResource('banner', 'API\BannerController')->except(['index']);
-Route::apiResource('user', 'API\UserController')->except(['index']);
-Route::get('category/{id}/child', 'API\CategoryController@child');
-Route::patch('category/{id}/move', 'API\CategoryController@move');
-Route::patch('banner/{id}/move', 'API\BannerController@move');
-Route::post('news/edit', 'API\NewsController@updateWithFile')->name('news.edit');
+Route::namespace('API')->group(function () {
+    Route::apiResource('news', 'NewsController')->except(['index']);
+    Route::apiResource('category', 'CategoryController')->except(['index']);
+    Route::apiResource('banner', 'BannerController')->except(['index']);
+    Route::apiResource('user', 'UserController')->except(['index']);
+    Route::apiResource('order', 'OrderController')->except(['index']);
+    Route::apiResource('user', 'UserController')->except(['index']);
+    Route::get('category/{id}/child', 'CategoryController@child');
+    Route::patch('category/{id}/move', 'CategoryController@move');
+    Route::patch('banner/{id}/move', 'BannerController@move');
+    Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
+    Route::get('user/{id}/order', 'UserController@getOrder');
+});
