@@ -28,12 +28,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function recipient()
+    public function recipients()
     {
         return $this->hasMany(Recipient::class);
     }
 
-    public function order()
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }
@@ -41,5 +41,10 @@ class User extends Authenticatable
     public function getTotalSpentAttribute()
     {
         return $this->attributes['total_spent'] = Order::where('user_id', $this->id)->sum('amount_total');
+    }
+
+    public function getOrderLengthAttribute()
+    {
+        return $this->attributes['order_length'] = Order::where('user_id', $this->id)->count();
     }
 }
