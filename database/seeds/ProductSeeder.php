@@ -13,9 +13,9 @@ class ProductSeeder extends Seeder
     public function run()
     {
         Product::truncate();
-        for ($i=0; $i <50 ; $i++) {
-            $product=factory(Product::class)->make();
-            $product->order= Product::where('category_id', $product->category_id)->count() + 1;
+        for ($i = 0; $i < 50; $i++) {
+            $product = factory(Product::class)->make();
+            $product->order = Product::where('category_id', $product->category_id)->count() + 1;
             $product->save();
         }
     }
