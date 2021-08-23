@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\OrderController;
 
 class UserController extends Controller
 {
@@ -44,9 +45,10 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        $user->recipient;
+        $user->recipients;
         $user->total_spent;
-        $user->order;
+        $user->order_length;
+        // $user->orders;
         // $user->recipient->order;
         return $user;
     }
@@ -77,7 +79,14 @@ class UserController extends Controller
     public function getOrder($id)
     {
         $user = User::findOrFail($id);
-        $user->order;
-
+        $user->total_spent;
+        $user->orders;
+        $user->orders->each(function($order){
+            $order->order_details;
+            $order->order_details->each(function($order_detail){
+                $order_detail->product_name;
+            });
+        });
+        return $user;
     }
 }

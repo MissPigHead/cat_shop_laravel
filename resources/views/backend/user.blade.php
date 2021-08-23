@@ -155,6 +155,25 @@
   <script>
     function getUserOrder(id) {
       console.log(id)
+      $.ajax({
+        url: "/api/user/" + id + "/order",
+        method: "GET",
+        dataType: "json",
+        success: function(result) {
+          console.log('suc', result)
+          let user = result
+          console.log(`${user.name}-${user.email}`)
+          $.each(user.orders, (k, order) => {
+            console.log(`第${k+1}單`, order)
+            $.each(order.order_details, (k, detail) => {
+              console.log(detail)
+            })
+          })
+        },
+        error: function(result) {
+          console.log('err', result)
+        },
+      })
     }
 
     function getUserInfo(id) {
@@ -165,32 +184,36 @@
         success: function(result) {
           let user = result
           let code = ''
+          $("[data=recipient]").remove()
           $("#editUserLabel").text(`${user.name} - ${user.email}`)
           $("#created_at").text(`${(user.created_at).substr(0,10)}`)
           $("#phone_no").text(`${user.phone_no}`)
           $("#birthday").text(`${user.birthday}`)
           $("#total_spent").text(`${user.total_spent}`)
-          $("#order_length").text(`${user.order.length}`)
-          $.each(user.recipient, (k, recipient) => {
+          $("#order_length").text(`${user.order_length}`)
+          $.each(user.recipients, (k, recipient) => {
             code = code + `
-                <tr>
+                <tr data='recipient'>
                     <td rowspan="3"><input type="checkbox" name="" id=""></td>
                     <td class="table-secondary">收件人名稱</td>
                     <td colspan="4">${recipient.name}</td>
                 </tr>
-                <tr>
+                <tr data='recipient'>
                     <td class="table-secondary">電話</td>
                     <td colspan="2">${recipient.phone_no}</td>
                     <td class="table-secondary">郵遞區號</td>
                     <td>${recipient.postcode}</td>
                 </tr>
-                <tr>
+                <tr data='recipient'>
                     <td class="table-secondary">地址</td>
                     <td id="phone_no" colspan="4">${recipient.addr}</td>
                 </tr>
                 `
           })
           $("#recipientTable").append(code)
+        },
+        error: function(result) {
+          console.log('err', result)
         },
       })
     }
