@@ -85,6 +85,7 @@ class UserController extends Controller
             $order->order_details;
             $order->order_details->each(function($order_detail){
                 $order_detail->product_name;
+                $order_detail->image_path;
             });
         });
         return $user;

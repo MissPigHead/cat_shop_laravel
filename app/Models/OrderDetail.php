@@ -24,4 +24,9 @@ class OrderDetail extends Model
     {
         return $this->attributes['product_name'] = Product::find($this->product_id)->name;
     }
+
+    public function getImagePathAttribute()
+    {
+        return $this->attributes['image_path'] = Product::find($this->product_id)->image_path;
+    }
 }
