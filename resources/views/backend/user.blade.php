@@ -31,31 +31,37 @@
           </div>
           <div class="modal-body">
             <h5 class="text-primary">會員資訊</h5>
-            <table class="table table-bordered table-hover table-fix">
-              <tr>
-                <td class="table-secondary">累計訂單數</td>
-                <td id="order_length">21</td>
-                <td class="table-secondary">累計消費額</td>
-                <td id="total_spent"></td>
-              </tr>
-              <tr>
-                <td class="table-secondary">註冊日期</td>
-                <td id="created_at"></td>
-                <td class="table-secondary">生日</td>
-                <td id="birthday"></td>
-              </tr>
-              <tr>
-                <td class="table-secondary">電話號碼</td>
-                <td id="phone_no" colspan="3"></td>
-              </tr>
-            </table>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover table-fix table-w-470">
+                <tr>
+                  <td class="table-secondary">累計訂單數</td>
+                  <td id="order_length"></td>
+                  <td class="table-secondary">累計消費額</td>
+                  <td id="total_spent"></td>
+                </tr>
+                <tr>
+                  <td class="table-secondary">註冊日期</td>
+                  <td id="created_at"></td>
+                  <td class="table-secondary">生日</td>
+                  <td id="birthday"></td>
+                </tr>
+                <tr>
+                  <td class="table-secondary">電話號碼</td>
+                  <td id="phone_no" colspan="3"></td>
+                </tr>
+              </table>
+
+            </div>
             <h5 class="text-primary mt-2">收件資訊</h5>
-            <table class="table table-bordered table-hover table-fix" id="recipientTable">
-              <tr class="table-secondary">
-                <td>刪除</td>
-                <td colspan="5">收件者資訊</td>
-              </tr>
-            </table>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover table-fix table-w-470" id="recipientTable">
+                <tr class="table-secondary">
+                  <td>刪除</td>
+                  <td colspan="5">收件者資訊</td>
+                </tr>
+              </table>
+
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-info">確認</button>
@@ -72,32 +78,43 @@
             <h5 class="modal-title" id="editUserOrderLabel"></h5>
           </div>
           <div class="modal-body">
-            <h5 class="text-primary">會員資訊</h5>
-            <table class="table table-bordered table-hover table-fix">
-              <tr>
-                <td class="table-secondary">累計訂單數</td>
-                <td id="orderNum">21</td>
-                <td class="table-secondary">累計消費額</td>
-                <td id="spentMoney">30000</td>
-              </tr>
-              <tr>
-                <td class="table-secondary">註冊日期</td>
-                <td id="created_at"></td>
-                <td class="table-secondary">生日</td>
-                <td id="birthday"></td>
-              </tr>
-              <tr>
-                <td class="table-secondary">電話號碼</td>
-                <td id="phone_no" colspan="3"></td>
-              </tr>
-            </table>
-            <h5 class="text-primary mt-2">收件資訊</h5>
-            <table class="table table-bordered table-hover table-fix" id="recipientTable">
-              <tr class="table-secondary">
-                <td>刪除</td>
-                <td colspan="5">收件者資訊</td>
-              </tr>
-            </table>
+            <div class="table-responsive-sm">
+              <table class="table table-bordered table-hover table-fix table-w-470">
+                <tr class="table-secondary">
+                  <td colspan="3">商品名稱</td>
+                  <td colspan="2">圖片</td>
+                  <td colspan="2">價格</td>
+                  <td>數量</td>
+                  <td colspan="2">金額</td>
+                </tr>
+                <tr>
+                  <td colspan="3">PPPPPPPQQQQQ</td>
+                  <td colspan="2"><img src="/image/Banner01.jpg" class="w-100"></td>
+                  <td colspan="2">2580</td>
+                  <td>2</td>
+                  <td colspan="2">5160</td>
+                </tr>
+                <tr>
+                  <td class="table-secondary" colspan="3">總金額</td>
+                  <td colspan="7"></td>
+                </tr>
+                <tr>
+                    <td colspan="10"></td>
+
+                </tr>
+                <tr>
+                  <td class="table-secondary" colspan="1">收件者</td>
+                  <td colspan="4"></td>
+                  <td class="table-secondary">電話</td>
+                  <td colspan="4"></td>
+                </tr>
+                <tr>
+                  <td class="table-secondary">地址</td>
+                  <td colspan="9"></td>
+                </tr>
+              </table>
+            </div>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-info">確認</button>
@@ -154,6 +171,7 @@
   </div>
   <script>
     function getUserOrder(id) {
+        $('#editUserOrder .modal-body').empty()
       console.log(id)
       $.ajax({
         url: "/api/user/" + id + "/order",
@@ -162,12 +180,51 @@
         success: function(result) {
           console.log('suc', result)
           let user = result
-          console.log(`${user.name}-${user.email}`)
-          $.each(user.orders, (k, order) => {
-            console.log(`第${k+1}單`, order)
-            $.each(order.order_details, (k, detail) => {
+          $("#editUserOrderLabel").text(`${user.name} - ${user.email}`)
+          $.each(user.orders, (orderK, order) => {
+            $("#editUserOrder .modal-body").append(`
+                <h5 class="text-primary">訂單編號 ${order.id}</h5>
+                `)
+            $("#editUserOrder .modal-body").append(`
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-hover table-fix table-w-470 table-${orderK}"></table>
+                </div>
+                `)
+            $(`.table-${orderK}`).append(`
+                <tr class="table-secondary">
+                    <td colspan="3">商品名稱</td>
+                    <td colspan="2">圖片</td>
+                    <td colspan="2">價格</td>
+                    <td>數量</td>
+                    <td colspan="2">金額</td>
+                </tr>
+                `)
+                let status=['','未出貨','已出貨','未出貨取消訂單','出貨後退貨'];
+                let total=0
+            console.log(`第${orderK+1}單`, order)
+            $.each(order.order_details, (detailK, detail) => {
               console.log(detail)
+              $(`.table-${orderK}`).append(`
+              <tr>
+                  <td colspan="3">${detail.product_name}</td>
+                  <td colspan="2">${detail.image_path?"<img src="+detail.image_path[0]+">":""}</td>
+                  <td colspan="2">${detail.price}</td>
+                  <td>${detail.quantity}</td>
+                  <td colspan="2">${detail.amount}</td>
+                </tr>
+              `)
+              total=total+detail.amount
+              console.log(total)
+            //   $(`.table-${k}`).append(``)
             })
+              $(`.table-${orderK} tr.table-secondary`).before(`
+                <tr>
+                    <td class="table-secondary" colspan="3">總金額</td>
+                    <td colspan="4">${total}</td>
+                    <td colspan="3">${status[order.status]}</td>
+                </tr>
+                <tr><td colspan="10"></td></tr>
+                `)
           })
         },
         error: function(result) {
