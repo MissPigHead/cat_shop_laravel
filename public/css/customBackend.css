@@ -97,7 +97,6 @@ th, td{
     width: 470px;
 }
 .table-w-470 td{
-    /* max-width:140px; */
     padding: 0.5rem 0.25rem;
     border:1px solid #b3b7bb;
     word-wrap: break-word;

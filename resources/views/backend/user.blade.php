@@ -50,17 +50,6 @@
                   <td id="phone_no" colspan="3"></td>
                 </tr>
               </table>
-
-            </div>
-            <h5 class="text-primary mt-2">收件資訊</h5>
-            <div class="table-responsive">
-              <table class="table table-bordered table-hover table-fix table-w-470" id="recipientTable">
-                <tr class="table-secondary">
-                  <td>刪除</td>
-                  <td colspan="5">收件者資訊</td>
-                </tr>
-              </table>
-
             </div>
           </div>
           <div class="modal-footer">
@@ -172,13 +161,11 @@
   <script>
     function getUserOrder(id) {
         $('#editUserOrder .modal-body').empty()
-      console.log(id)
       $.ajax({
         url: "/api/user/" + id + "/order",
         method: "GET",
         dataType: "json",
         success: function(result) {
-          console.log('suc', result)
           let user = result
           $("#editUserOrderLabel").text(`${user.name} - ${user.email}`)
           $.each(user.orders, (orderK, order) => {
@@ -201,9 +188,7 @@
                 `)
                 let status=['','未出貨','已出貨','未出貨取消訂單','出貨後退貨'];
                 let total=0
-            console.log(`第${orderK+1}單`, order)
             $.each(order.order_details, (detailK, detail) => {
-              console.log(detail)
               $(`.table-${orderK}`).append(`
               <tr>
                   <td colspan="3">${detail.product_name}</td>
@@ -214,8 +199,6 @@
                 </tr>
               `)
               total=total+detail.amount
-              console.log(total)
-            //   $(`.table-${k}`).append(``)
             })
               $(`.table-${orderK} tr.table-secondary`).before(`
                 <tr>
@@ -241,13 +224,25 @@
         success: function(result) {
           let user = result
           let code = ''
-          $("[data=recipient]").remove()
+          $(".data-recipient").remove()
           $("#editUserLabel").text(`${user.name} - ${user.email}`)
           $("#created_at").text(`${(user.created_at).substr(0,10)}`)
           $("#phone_no").text(`${user.phone_no}`)
           $("#birthday").text(`${user.birthday}`)
           $("#total_spent").text(`${user.total_spent}`)
           $("#order_length").text(`${user.order_length}`)
+          if(user.recipients.length!=0){
+            $('#editUser .modal-body').append(`
+                <h5 class="text-primary mt-2 data-recipient">收件資訊</h5>
+                <div class="table-responsive data-recipient">
+                    <table class="table table-bordered table-hover table-fix table-w-470" id="recipientTable">
+                        <tr class="table-secondary">
+                        <td>刪除</td>
+                        <td colspan="5">收件者資訊</td>
+                        </tr>
+                    </table>
+                </div>
+            `)}
           $.each(user.recipients, (k, recipient) => {
             code = code + `
                 <tr data='recipient'>
