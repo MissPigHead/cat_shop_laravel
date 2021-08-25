@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Recipient;
 use App\Models\OrderDetail;
-use App\User;
+use App\Models\User;
 
 class Order extends Model
 {

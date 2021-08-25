@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\User;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
