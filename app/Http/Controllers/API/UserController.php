@@ -62,7 +62,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user=User::find($id);
+        $user->update($request->all());
     }
 
     /**
@@ -73,7 +74,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::destroy($id);
     }
 
     public function getOrder($id)

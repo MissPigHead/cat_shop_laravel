@@ -110,3 +110,11 @@ th, td{
     max-height: 40px;
     object-fit: contain;
 }
+.td-input{
+    width: 100%;
+    border: 1.5px solid #6c757d22;
+    border-radius: 0.3rem;
+}
+.td-input:focus-visible{
+    outline-color:#6cb2eb99;
+}

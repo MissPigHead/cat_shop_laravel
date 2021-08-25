@@ -1,7 +1,9 @@
 @extends('layouts.backend')
 @section('title', '會員區')
 @section('content')
-
+  @if ($errors->any())
+    @include('swal')
+  @endif
   <div class="col-9 content">
     <div class="row justify-content-center">
       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUser">手動新增會員</button>
@@ -32,28 +34,32 @@
           <div class="modal-body">
             <h5 class="text-primary">會員資訊</h5>
             <div class="table-responsive">
-              <table class="table table-bordered table-hover table-fix table-w-470">
+              <table class="table table-bordered table-fix table-w-470">
                 <tr>
                   <td class="table-secondary">累計訂單數</td>
-                  <td id="order_length"></td>
+                  <td id="order_length" colspan="2"></td>
                   <td class="table-secondary">累計消費額</td>
-                  <td id="total_spent"></td>
+                  <td id="total_spent" colspan="2"></td>
                 </tr>
                 <tr>
                   <td class="table-secondary">註冊日期</td>
-                  <td id="created_at"></td>
+                  <td id="created_at" colspan="2"></td>
                   <td class="table-secondary">生日</td>
-                  <td id="birthday"></td>
+                  <td id="birthday" colspan="2"></td>
                 </tr>
                 <tr>
                   <td class="table-secondary">電話號碼</td>
-                  <td id="phone_no" colspan="3"></td>
+                  <td id="phone_no" colspan="5"></td>
                 </tr>
               </table>
             </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-info mr-2" onclick="updateUserInfo()">修改</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-info">確認</button>
+            <button type="button" class="btn btn-info" onclick="deleteRevipients()">刪除</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </div>
@@ -68,7 +74,7 @@
           </div>
           <div class="modal-body">
             <div class="table-responsive-sm">
-              <table class="table table-bordered table-hover table-fix table-w-470">
+              <table class="table table-bordered table-fix table-w-470">
                 <tr class="table-secondary">
                   <td colspan="3">商品名稱</td>
                   <td colspan="2">圖片</td>
@@ -88,7 +94,7 @@
                   <td colspan="7"></td>
                 </tr>
                 <tr>
-                    <td colspan="10"></td>
+                  <td colspan="10"></td>
 
                 </tr>
                 <tr>
@@ -106,7 +112,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-info">確認</button>
+            <button type="button" class="btn btn-info" onclick="updateUserOrder()">確認</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </div>
@@ -116,7 +122,8 @@
     <table class="mt-4 table  table-bordered table-hover">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="col-2">帳號</th>
+          <th scope="col" class="col-1">會員編號</th>
+          <th scope="col" class="col-1">使用者名稱</th>
           <th scope="col" class="col-3">E-mail</th>
           <th scope="col" class="col-2">註冊日期</th>
           <th scope="col" class="col-2">累計消費額</th>
@@ -126,6 +133,7 @@
       <tbody>
         @foreach ($users as $user)
           <tr>
+            <td>{{ $user->id }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
             <td>{{ substr($user->created_at, 0, 10) }}</td>
@@ -133,7 +141,6 @@
             <td>
               <button type="button" class="btn btn-outline-secondary" title="檢視或編輯帳號資訊" data-toggle="modal"
                 data-target="#editUser" onclick="getUserInfo({{ $user->id }})">
-                {{-- <i class="fas fa-edit"></i> --}}
                 <i class="fas fa-address-card"></i>
               </button>
 
@@ -141,15 +148,13 @@
                 data-target="#editUserOrder" onclick="getUserOrder({{ $user->id }})">
                 <i class="far fa-list-alt"></i>
               </button>
-
-              {{-- <button type="button" class="btn btn-outline-secondary" title="暫時停權該帳號">
-                    <i class="fas fa-user"></i>
-                  </button> --}}
-
-              <button type="button" class="btn btn-secondary" title="取消停權">
-                <i class="fas fa-user-slash"></i>
+              <button type="button" class="btn btn-{{ $user->status ? 'outline-' : '' }}secondary"
+                title="{{ $user->status ? '暫時停止該帳號訂購權限' : '取消停權' }}"
+                onclick="changeUserStatus({{ $user->id }},{{ $user->status ? '0' : '1' }})">
+                <i class="fas {{ $user->status ? 'fa-user' : 'fa-user-slash' }}"></i>
               </button>
-              <button type="button" class="btn btn-outline-secondary" title="永久刪除帳號">
+              <button type="button" class="btn btn-outline-secondary" title="永久刪除帳號"
+                onclick="destroy({{ $user->id }})">
                 <i class="fas fa-trash-alt"></i>
               </button>
             </td>
@@ -159,25 +164,87 @@
     </table>
   </div>
   <script>
-    function getUserOrder(id) {
-        $('#editUserOrder .modal-body').empty()
+    function updateUserInfo() { // 更新會員資訊
+      id = $('#editUser .modal-footer .btn-info').prop('id')
+      phone_no = $("input[name=phone_no]").val()
+      birthday = $("input[name=birthday]").val()
+      $.ajax({
+        url: "/api/user/" + id,
+        method: "PATCH",
+        dataType: "json",
+        data: {
+          phone_no: phone_no,
+          birthday: birthday,
+          _token: '{{ csrf_token() }}',
+        },
+        error: function(result) {
+          console.log(result)
+          if (result.status == 200) {
+            location.reload()
+          } else if (result.status == 422) {
+
+          }
+        }
+      })
+    }
+
+    function deleteRevipients() { // 刪除會員的收件者資訊 ？？？？ 這個功能有必要嗎？可能會造成歷史訂單查無收件資訊？
+      re_id = []
+      $('tr[data=recipient] input:checked').each((k, v) => {
+        re_id.push($(v).val())
+      })
+      if (re_id.length != 0) {
+        Swal.fire({
+          title: '確認刪除收件者資訊？可能造成收件者不明',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#6cb2eb',
+          cancelButtonColor: '#afafaf',
+          cancelButtonText: '取消',
+          confirmButtonText: '確定刪除'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: "/api/recipient/" + re_id,
+              method: "DELETE",
+              dataType: "text",
+              data: {
+                _token: '{{ csrf_token() }}',
+              },
+              success: function(result) {
+                location.reload()
+              },
+              error: function(result) {
+                console.log(result)
+              }
+            })
+          }
+        })
+      }
+    }
+
+    function updateUserOrder() {
+        // 需要從這裏執行嗎？或是只能從訂單頁面執行？
+    }
+
+    function getUserOrder(id) { // 取得會員歷史訂單
+      $('#editUserOrder .modal-body').empty()
       $.ajax({
         url: "/api/user/" + id + "/order",
         method: "GET",
         dataType: "json",
         success: function(result) {
           let user = result
-          $("#editUserOrderLabel").text(`${user.name} - ${user.email}`)
-          $.each(user.orders, (orderK, order) => {
-            $("#editUserOrder .modal-body").append(`
-                <h5 class="text-primary">訂單編號 ${order.id}</h5>
-                `)
-            $("#editUserOrder .modal-body").append(`
+          $("#editUserOrderLabel").text(`${user.id} - ${user.name} - ${user.email}`)
+          if (user.orders.length != 0) {
+            $.each(user.orders, (orderK, order) => {
+              $("#editUserOrder .modal-body").append(`<h5 class="text-primary">訂單編號 ${order.id}</h5>`)
+              $("#editUserOrder .modal-body").append(`
                 <div class="table-responsive-sm">
-                    <table class="table table-bordered table-hover table-fix table-w-470 table-${orderK}"></table>
+                    <table class="table table-bordered table-fix table-w-470 table-${orderK}"></table>
                 </div>
                 `)
-            $(`.table-${orderK}`).append(`
+              $(`.table-${orderK}`).append(`
                 <tr class="table-secondary">
                     <td colspan="3">商品名稱</td>
                     <td colspan="2">圖片</td>
@@ -186,10 +253,11 @@
                     <td colspan="2">金額</td>
                 </tr>
                 `)
-                let status=['','未出貨','已出貨','未出貨取消訂單','出貨後退貨'];
-                let total=0
-            $.each(order.order_details, (detailK, detail) => {
-              $(`.table-${orderK}`).append(`
+
+              let status = ['', '未出貨', '已出貨', '未出貨取消訂單', '出貨後退貨'];
+              let total = 0
+              $.each(order.order_details, (detailK, detail) => {
+                $(`.table-${orderK}`).append(`
               <tr>
                   <td colspan="3">${detail.product_name}</td>
                   <td colspan="2">${detail.image_path?"<img src="+detail.image_path[0]+">":""}</td>
@@ -198,8 +266,8 @@
                   <td colspan="2">${detail.amount}</td>
                 </tr>
               `)
-              total=total+detail.amount
-            })
+                total = total + detail.amount
+              })
               $(`.table-${orderK} tr.table-secondary`).before(`
                 <tr>
                     <td class="table-secondary" colspan="3">總金額</td>
@@ -208,7 +276,10 @@
                 </tr>
                 <tr><td colspan="10"></td></tr>
                 `)
-          })
+            })
+          } else {
+            $('#editUserOrder .modal-body').append(`<h5 class="text-primary mt-2">該使用者無訂單記錄</h5>`)
+          }
         },
         error: function(result) {
           console.log('err', result)
@@ -216,7 +287,7 @@
       })
     }
 
-    function getUserInfo(id) {
+    function getUserInfo(id) { // 取得會員 會員資訊 及 收件者資訊
       $.ajax({
         url: "/api/user/" + id,
         method: "GET",
@@ -224,17 +295,20 @@
         success: function(result) {
           let user = result
           let code = ''
-          $(".data-recipient").remove()
-          $("#editUserLabel").text(`${user.name} - ${user.email}`)
+          $('#editUser .modal-footer .btn-info').prop('id', user.id)
+          $(".data-remove").remove()
+          $("#editUserLabel").text(`${user.id} - ${user.name} - ${user.email}`)
           $("#created_at").text(`${(user.created_at).substr(0,10)}`)
-          $("#phone_no").text(`${user.phone_no}`)
-          $("#birthday").text(`${user.birthday}`)
+          $("#phone_no").append(
+            `<input type="text" name="phone_no" class="td-input data-remove" value="${user.phone_no}">`)
+          $("#birthday").append(
+            `<input type="date" name="birthday" class="td-input data-remove" value="${user.birthday}">`)
           $("#total_spent").text(`${user.total_spent}`)
           $("#order_length").text(`${user.order_length}`)
-          if(user.recipients.length!=0){
-            $('#editUser .modal-body').append(`
-                <h5 class="text-primary mt-2 data-recipient">收件資訊</h5>
-                <div class="table-responsive data-recipient">
+          if (user.recipients.length != 0) {
+            $('#editUser .modal-footer .btn-info').before(`
+                <h5 class="text-primary mt-2 data-remove w-100">收件資訊</h5>
+                <div class="table-responsive data-remove">
                     <table class="table table-bordered table-hover table-fix table-w-470" id="recipientTable">
                         <tr class="table-secondary">
                         <td>刪除</td>
@@ -242,11 +316,12 @@
                         </tr>
                     </table>
                 </div>
-            `)}
+            `)
+          }
           $.each(user.recipients, (k, recipient) => {
             code = code + `
                 <tr data='recipient'>
-                    <td rowspan="3"><input type="checkbox" name="" id=""></td>
+                    <td rowspan="3"><input type="checkbox" value="${ recipient.id}"></td>
                     <td class="table-secondary">收件者名稱</td>
                     <td colspan="4">${recipient.name}</td>
                 </tr>
@@ -267,6 +342,53 @@
         error: function(result) {
           console.log('err', result)
         },
+      })
+    }
+
+    function changeUserStatus(id, status) { // 更新會員是否停權
+      $.ajax({
+        url: "/api/user/" + id,
+        method: "PATCH",
+        dataType: "text",
+        data: {
+          status: status,
+          _token: '{{ csrf_token() }}',
+        },
+        success: function(result) {
+          location.reload()
+        },
+        error: function(result) {
+          console.log(result)
+        }
+      })
+    }
+
+    function destroy(id) { //刪除使用者
+      Swal.fire({
+        title: '確認刪除該使用者？',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6cb2eb',
+        cancelButtonColor: '#afafaf',
+        cancelButtonText: '取消',
+        confirmButtonText: '確定刪除'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: "/api/user/" + id,
+            method: "DELETE",
+            dataType: "text",
+            data: {
+              _token: '{{ csrf_token() }}',
+            },
+            success: function(result) {
+              location.reload()
+            },
+            error: function(result) {
+              console.log(result)
+            }
+          })
+        }
       })
     }
   </script>

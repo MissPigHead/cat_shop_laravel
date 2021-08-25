@@ -23,7 +23,7 @@ Route::namespace('API')->group(function () {
     Route::apiResource('banner', 'BannerController')->except(['index']);
     Route::apiResource('user', 'UserController')->except(['index']);
     Route::apiResource('order', 'OrderController')->except(['index']);
-    Route::apiResource('user', 'UserController')->except(['index']);
+    Route::apiResource('recipient', 'RecipientController')->except(['index']);
     Route::get('category/{id}/child', 'CategoryController@child');
     Route::patch('category/{id}/move', 'CategoryController@move');
     Route::patch('banner/{id}/move', 'BannerController@move');
