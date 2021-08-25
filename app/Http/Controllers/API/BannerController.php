@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Http\Requests\BannerRequest;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
@@ -43,6 +45,10 @@ class BannerController extends Controller
 
     public function destroy($id)
     {
+        $banner = Banner::find($id);
+        if (File::exists(public_path($banner->image_path))) { // 先檢查檔案是否存在，不存在就不用處理了
+            Storage::move("public/" . substr($banner->image_path, 9), "user_delete/" . substr($banner->image_path, 9)); // 暫時移到這個路徑，再定期刪除（！？）
+        }
         Banner::destroy($id);
     }
 
