@@ -15,7 +15,7 @@ class BannerRequest extends FormRequest
     {
         if ($this->method() == 'POST') {
             return [
-                'image' => 'bail|required|mimes:jpg,jpeg,bmp,png|max:2048',
+                'image_path' => 'bail|required|mimes:jpg,jpeg,bmp,png|max:2048',
                 'text' => 'max:20',
             ];
         } else {

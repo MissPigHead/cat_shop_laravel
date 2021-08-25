@@ -20,7 +20,7 @@ class BannerController extends Controller
         $data = $request->all();
         if ($data) {
             $banner = Banner::make($request->all());
-            $banner->image_path = $this->saveFile($request->image); // 存圖片
+            $banner->image_path = $this->saveFile($request->image_path); // 存圖片
             $banner->order = Banner::max('order') + 1;
             $banner->save();
             return back();

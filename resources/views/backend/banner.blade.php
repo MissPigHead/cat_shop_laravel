@@ -23,7 +23,7 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="imageBanner" class="col-form-label">請上傳圖片</label>
-              <input type="file" class="form-control-file" name="image" id="imageBanner">
+              <input type="file" class="form-control-file" name="image_path" id="imageBanner">
             </div>
             <div class="form-group">
               <label for="textBanner">請輸入圖片備註文字</label>
