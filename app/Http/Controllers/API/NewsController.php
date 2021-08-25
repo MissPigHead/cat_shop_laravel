@@ -49,6 +49,10 @@ class NewsController extends Controller
 
     public function destroy($id) // 刪除id資料
     {
+        $news = News::find($id);
+        if (File::exists(public_path($news->image_path))) { // 先檢查檔案是否存在，不存在就不用處理了
+            Storage::move("public/" . substr($news->image_path, 9), "user_delete/" . substr($news->image_path, 9)); // 暫時移到這個路徑，再定期刪除（！？）
+        }
         News::destroy($id);
     }
 
@@ -62,8 +66,8 @@ class NewsController extends Controller
         /* 處理圖片*/
         if ($request->image_path) { // 有上傳圖片
             if ($news->image_path) { // 移除舊圖片
-                if (File::exists($news->image_path)) { // 先檢查檔案是否存在，不存在就不用處理了
-                    Storage::move("public" . substr($news->image_path, 8), "user_delete" . substr($news->image_path, 8)); // 暫時移到這個路徑，再定期刪除（！？）
+                if (File::exists(public_path($news->image_path))) { // 先檢查檔案是否存在，不存在就不用處理了
+                    Storage::move("public/" . substr($news->image_path, 9), "user_delete/" . substr($news->image_path, 9)); // 暫時移到這個路徑，再定期刪除（！？）
                 }
             }
             $re['image_path'] = $this->saveFile($request->image_path); // 將新的圖片路徑寫到更新資料中
@@ -72,7 +76,7 @@ class NewsController extends Controller
                 if ($request->original_image) { // 沿用舊圖不變化
                     $re['image_path'] = $news->image_path;
                 } else { // 刪除舊圖，不再使用圖片
-                    if (File::exists($news->image_path)) {
+                    if (File::exists(public_path($news->image_path))) {
                         Storage::move("public" . substr($news->image_path, 8), "user_delete" . substr($news->image_path, 8));
                     }
                 }
@@ -82,8 +86,8 @@ class NewsController extends Controller
         /* 整理要做更新的項目，將資料更新到資料庫 */
         unset($re['_token']);
         unset($re['original_image']);
-        $news->update($re);
 
+        $news->update($re);
         return back();
     }
 
@@ -92,7 +96,7 @@ class NewsController extends Controller
         $storage_path = "public/news";
         $file_name = $file->hashName(); // 雜湊名稱
         $file->storeAs($storage_path, $file_name); // 將image 存到指定路徑
-        $public_path = "/storage/news" . "/" . $file_name; // 圖片路徑
+        $public_path = "/storage/news/" . $file_name; // 圖片路徑
         return $public_path;
     }
 }
