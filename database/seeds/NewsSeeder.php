@@ -13,6 +13,6 @@ class NewsSeeder extends Seeder
     public function run()
     {
         News::truncate();
-        factory(News::class, 30)->create();
+        factory(News::class, 10)->create();
     }
 }

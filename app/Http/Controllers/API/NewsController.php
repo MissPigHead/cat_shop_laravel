@@ -23,8 +23,8 @@ class NewsController extends Controller
         $data = $request->all();
         if ($data) {
             $news = News::make($request->all());
-            if ($request->hasFile('image')) {
-                $news->image_path = $this->saveFile($request->image); // 存圖片
+            if ($request->hasFile('image_path')) {
+                $news->image_path = $this->saveFile($request->image_path); // 存圖片
             } else {
                 $news->image_path = '';
             }
@@ -60,13 +60,13 @@ class NewsController extends Controller
         $re['image_path'] = '';
 
         /* 處理圖片*/
-        if ($request->image) { // 有上傳圖片
+        if ($request->image_path) { // 有上傳圖片
             if ($news->image_path) { // 移除舊圖片
                 if (File::exists($news->image_path)) { // 先檢查檔案是否存在，不存在就不用處理了
                     Storage::move("public" . substr($news->image_path, 8), "user_delete" . substr($news->image_path, 8)); // 暫時移到這個路徑，再定期刪除（！？）
                 }
             }
-            $re['image_path'] = $this->saveFile($request->image); // 將新的圖片路徑寫到更新資料中
+            $re['image_path'] = $this->saveFile($request->image_path); // 將新的圖片路徑寫到更新資料中
         } else { // 無上傳圖片
             if ($news->image_path) { // 有舊圖片
                 if ($request->original_image) { // 沿用舊圖不變化
@@ -81,7 +81,7 @@ class NewsController extends Controller
 
         /* 整理要做更新的項目，將資料更新到資料庫 */
         unset($re['_token']);
-        unset($re['id']);
+        unset($re['original_image']);
         $news->update($re);
 
         return back();

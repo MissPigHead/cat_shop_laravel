@@ -38,7 +38,7 @@
             <div class="form-group row">
               <label for="image" class="col-2 col-form-label">圖片</label>
               <div class="col-9">
-                <input type="file" name="image" id="imageNew">
+                <input type="file" name="image_path" id="imageNew">
                 <p class="small text-dark my-2">*可留空或選擇1張2MB以下jpg, jpeg, bmp, png 圖檔</p>
               </div>
             </div>
@@ -78,7 +78,7 @@
               <label for="article" class="col-2 col-form-label">圖片</label>
               <div class="col-9 row">
                 <button type="button" class="btn btn-info ml-3" id="chooseImage" onclick="addInput()">修改圖片</button>
-                <input type="file" class="my-2 col-12" name="image" id="imageUpdate">
+                <input type="file" class="my-2 col-12" name="image_path" id="imageUpdate">
 
 
                 <div class="btn-group-toggle ml-3" data-toggle="buttons">
@@ -168,14 +168,14 @@
       }
     });
 
-    function addInput() { // 修改用Modal: 按下修改圖片
+    function addInput() { // 修改用Modal按鈕: 修改圖片
       $("#chooseImage").hide() // 修改圖片
       $('#imageUpdate').show() // 顯示 input file
       $('#originalImage').parent().parent().show() // 使用原圖
       $('#deleteImage').show() // 刪除圖片
     }
 
-    function deleteImg(id) { // 修改用Modal: 按下刪除圖片
+    function deleteImg(id) { // 修改用Modal按鈕: 刪除圖片
       $("#deleteImage").hide() // 刪除圖片
       $('#originalImage').parent().parent().show() // 使用原圖
       $("#originalImage").prop('checked', false)
@@ -185,7 +185,7 @@
       $('#imageUpdate').val('') // input file
     }
 
-    function originalImg(src) { // 修改用Modal: 使用原圖片
+    function originalImg(src) { // 修改用Modal按鈕: 使用原圖片
       if (src) {
         $("#deleteImage").show() // 刪除圖片 --> 顯示
       }
