@@ -17,7 +17,7 @@ class User extends Authenticatable
     const ROLE_USER = 'user';
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'birthday', 'phone_no'
+        'name', 'email', 'password', 'role', 'birthday', 'phone_no', 'status'
     ];
 
     protected $hidden = [

@@ -27,5 +27,6 @@ $factory->define(User::class, function (Faker $faker) {
         'birthday' => $faker->date('Y-m-d', '2014-12-31'),
         'phone_no' => $faker->phoneNumber,
         'created_at' => $faker->dateTimeThisYear('2021-06-30', 'Asia/Taipei'),
+        'status' => $faker->boolean($chanceOfGettingTrue = 95),
     ];
 });

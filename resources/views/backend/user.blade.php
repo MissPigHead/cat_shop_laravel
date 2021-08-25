@@ -247,7 +247,7 @@
             code = code + `
                 <tr data='recipient'>
                     <td rowspan="3"><input type="checkbox" name="" id=""></td>
-                    <td class="table-secondary">收件人名稱</td>
+                    <td class="table-secondary">收件者名稱</td>
                     <td colspan="4">${recipient.name}</td>
                 </tr>
                 <tr data='recipient'>

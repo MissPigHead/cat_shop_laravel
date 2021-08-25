@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\User;
+use App\Models\User;
 
 class CreateUsersTable extends Migration
 {
@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('password')->comment('密碼');
             $table->date('birthday')->nullable()->comment('生日');
             $table->string('phone_no')->nullable()->comment('手機號');
+            $table->boolean('status')->default(0)->comment('停權');
             $table->rememberToken();
             $table->timestamps();
         });
