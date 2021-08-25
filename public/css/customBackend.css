@@ -96,8 +96,10 @@ th, td{
 .table-w-470{
     width: 470px;
 }
+.table td{
+    padding: 0.5rem;
+}
 .table-w-470 td{
-    padding: 0.5rem 0.25rem;
     border:1px solid #b3b7bb;
     word-wrap: break-word;
     white-space: inherit;

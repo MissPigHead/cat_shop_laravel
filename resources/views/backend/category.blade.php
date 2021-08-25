@@ -26,7 +26,7 @@
       <button type="button" class="btn btn-info" onclick="addCategory('c')">新增</button>
     </div>
     <!-- 顯示區 -->
-    <table class="mt-4 table table-hover">
+    <table class="mt-4 table">
       <thead class="thead-dark">
         <tr>
           <!-- <tr class="table-active font-weight-bolder"> -->
@@ -67,8 +67,8 @@
                 onclick="move({{ $parentCategory->id }},'{{ $loop->last ? 'max' : $loop->iteration }}','down')">
                 <i class="fas fa-caret-down"></i>
               </button>
-              <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal"
-                data-target="#updateCategoryTitle" onclick="getCategoryTitle({{ $parentCategory->id }})">
+              <button type="button" class="btn btn-outline-secondary" title='編輯' data-toggle="modal"
+                data-target="#updateCategory" onclick="getCategory({{ $parentCategory->id }},0)">
                 <i class="fas fa-edit"></i>
               </button>
               <button type="button" class="btn btn-outline-secondary" title='刪除此主目錄及底下子目錄'
@@ -81,19 +81,26 @@
       </tbody>
     </table>
     <!-- 修改用Modal -->
-    <div class="modal fade" id="updateCategoryTitle" tabindex="-1" aria-labelledby="updateCategoryLabel"
-      aria-hidden="true">
+    <div class="modal fade" id="updateCategory" tabindex="-1" aria-labelledby="updateCategory" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="updateCategoryLabel">請輸入新的目錄名稱</h5>
           </div>
           <div class="modal-body">
+            <h5 class="modal-title">請輸入新的目錄名稱</h5>
             <input type="text" class="form-control" id="updateTitle">
+            <h5 class="modal-title">請選擇上層主目錄</h5>
+            <select name="updateParent" id="updateParent" class="form-control">
+              <option value="0">已為主目錄</option>
+              @foreach ($parentCategories as $parentCategory)
+                <option value={{ $parentCategory->id }}>{{ $parentCategory->title }}</option>
+              @endforeach
+            </select>
+
           </div>
           <div class="modal-footer">
             <input type="hidden" value="">
-            <button type="button" class="btn btn-info" onclick="updateCategoryTitle()">確認</button>
+            <button type="button" class="btn btn-info" onclick="updateCategory()">確認</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
           </div>
         </div>
@@ -146,7 +153,7 @@
         dataType: "json", // "json"：ajax呼叫成功，但返回資料非json，所以返回 error+狀態碼200
         data: data,
         error: function(result) {
-=          if (result.status == 200) {
+          if (result.status == 200) {
             location.reload()
           } else if (result.status == 422) {
             let msg = ''
@@ -154,11 +161,11 @@
               msg = msg + "<li class='text-left'>" + $v[0] + "</li>"
             })
             Swal.fire({
-                html:`<ul>${msg}</ul>`
+              html: `<ul>${msg}</ul>`
             })
-          } else{
-              console.log(result)
-              console.log(result.responseJSON)
+          } else {
+            console.log(result)
+            console.log(result.responseJSON)
           }
         }
       })
@@ -191,7 +198,7 @@
                       <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序' onclick='move(${ data.id },"${ order==result.length?'max':order }","down")'>
                         <i class='fas fa-caret-down'></i>
                       </button>
-                      <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal" data-target="#updateCategoryTitle" onclick="getCategoryTitle(${data.id})">
+                      <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal" data-target="#updateCategory" onclick="getCategory(${data.id},${data.parent})">
                         <i class='fas fa-edit'></i>
                       </button>
                       <button type='button' class='btn btn-outline-secondary' title='刪除此子目錄' onclick='deleteCategory(${ data.id },"c")'>
@@ -263,22 +270,26 @@
       })
     }
 
-    function getCategoryTitle(id) { // ajax 取回欲編輯的目錄資料
+    function getCategory(id,parent) { // ajax 取回欲編輯的目錄資料
+        $('#updateParent').val(parent)
+        if(parent==0) $('#updateParent').attr('disabled','disabled')
+        else $('#updateParent').attr('disabled',false)
       $.ajax({
         url: "/api/category/" + id,
         method: "GET",
         dataType: "json", // 注意抓回資料型態
         success: function(result) {
           $('#updateTitle').val(result.title)
-          $('#updateCategoryTitle input[type=hidden]').val(result.id)
+          $('#updateCategory input[type=hidden]').val(result.id)
         }
       })
     }
 
-    function updateCategoryTitle() { // ajax 傳至controller update 更改title
-      let id = $('#updateCategoryTitle input[type=hidden]').val()
+    function updateCategory() { // ajax 傳至controller update 更改title
+      let id = $('#updateCategory input[type=hidden]').val()
       let data = {
         title: $('#updateTitle').val(),
+        parent: $('#updateParent').val(),
         _token: '{{ csrf_token() }}'
       }
       $.ajax({
@@ -287,7 +298,7 @@
         dataType: "json",
         data: data,
         error: function(result) {
-            if (result.status == 200) {
+          if (result.status == 200) {
             location.reload()
           } else if (result.status == 422) {
             let msg = ''
@@ -295,11 +306,11 @@
               msg = msg + "<li class='text-left'>" + $v[0] + "</li>"
             })
             Swal.fire({
-                html:`<ul>${msg}</ul>`
+              html: `<ul>${msg}</ul>`
             })
-          } else{
-              console.log(result)
-              console.log(result.responseJSON)
+          } else {
+            console.log(result)
+            console.log(result.responseJSON)
           }
         }
       })
