@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
             if ($i < 4 || $i == 15) {
                 $category->parent = 0;
                 $category->title = "Parent" . $i;
-                $category->order = $i;
+                $category->order = $i+1;
             } else {
                 $category->title = "Child" . $i;
                 $category->order = Category::where('parent', $category->parent)->count() + 1;
