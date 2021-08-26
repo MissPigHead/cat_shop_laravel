@@ -1,6 +1,10 @@
 @extends('layouts.frontend')
 @section('title','會員註冊')
 @section('content')
+@if ($errors->any())
+  @include('swal')
+@endif
+
   <main>
     <div class="container">
       <div class="row justify-content-center">
@@ -45,10 +49,7 @@
               </div>
             </div>
             <div class="row my-2 justify-content-center">
-              <a href="personal.html">
-                <button type="button" class="btn btn-info mx-2">確認</button>
-              </a>
-              <!-- <button type="button" class="btn btn-info mx-2">確認</button> -->
+              <button type="button" class="btn btn-info mx-2">確認</button>
               <button type="button" class="btn btn-secondary mx-2" data-dismiss="modal">取消</button>
             </div>
           </form>

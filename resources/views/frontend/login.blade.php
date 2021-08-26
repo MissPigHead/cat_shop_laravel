@@ -1,6 +1,9 @@
 @extends('layouts.frontend')
 @section('title','登入')
 @section('content')
+@if ($errors->any())
+  @include('swal')
+@endif
   <main>
     <div class="container">
       <div class="row justify-content-center">
@@ -10,7 +13,8 @@
               <h4>會員登入</h4>
             </div>
           </div>
-          <form>
+          <form method="POST" action="{{ route('login') }}">
+            @csrf
             <div class="form-group row align-items-center">
               <label for="account" class="col-3 col-sm-2 col-form-label">帳號</label>
               <div class="col-9 col-sm-10">
@@ -35,8 +39,8 @@
             </div>
           </form>
           <div class="row my-4 px-3 justify-content-between">
-            <a href="forget.html">忘記密碼？</a>
-            <a href="register.html">註冊帳號</a>
+            <a href="{{ route('forget') }}">忘記密碼？</a>
+            <a href="{{ route('register') }}">註冊帳號</a>
           </div>
         </div>
       </div>

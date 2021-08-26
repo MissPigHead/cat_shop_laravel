@@ -1,7 +1,7 @@
 @extends('layouts.frontend')
-@section('title','喵喵商城首頁')
+@section('title', '喵喵商城首頁')
 @section('content')
-  <main>
+<main>
     <section id="banner">
       <div class="container my-3">
         <div class="row justify-content-center">
@@ -12,16 +12,7 @@
         </div>
       </div>
     </section>
-    <script> // owl carousel   for banner
-      $('.owl-carousel').owlCarousel({
-        loop:true,
-        dots:true,
-        autoplay:true,
-        center: true,
-        items:1,
-        animateOut: 'fadeOut',
-      });
-    </script>
+
     <section id="products">
       <div class="container my-4">
         <div class="row my-2">
@@ -81,6 +72,7 @@
         </div>
       </div>
     </section>
+
     <section id="news">
       <div class="container my-4">
         <div class="row my-2">
@@ -100,4 +92,16 @@
       </div>
     </section>
   </main>
+
+  <script>
+    // owl carousel   for banner
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      dots: true,
+      autoplay: true,
+      center: true,
+      items: 1,
+      animateOut: 'fadeOut',
+    });
+  </script>
 @endsection
