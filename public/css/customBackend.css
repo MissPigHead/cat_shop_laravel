@@ -10,6 +10,7 @@ font-family: 'Permanent Marker', cursive; */
   --yellow01: #fcefb4;
   --yellow02: #fefbeb;
   --gray01: #afafaf;
+  --pink00:#e4007f;
   --pink01:#f72585;
 }
 html{
@@ -74,6 +75,9 @@ main{
 .text-pink{
   color: var(--pink01);
 }
+.text-pink00{
+    color: var(--pink00);
+  }
 .bg-yellow02{
   background: var(--yellow02);
 }

@@ -12,7 +12,9 @@ font-family: 'Noto Sans TC', sans-serif;  */
   --yellow01: #fcefb4;
   --yellow02: #fefbeb;
   --gray01: #afafaf;
+  --pink00:#e4007f;
   --pink01:#f72585;
+  --pink02:#d8156c;
 }
 html{
   font-size: 14px;
@@ -43,45 +45,20 @@ main{
 
 #banner img{
   max-height: 400px;
-  width: 100%; 
+  width: 100%;
   border-radius: 5px;
   padding: 0 15px;
   object-fit: cover;
   object-position: 50% 50%;
-} 
-/* .sideBar>a{
-  color: darkblue;
-  text-decoration: none;
 }
-.sideBar>a:hover{
-  color: blue
-}
-
-.sideBar div{
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-  padding: 0.5rem 0;
-  margin: 1rem;
-  border-radius: 1rem;
-  background: var(--yellow01);
-} 
-.content{
-  margin: 1rem 0 0 0;
-  height: calc(100vh - 11rem);
-  overflow-y: auto;
-}
-.content .col h2{
-  margin-top: -2rem;
-}
-.chart-area{
-  min-height: 20rem;
-}*/
 .text-gray{
   color: var(--gray01);
 }
 .text-pink{
   color: var(--pink01);
+}
+.text-pink00{
+  color: var(--pink00);
 }
 .bg-yellow01{
   background: var(--yellow01);
@@ -104,4 +81,16 @@ th, td{
 .newsText{
   /* line-height: 2; */
   font-weight: 300;
+}
+.btn-outline-pink{
+    color: var(--pink01);
+    border-color: var(--pink01);
+}
+.btn-outline-pink:hover{
+    color: #fff;
+    background-color: var(--pink02);
+    border-color: var(--pink02);
+}
+.btn-outline-pink:focus-visible{
+outline: var(--pink02);
 }
