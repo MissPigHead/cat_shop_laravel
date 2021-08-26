@@ -96,7 +96,6 @@
                 <option value={{ $parentCategory->id }}>{{ $parentCategory->title }}</option>
               @endforeach
             </select>
-
           </div>
           <div class="modal-footer">
             <input type="hidden" value="">
@@ -113,6 +112,49 @@
       id = $(this).attr('id').substr(1)
       getChildCategory(id)
     })
+
+    function getChildCategory(id) { // ajax 取回子目錄的資料
+      $.ajax({
+        url: "/api/category/" + id + "/child",
+        method: "GET",
+        dataType: "json", // 注意抓回資料型態
+        success: function(result) {
+          let order = result.length
+          $.each(result, function() {
+            data = $(this)[0]
+            code = `
+                  <tr class='${data.show?'bg-white':'bg-light'} child p${data.parent}'>
+                    <td></td>
+                    <td>${ data.title } </td>
+                    <td>${data.show ? '顯示中' : '已隱藏'}
+                    </td>
+                    <td>
+                      <button type='button' class='btn btn-outline-secondary'
+                        title='${ data.show ? '隱藏該目錄' : '顯示該目錄' }'
+                        onclick='show(${ data.id },${ data.show ? 0 : 1 })'>
+                        <i class='${ data.show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }'></i>
+                      </button>
+                      <button type='button' class='btn btn-outline-secondary' title='向上移動顯示順序' onclick='move(${ data.id },"${ order==1?'min':order }","up")'>
+                        <i class='fas fa-caret-up'></i>
+                      </button>
+                      <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序' onclick='move(${ data.id },"${ order==result.length?'max':order }","down")'>
+                        <i class='fas fa-caret-down'></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal" data-target="#updateCategory" onclick="getCategory(${data.id},${data.parent})">
+                        <i class='fas fa-edit'></i>
+                      </button>
+                      <button type='button' class='btn btn-outline-secondary' title='刪除此子目錄' onclick='deleteCategory(${ data.id },"c")'>
+                        <i class='fas fa-trash-alt'></i>
+                      </button>
+                    </td>
+                  </tr>
+                `
+            $(`#p${id}`).after(code)
+            order--
+          })
+        }
+      })
+    }
 
     function collapseChild(data) { // 收合或展開子目錄
       if (data == 'all') {
@@ -171,48 +213,6 @@
       })
     }
 
-    function getChildCategory(id) { // ajax 取回子目錄的資料
-      $.ajax({
-        url: "/api/category/" + id + "/child",
-        method: "GET",
-        dataType: "json", // 注意抓回資料型態
-        success: function(result) {
-          let order = result.length
-          $.each(result, function() {
-            data = $(this)[0]
-            code = `
-                  <tr class='${data.show?'bg-white':'bg-light'} child p${data.parent}'>
-                    <td></td>
-                    <td>${ data.title } </td>
-                    <td>${data.show ? '顯示中' : '已隱藏'}
-                    </td>
-                    <td>
-                      <button type='button' class='btn btn-outline-secondary'
-                        title='${ data.show ? '隱藏該目錄' : '顯示該目錄' }'
-                        onclick='show(${ data.id },${ data.show ? 0 : 1 })'>
-                        <i class='${ data.show ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }'></i>
-                      </button>
-                      <button type='button' class='btn btn-outline-secondary' title='向上移動顯示順序' onclick='move(${ data.id },"${ order==1?'min':order }","up")'>
-                        <i class='fas fa-caret-up'></i>
-                      </button>
-                      <button type='button' class='btn btn-outline-secondary' title='向下移動顯示順序' onclick='move(${ data.id },"${ order==result.length?'max':order }","down")'>
-                        <i class='fas fa-caret-down'></i>
-                      </button>
-                      <button type="button" class="btn btn-outline-secondary" title='編輯目錄名稱' data-toggle="modal" data-target="#updateCategory" onclick="getCategory(${data.id},${data.parent})">
-                        <i class='fas fa-edit'></i>
-                      </button>
-                      <button type='button' class='btn btn-outline-secondary' title='刪除此子目錄' onclick='deleteCategory(${ data.id },"c")'>
-                        <i class='fas fa-trash-alt'></i>
-                      </button>
-                    </td>
-                  </tr>
-                `
-            $(`#p${id}`).after(code)
-            order--
-          })
-        }
-      })
-    }
 
     function deleteCategory(id, type) { // 刪除目錄
       if (type == 0) {
@@ -252,28 +252,10 @@
       })
     }
 
-    function show(id, show) { // ajax 傳至controller update 更改show 決定前台是否顯示
-      $.ajax({
-        url: "/api/category/" + id,
-        method: "PATCH",
-        dataType: "json",
-        data: {
-          show: show,
-          _token: '{{ csrf_token() }}',
-        },
-        success: function(result) {
-          location.reload()
-        },
-        error: function(result) {
-          console.log(result)
-        }
-      })
-    }
-
-    function getCategory(id,parent) { // ajax 取回欲編輯的目錄資料
-        $('#updateParent').val(parent)
-        if(parent==0) $('#updateParent').attr('disabled','disabled')
-        else $('#updateParent').attr('disabled',false)
+    function getCategory(id, parent) { // ajax 取回欲編輯的目錄資料
+      $('#updateParent').val(parent)
+      if (parent == 0) $('#updateParent').attr('disabled', 'disabled')
+      else $('#updateParent').attr('disabled', false)
       $.ajax({
         url: "/api/category/" + id,
         method: "GET",
@@ -316,6 +298,24 @@
       })
     }
 
+    function show(id, show) { // ajax 傳至controller update 更改show 決定前台是否顯示
+      $.ajax({
+        url: "/api/category/" + id,
+        method: "PATCH",
+        dataType: "text",
+        data: {
+          show: show,
+          _token: '{{ csrf_token() }}',
+        },
+        success: function(result) {
+          location.reload()
+        },
+        error: function(result) {
+          console.log(result)
+        }
+      })
+    }
+
     function move(id, order, direction) { // ajax 傳至controller move 更改顯示order
       if (order == 'min' && direction == 'up') {
         Swal.fire("已經在第一位，無法往前")
@@ -325,9 +325,7 @@
         let skip
         if (direction == 'up') skip = order - 2
         else if (direction == 'down') skip = order
-
         let data = {
-          id: id,
           order: order,
           skip: skip,
           _token: '{{ csrf_token() }}'
@@ -347,5 +345,4 @@
       }
     }
   </script>
-
 @endsection

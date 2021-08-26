@@ -45,11 +45,11 @@
                   <td class="table-secondary">註冊日期</td>
                   <td id="created_at" colspan="2"></td>
                   <td class="table-secondary">生日</td>
-                  <td id="birthday" colspan="2"></td>
+                  <td colspan="2"><input type="date" id="birthday" class="td-input"></td>
                 </tr>
                 <tr>
                   <td class="table-secondary">電話號碼</td>
-                  <td id="phone_no" colspan="5"></td>
+                  <td colspan="5"><input type="text" id="phone_no" class="td-input"></td>
                 </tr>
               </table>
             </div>
@@ -166,8 +166,9 @@
   <script>
     function updateUserInfo() { // 更新會員資訊
       id = $('#editUser .modal-footer .btn-info').prop('id')
-      phone_no = $("input[name=phone_no]").val()
-      birthday = $("input[name=birthday]").val()
+      phone_no = $("#phone_no").val()
+      birthday = $("#birthday").val()
+      console.log(phone_no,birthday)
       $.ajax({
         url: "/api/user/" + id,
         method: "PATCH",
@@ -224,7 +225,7 @@
     }
 
     function updateUserOrder() {
-        // 需要從這裏執行嗎？或是只能從訂單頁面執行？
+      // 需要從這裏執行嗎？或是只能從訂單頁面執行？
     }
 
     function getUserOrder(id) { // 取得會員歷史訂單
@@ -299,10 +300,8 @@
           $(".data-remove").remove()
           $("#editUserLabel").text(`${user.id} - ${user.name} - ${user.email}`)
           $("#created_at").text(`${(user.created_at).substr(0,10)}`)
-          $("#phone_no").append(
-            `<input type="text" name="phone_no" class="td-input data-remove" value="${user.phone_no}">`)
-          $("#birthday").append(
-            `<input type="date" name="birthday" class="td-input data-remove" value="${user.birthday}">`)
+          $("#phone_no").val(`${user.phone_no}`)
+          $("#birthday").val(`${user.birthday}`)
           $("#total_spent").text(`${user.total_spent}`)
           $("#order_length").text(`${user.order_length}`)
           if (user.recipients.length != 0) {
