@@ -169,6 +169,7 @@ return [
         'password'              => '密碼',
         'password_confirmation' => '確認密碼',
         'phone'                 => '電話',
+        'phone_no'              => '電話號碼',
         'second'                => '秒',
         'sex'                   => '性別',
         'size'                  => '大小',
