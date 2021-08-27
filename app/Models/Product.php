@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OrderDetail;
+use App\Models\Category;
 
 class Product extends Model
 {
@@ -16,5 +17,10 @@ class Product extends Model
     public function order_details()
     {
         return $this->belongsToMany(OrderDetail::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
