@@ -53,9 +53,10 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:30'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8','max:20', 'confirmed'],
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z0-9]*$/', 'max:20'],
+            'email' => ['required', 'string', 'email', 'max:255', 'regex:/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/', 'unique:users'],
+            'phone_no' => ['size:10', 'regex:/^d{10}$/'],
+            'password' => ['required', 'string', 'min:8', 'max:20', 'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{1,}$/', 'confirmed'],
         ]);
     }
 
@@ -77,9 +78,9 @@ class RegisterController extends Controller
 
     public function showRegistrationForm() // 調用AuthenticatesUsers 後 改寫裡面登入的頁面
     {
-        $categories=Category::where([['show',1],['parent',0]])->orderBy('order','asc')->get(); // 只抓主目錄
-        $data=[
-            'categories'=>$categories,
+        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
+        $data = [
+            'categories' => $categories,
         ];
         return view('frontend.register', $data);
     }
