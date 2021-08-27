@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers; // 註冊頁面寫在這裡 showRegistrationForm(){return view('auth.register');} 直接用或改寫
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Category;
 
 class RegisterController extends Controller
 {
@@ -78,10 +77,6 @@ class RegisterController extends Controller
 
     public function showRegistrationForm() // 調用AuthenticatesUsers 後 改寫裡面登入的頁面
     {
-        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
-        $data = [
-            'categories' => $categories,
-        ];
-        return view('frontend.register', $data);
+        return view('frontend.register');
     }
 }

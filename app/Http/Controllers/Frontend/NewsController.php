@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category;
 use App\Models\News;
 
 
@@ -17,13 +16,9 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $categories=Category::where([['show',1],['parent',0]])->orderBy('order','asc')->get(); // 只抓主目錄
-        $news=News::where('show',1)->orderBy('updated_at','desc')->get();
-
-
-        $data=[
-            'news'=>$news,
-            'categories'=>$categories,
+        $news = News::where('show', 1)->orderBy('updated_at', 'desc')->get();
+        $data = [
+            'news' => $news,
         ];
         return view('frontend.news', $data);
     }
@@ -47,7 +42,8 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        //
+        $news = News::findOrFail($id);
+        return view('frontend.newsDetail', ['news' => $news]);
     }
 
     /**

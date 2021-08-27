@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category;
 use App\Models\Product;
 
 
@@ -17,10 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $categories=Category::where([['show',1],['parent',0]])->orderBy('order','asc')->get(); // 只抓主目錄
-
         $data=[
-            'categories'=>$categories,
         ];
         // dd($data);
         return view('frontend.products', $data);
