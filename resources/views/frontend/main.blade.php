@@ -22,54 +22,20 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/acedfa" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/cedfaa" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/bafafe" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/edfaed" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/acedfa" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center">
-            <img src="https://fakeimg.pl/500x500/cedfaa" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center d-none d-lg-block">
-            <img src="https://fakeimg.pl/500x500/bafafe" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
-          <div class="col-6 col-md-4 col-lg-3 text-center d-none d-lg-block">
-            <img src="https://fakeimg.pl/500x500/edfaed" class="w-100">
-            <h6 class="mt-2 text-gray">豆腐砂</h6>
-            <p class="mb-2">小茜豆腐砂</p>
-            <p class="font-weight-bolder text-danger">NT$ 250</p>
-          </div>
+          @foreach ($products as $product)
+            <div class="col-6 col-md-4 col-lg-3 text-center product">
+              <a href="{{ route('products.show', ['product' => $product->id]) }}">
+                <div class="owl-carousel owl-theme">
+                  @foreach ($product->image_path as $image_path)
+                    <div class="item"><img src="{{ $image_path }}"></div>
+                  @endforeach
+                </div>
+                <p class="my-2 text-gray">{{ $product->specification }}</p>
+                <h5 class="mb-2">{{ $product->name }}</h5>
+                <p class="font-weight-bolder text-danger">NTD {{ $product->price }}</p>
+              </a>
+            </div>
+          @endforeach
         </div>
       </div>
     </section>
@@ -80,7 +46,7 @@
           <div class="col-12 my-2">
             <h4>育貓新知</h4>
           </div>
-          <ul class="col-12 col-md-10 col-lg-8 list-group list-group-flush">
+          <ul class="col-12 col-md-10 list-group list-group-flush">
             @foreach ($news as $news)
               <li class="list-group-item bg-transparent py-2"><a
                   href="{{ route('news.show', ['news' => $news->id]) }}">{{ $news->title }}</a></li>
@@ -92,8 +58,8 @@
   </main>
 
   <script>
-    // owl carousel   for banner
-    $('.owl-carousel').owlCarousel({
+    // owl carousel for banner
+    $('#banner .owl-carousel').owlCarousel({
       loop: true,
       dots: true,
       autoplay: true,
@@ -101,5 +67,20 @@
       items: 1,
       animateOut: 'fadeOut',
     });
+
+    // owl carousel for product
+    $('#products .owl-carousel').owlCarousel({
+      loop: true,
+      dots: false,
+      autoplay: true,
+      center: true,
+      items: 1,
+      animateOut: 'fadeOut',
+    });
+
+    // 配合版面 控制最新商品顯示數量
+    $('#products .product').eq(6).addClass('d-none d-md-block')
+    $('#products .product').eq(7).addClass('d-none d-md-block')
+    $('#products .product').eq(8).addClass('d-none d-md-block d-lg-none')
   </script>
 @endsection

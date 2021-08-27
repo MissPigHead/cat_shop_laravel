@@ -16,7 +16,7 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --pink01: #f72585;
     --pink02: #d8156c;
     --purple: #3700b3;
-    --indigo01:#1A237E;
+    --indigo01: #1A237E;
     --indigo02: #304FFE;
     --indigo03: #3F51B5;
 }
@@ -99,7 +99,6 @@ td {
 }
 
 .newsText {
-    /* line-height: 2; */
     font-weight: 300;
 }
 
@@ -117,13 +116,22 @@ td {
 .btn-outline-pink:focus-visible {
     outline: var(--pink02);
 }
+
 #news img {
     width: 100%;
     max-height: 500px;
     object-fit: contain;
 }
 
-#news p{
-    text-indent:2em
+#news p {
+    text-indent: 2em
 }
 
+#news a,
+#products a {
+    text-decoration: none;
+}
+
+#products img:hover {
+    opacity: 0.4;
+}
