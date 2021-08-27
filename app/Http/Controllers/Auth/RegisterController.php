@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Providers\RouteServiceProvider; // 註冊後跳轉的路徑寫在這裡
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Foundation\Auth\RegistersUsers; // 註冊頁面寫在這裡 showRegistrationForm(){return view('auth.register');} 直接用或改寫
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,6 +26,7 @@ class RegisterController extends Controller
 
     /**
      * Where to redirect users after registration.
+     * 註冊後跳轉的路徑 預設是"/home" 在config/auth.php 改為"/"
      *
      * @var string
      */
@@ -43,6 +44,7 @@ class RegisterController extends Controller
 
     /**
      * Get a validator for an incoming registration request.
+     * 註冊資訊驗證條件 代替使用Request
      *
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -68,7 +70,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => User::ROLE_USER,  // 預設為一般使用者
+            'role' => User::ROLE_USER,  // 預設所有註冊者為一般使用者 blade & controller 控制權限方法去看筆記
         ]);
     }
 }
