@@ -37,10 +37,10 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('guest');
+    // }
 
     /**
      * Get a validator for an incoming registration request.
@@ -54,7 +54,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'regex:/^[a-zA-Z0-9]*$/', 'max:20'],
             'email' => ['required', 'string', 'email', 'max:255', 'regex:/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/', 'unique:users'],
-            'phone_no' => ['size:10', 'regex:/^d{10}$/'],
+            'phone_no' => ['size:10', 'regex:/^\d{10}$/'],
             'password' => ['required', 'string', 'min:8', 'max:20', 'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{1,}$/', 'confirmed'],
         ]);
     }
