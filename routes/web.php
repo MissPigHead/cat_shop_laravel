@@ -1,13 +1,9 @@
 <?php
 
-use App\Models\Category;
-
-
 Route::name('admin')->prefix('admin')  // 後台
     // -> middleware('can:admin') // 使用middleware 控制權限
     ->group(function () {
-        Route::get('/', 'AdminController@index');
-        Route::namespace('API')->group(function () {
+        Route::namespace('Backend')->group(function () {
             Route::get('/news', 'NewsController@index')->name('.news');
             Route::get('/banner', 'BannerController@index')->name('.banner');
             Route::get('/category', 'CategoryController@index')->name('.category');
@@ -19,21 +15,12 @@ Route::name('admin')->prefix('admin')  // 後台
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@frontend')->name('home');
+Route::get('/admin', 'HomeController@backend')->name('admin');
 
 Route::namespace('Frontend')->group(function () {
-    Route::get('/', 'MainController@index')->name('main');
-    Route::name('categories')->prefix('categories')->group(function () {
-        Route::get('/', 'CategoryController@index');
-        Route::get('/{id}', 'CategoryController@show')->name('.show');
-    });
-    Route::get('/news', 'NewsController@index')->name('news');
-    Route::get('/products', 'ProductController@index')->name('product');
-    Route::get('/orders', 'OrderController@index')->name('order');
+    Route::Resource('/categories', 'CategoryController')->only(['index','show']);
+    Route::Resource('/news', 'NewsController')->only(['index','show']);
+    Route::Resource('/products', 'ProductController')->only(['index','show']);
+    Route::Resource('/orders', 'OrderController')->only(['index','show']);
 });
-
-$categories=Category::where([['show',1],['parent',0]])->orderBy('order','asc')->get();
-
-Route::view('/forgetpassword', 'frontend.forget',['categories'=>$categories])->name('forget');
-Route::view('/login', 'frontend.login',['categories'=>$categories])->name('login');
-Route::view('/register', 'frontend.register',['categories'=>$categories])->name('register');

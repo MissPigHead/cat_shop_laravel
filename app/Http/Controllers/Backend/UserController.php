@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Backend;
 
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\Backend\OrderController;
 
 class UserController extends Controller
 {

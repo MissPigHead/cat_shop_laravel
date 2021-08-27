@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Backend;
 
 use App\Models\Recipient;
 use Illuminate\Http\Request;
