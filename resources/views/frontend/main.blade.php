@@ -1,13 +1,14 @@
 @extends('layouts.frontend')
 @section('title', '喵喵商城首頁')
 @section('content')
-<main>
+  <main>
     <section id="banner">
       <div class="container my-3">
         <div class="row justify-content-center">
           <div class="owl-carousel owl-theme">
-            <div class="item"><img src="image/Banner01.jpg" alt="cat pic"></div>
-            <div class="item"><img src="image/Banner02.jpg" alt="cat pic"></div>
+            @foreach ($banners as $banner)
+              <div class="item"><img src="{{ $banner->image_path }}" alt="{{ $banner->text }}"></div>
+            @endforeach
           </div>
         </div>
       </div>
@@ -75,18 +76,15 @@
 
     <section id="news">
       <div class="container my-4">
-        <div class="row my-2">
-          <div class="col">
+        <div class="row justify-content-center">
+          <div class="col-12 my-2">
             <h4>育貓新知</h4>
           </div>
-        </div>
-        <div class="row justify-content-center">
-          <ul class="col-12 col-md-10 list-group list-group-flush px-3">
-            <li class="list-group-item bg-transparent">「柚子帽」氣味貓最恨　柑橘油恐引發過敏甚至中毒</li>
-            <li class="list-group-item bg-transparent">愛牠就別給牠戴綠帽！美女獸醫：貓狗戴「柚帽」恐引起中毒</li>
-            <li class="list-group-item bg-transparent">寵物知識+／怎樣能和傲驕貓咪當朋友？獸醫教你得寵5個撇步</li>
-            <li class="list-group-item bg-transparent">貓貓冷知識｜貓咪喜歡把飼料叼出碗外？背後藏兩大原因</li>
-            <li class="list-group-item bg-transparent">愛牠就別給牠戴綠帽！美女獸醫：貓狗戴「柚帽」恐引起中毒</li>
+          <ul class="col-12 col-md-10 col-lg-8 list-group list-group-flush">
+            @foreach ($news as $news)
+              <li class="list-group-item bg-transparent py-2"><a
+                  href="{{ route('news.show', ['news' => $news->id]) }}">{{ $news->title }}</a></li>
+            @endforeach
           </ul>
         </div>
       </div>

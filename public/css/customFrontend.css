@@ -15,6 +15,10 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --pink00: #e4007f;
     --pink01: #f72585;
     --pink02: #d8156c;
+    --purple: #3700b3;
+    --indigo01:#1A237E;
+    --indigo02: #304FFE;
+    --indigo03: #3F51B5;
 }
 
 html {
@@ -24,7 +28,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    color: darkblue;
+    color: var(--indigo01);
     background: #f4f5f6;
     font-family: "Cairo", 'Noto Sans TC', sans-serif;
     ;
@@ -113,3 +117,13 @@ td {
 .btn-outline-pink:focus-visible {
     outline: var(--pink02);
 }
+#news img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+}
+
+#news p{
+    text-indent:2em
+}
+
