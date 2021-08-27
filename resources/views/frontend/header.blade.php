@@ -2,7 +2,7 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-yellow01 px-2">
       <a class="navbar-brand" href="{{ route('home') }}">
-        <img src="image/00cat-256.png" alt="logo" height="30" class="d-inline-block align-top" loading="lazy">
+        <img src="{{ asset('image/00cat-256.png') }}" alt="logo" height="30" class="d-inline-block align-top" loading="lazy">
         <span class="h4 text-pink00 text-Pacifico">Ling's Shop</span>
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -12,7 +12,7 @@
 
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto align-items-lg-center">
           <li class="nav-item">
             <a class="nav-link" href="{{ route('home') }}">首頁</a>
           </li>
@@ -22,7 +22,7 @@
             <div class="dropdown-menu" aria-labelledby="categoriesDropDown">
               <a class="dropdown-item" href="{{ route('categories.index') }}">所有商品</a>
               <div class="dropdown-divider"></div>
-              @foreach ($categories as $category)
+              @foreach ($navCategories as $category)
                 <a class="dropdown-item"
                   href="{{ route('categories.show', ['id', $category->id]) }}">{{ $category->title }}</a>
               @endforeach
@@ -41,15 +41,13 @@
           <!-- Authentication Links -->
           @guest {{-- 沒有登入就是guest --}}
 
-            <li class="nav-item">
+            <li class="nav-item my-2 my-lg-0 ml-lg-2">
               <a href="{{ route('register') }}">
-                <button class="btn btn-outline-info px-2 py-1 m-2 my-sm-0" type="button">註冊
+                <button class="btn btn-outline-info px-2  py-1" type="button">註冊
                 </button>
               </a>
-            </li>
-            <li class="nav-item">
               <a href="{{ route('login') }}">
-                <button class="btn btn-outline-pink px-2 py-1 m-2 my-sm-0" type="button">登入
+                <button class="btn btn-outline-pink px-2  py-1" type="button">登入
                 </button>
               </a>
             </li>
