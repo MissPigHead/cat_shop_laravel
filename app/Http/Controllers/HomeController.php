@@ -10,46 +10,17 @@ use App\Models\Product;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    // public function index()
-    // {
-    //     return view('home');
-    // }
-
-    // 上面全部是原來框架的內容
-
     public function frontend()
     {
-        $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get();
-        $news = News::where('show', 1)->orderBy('updated_at', 'desc')->get();
+        $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get(['image_path', 'text']);
+        $news = News::where('show', 1)->orderBy('updated_at', 'desc')->get(['id', 'title']);
         $products = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc')->get();
 
-        $data = [
-            'banners' => $banners,
-            'news' => $news,
-            'products' => $products,
-        ];
-        // dd($data);
-        return view('frontend.main', $data);
+        return view('frontend.main', ['banners' => $banners,'news' => $news,'products' => $products]);
     }
 
     public function backend()
     {
         return view('backend.main');
     }
-
 }
