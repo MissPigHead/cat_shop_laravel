@@ -30,7 +30,9 @@ Route::namespace('Frontend')->group(function () {
 
 // ----------------- 測試用 -------------------- //
 use App\Models\User;
+use App\Models\Product;
 use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Product as ProductResource;
 use App\Http\Resources\UserCollection;
 
 Route::get('/test1', function (){
@@ -49,3 +51,11 @@ Route::get('/test4', function () {
     return new UserCollection(User::all());
 });
 // test1返回一個user, test2返回帶有key(id)的物件集合，test3 & test4 返回帶有物件的陣列，若不加keyBy test2~4等效
+
+Route::get('/test5', function () {
+    return ProductResource::collection(Product::all());
+});
+
+Route::get('/test6', function () {
+    return ProductResource::collection(Product::paginate(10));
+});
