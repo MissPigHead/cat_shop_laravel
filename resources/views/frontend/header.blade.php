@@ -2,7 +2,8 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-yellow01 px-2">
       <a class="navbar-brand" href="{{ route('home') }}">
-        <img src="{{ asset('image/00cat-256.png') }}" alt="logo" height="30" class="d-inline-block align-top" loading="lazy">
+        <img src="{{ asset('image/00cat-256.png') }}" alt="logo" height="30" class="d-inline-block align-top"
+          loading="lazy">
         <span class="h4 text-pink00 text-Pacifico">Ling's Shop</span>
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -22,7 +23,7 @@
             <div class="dropdown-menu" aria-labelledby="categoriesDropDown">
               <a class="dropdown-item" href="{{ route('categories.index') }}">所有商品</a>
               <div class="dropdown-divider"></div>
-              @foreach ($navCategories as $category)
+              @foreach ($mainCategories as $category)
                 <a class="dropdown-item"
                   href="{{ route('categories.show', ['id', $category->id]) }}">{{ $category->title }}</a>
               @endforeach
@@ -56,23 +57,43 @@
           @else {{-- 登入後 --}}
             @can('admin')
               <!-- 系統管理者 -->
-              <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin') }}" target="_blank">後台</a>
+              <li class="nav-item dropdown">
+                <a id="adminDropDown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false" v-pre>
+                  <i class="fas fa-cog"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminDropDown">
+                  <a class="dropdown-item" href="{{ route('admin') }}" target="_blank">管理後台</a>
+
+                  {{-- 登出 --}}
+                  <a class="dropdown-item" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <button class="btn btn-outline-pink px-2 py-1 my-sm-0" type="button">登出
+                    </button>
+                  </a>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                  </form>
+                  {{-- 登出 --}}
+
+                </div>
               </li>
+
             @else
               <!-- 一般使用者 -->
               <li class="nav-item dropdown">
                 <a id="userDropDown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false" v-pre>
-                  {{ Auth::user()->name }}
+                  <i class="fas fa-user-cog"></i>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropDown">
-                  <a class="dropdown-item" href="">個人資訊</a>
+                  <p class="px-4 my-2">Hi! {{ Auth::user()->name }}</p>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="">購物車</a>
-                  <a class="dropdown-item" href="">歷史訂單</a>
-                  <a class="dropdown-item" href="">收件資訊</a>
+                  <a class="dropdown-item" href="{{ route('user.show',['user',Auth::user()->id]) }}">個人資訊</a>
+                  <a class="dropdown-item" href="{{ route('cart',['id',Auth::user()->id]) }}">購物車</a>
+                  <a class="dropdown-item" href="{{ route('orders',['id',Auth::user()->id]) }}">歷史訂單</a>
+                  {{-- <a class="dropdown-item" href="{{ route('') }}">收件資訊</a> --}}
 
                   {{-- 登出 --}}
                   <a class="dropdown-item" href="{{ route('logout') }}"

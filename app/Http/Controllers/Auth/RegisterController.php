@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider; // 註冊後跳轉的路徑寫在這裡
-use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers; // 註冊頁面寫在這裡 showRegistrationForm(){return view('auth.register');} 直接用或改寫
+use Illuminate\Foundation\Auth\RegistersUsers; // 這個是trait 註冊頁面寫在這裡
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\Category;
 
 class RegisterController extends Controller
 {
@@ -37,10 +39,12 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('guest');
-    // }
+    public function __construct()
+    {
+        $this->middleware('guest');
+        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
+        view()->share('mainCategories', $categories);
+    }
 
     /**
      * Get a validator for an incoming registration request.
@@ -71,11 +75,14 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => User::ROLE_USER,  // 預設所有註冊者為一般使用者 blade & controller 控制權限方法去看筆記
+            'role' => User::ROLE_USER,  // 預設所有註冊者為一般使用者 在blade & controller 控制權限方法去看筆記
+            'birthday' => $data['birthday'],
+            'phone_no' => $data['phone_no'],
+            'remember_token' => Str::random(20)
         ]);
     }
 
-    public function showRegistrationForm() // 調用AuthenticatesUsers 後 改寫裡面登入的頁面
+    public function showRegistrationForm() // 參考trait AuthenticatesUsers 的寫法
     {
         return view('frontend.register');
     }

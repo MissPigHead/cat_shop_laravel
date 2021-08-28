@@ -14,7 +14,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $categories=Category::where([['show',1],['parent',0]])->orderBy('order','asc')->get(); // 只抓主目錄
-        view()->share('navCategories',$categories);
+        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
+        view()->share('mainCategories', $categories);
     }
 }

@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\AuthenticatesUsers; // 登入頁面寫在這裡 showLoginForm(){return view('auth.login');} 直接用或改寫
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\Category;
 
 class LoginController extends Controller
 {
@@ -33,13 +34,17 @@ class LoginController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('guest')->except('logout');
-    // }
+    public function __construct()
+
+    {
+        $this->middleware('guest')->except('logout');
+        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
+        view()->share('mainCategories', $categories);
+    }
 
     public function showLoginForm() // 調用AuthenticatesUsers 後 改寫裡面登入的頁面
     {
+        $this->middleware('guest')->except('logout');
         return view('frontend.login');
     }
 }
