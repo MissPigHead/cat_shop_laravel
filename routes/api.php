@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::namespace('Backend')->group(function () {
+Route::middleware('can:admin')->namespace('Backend')->group(function () {
     Route::apiResource('news', 'NewsController')->except(['index']);
     Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
 
