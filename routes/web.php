@@ -1,6 +1,7 @@
 <?php
 
-Route::middleware('can:admin')->name('admin')->prefix('admin')->group(function () { // 後台
+Route::name('admin')->prefix('admin')->group(function () { // 後台
+// Route::middleware('can:admin')->name('admin')->prefix('admin')->group(function () { // 後台
     Route::get('/', 'HomeController@backend');
     Route::namespace('Backend')->group(function () {
         Route::get('/news', 'NewsController@index')->name('.news');
@@ -35,27 +36,12 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Resources\Product as ProductResource;
 use App\Http\Resources\UserCollection;
 
-Route::get('/test1', function (){
-    return new UserResource(User::find(1));
-});
-
 Route::get('/test2', function () {
-    return UserResource::collection(User::all()->keyBy->id);
-});
-
-Route::get('/test3', function () {
-    return new UserCollection(User::all());
-});
-
-Route::get('/test4', function () {
-    return new UserCollection(User::all());
-});
-// test1返回一個user, test2返回帶有key(id)的物件集合，test3 & test4 返回帶有物件的陣列，若不加keyBy test2~4等效
-
-Route::get('/test5', function () {
-    return ProductResource::collection(Product::all());
+    return UserResource::collection(User::with('recipients')->with('orders')->get());
+    // return UserResource::collection(User::all()->keyBy->id);
 });
 
 Route::get('/test6', function () {
     return ProductResource::collection(Product::paginate(10));
 });
+
