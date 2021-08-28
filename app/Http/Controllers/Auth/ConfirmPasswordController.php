@@ -1,4 +1,9 @@
 <?php
+// 暫未使用 需要使用時記得加入全域變數!
+
+// 用途：需要已登入的用戶再次輸入密碼時
+// 例如要下單 或改革人資料 或登入時間屆期等等
+// 因此 _construct 才會綁已登入 middleware('auth')
 
 namespace App\Http\Controllers\Auth;
 

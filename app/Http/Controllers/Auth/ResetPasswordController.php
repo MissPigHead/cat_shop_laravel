@@ -1,4 +1,6 @@
 <?php
+// 讓使用者重設密碼
+// 參考trait 後，先可能會用到的 顯示頁面showResetForm() & 驗證規則rules() 放在下面
 
 namespace App\Http\Controllers\Auth;
 
@@ -27,4 +29,20 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+
+    // public function showResetForm(Request $request, $token = null)
+    // {
+    //     return view('auth.passwords.reset')->with(
+    //         ['token' => $token, 'email' => $request->email]
+    //     );
+    // }
+
+    // protected function rules()
+    // {
+    //     return [
+    //         'token' => 'required',
+    //         'email' => 'required|email',
+    //         'password' => 'required|confirmed|min:8',
+    //     ];
+    // }
 }
