@@ -13,7 +13,7 @@
     <div class="modal fade" id="addBanner" tabindex="-1" aria-labelledby="addBannerLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <form method="POST" action="{{ route('banner.store') }}" enctype="multipart/form-data">
+          <form method="POST" action="{{ route('api.banner.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="modal-header">
               <h5 class="modal-title" id="addBannerLabel">新增Banner廣告</h5>

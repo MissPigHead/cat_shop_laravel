@@ -13,6 +13,13 @@ class Category extends Model
         'show' => false,
     ];
 
+    public function getParentNameAttribute()
+    {
+        $p_id=$this->parent;
+        $p_name=Category::find($p_id)->title;
+        return $this->attributes['parent_name'] = $p_name;
+    }
+
     protected function products()
     {
         return $this->hasMany(Product::class);

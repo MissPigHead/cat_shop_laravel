@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\Recipient;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class OrderController extends Controller
+
+class RecipientController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return view('frontend.orderHistory');
+        //
     }
 
     /**
@@ -59,6 +61,6 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Recipient::destroy($id);
     }
 }

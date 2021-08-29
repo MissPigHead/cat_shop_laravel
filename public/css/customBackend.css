@@ -12,6 +12,7 @@ font-family: 'Permanent Marker', cursive; */
     --gray01: #afafaf;
     --pink00: #e4007f;
     --pink01: #f72585;
+    --pink02: #FF4081;
 }
 
 html {
@@ -57,6 +58,13 @@ main {
 .sideBar>a:hover {
     color: blue
 }
+.sideBar>a.text-pink{
+    color: var(--pink00);
+}
+
+.sideBar>a.text-pink:hover {
+    color: var(--pink02);
+}
 
 .sideBar div {
     font-size: 1.2rem;
@@ -66,7 +74,6 @@ main {
     margin: 1rem;
     border-radius: 1rem;
     background: var(--yellow01);
-    /* border: 0.2rem solid var(--yellow01); */
 }
 
 .content {

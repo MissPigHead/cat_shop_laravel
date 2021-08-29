@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\API;
 
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\API\OrderController;
 
 class UserController extends Controller
 {
@@ -19,11 +19,12 @@ class UserController extends Controller
     public function index()
     {
         // $users = User::all();
-        $users = User::orderBy('created_at', 'asc')->get();
+        $users = User::where('role', 'user')->orderBy('created_at', 'asc')->get();
         $users->each(function ($user) {
             $user->total_spent;
         });
-        return view('backend.user', ['users' => $users]);
+        return $users;
+        // return view('backend.user', ['users' => $users]);
     }
 
     /**
@@ -62,7 +63,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user=User::find($id);
+        $user = User::find($id);
         $user->update($request->all());
     }
 
@@ -82,9 +83,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->total_spent;
         $user->orders;
-        $user->orders->each(function($order){
+        $user->orders->each(function ($order) {
             $order->order_details;
-            $order->order_details->each(function($order_detail){
+            $order->order_details->each(function ($order_detail) {
                 $order_detail->product_name;
                 $order_detail->image_path;
             });

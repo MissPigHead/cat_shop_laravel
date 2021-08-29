@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,8 +14,7 @@ class NewsController extends Controller
 {
     public function index() // 取全部
     {
-        $news = News::orderBy('updated_at', 'desc')->get();
-        return view('backend.news', ['news' => $news]);
+        return News::all();
     }
 
     public function store(NewsRequest $request) // 儲存資料

@@ -13,25 +13,28 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::middleware('can:admin')->namespace('Backend')->group(function () {
+Route::namespace('API')->name('api.')->group(function () {
+// Route::middleware('can:admin')->namespace('Backend')->group(function () {
     Route::apiResource('news', 'NewsController')->except(['index']);
     Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
 
-    Route::apiResource('category', 'CategoryController')->except(['index']);
+    Route::apiResource('category', 'CategoryController');
     Route::get('category/{id}/child', 'CategoryController@child');
     Route::patch('category/{id}/move', 'CategoryController@move');
 
-    Route::apiResource('banner', 'BannerController')->except(['index']);
+    Route::apiResource('product', 'ProductController');
+
+    Route::apiResource('banner', 'BannerController');
     Route::patch('banner/{id}/move', 'BannerController@move');
 
-    Route::apiResource('user', 'UserController')->except(['index']);
+    Route::apiResource('user', 'UserController');
     Route::get('user/{id}/order', 'UserController@getOrder');
 
-    Route::apiResource('order', 'OrderController')->except(['index']);
+    Route::apiResource('order', 'OrderController');
 
-    Route::apiResource('recipient', 'RecipientController')->except(['index']);
+    Route::apiResource('recipient', 'RecipientController');
 });

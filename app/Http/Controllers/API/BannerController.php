@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Http\Requests\BannerRequest;
+use App\Http\Resources\Banner as BannerResources;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,8 +14,8 @@ class BannerController extends Controller
 {
     public function index()
     {
-        $banners = Banner::orderBy('order', 'asc')->get();
-        return view('backend.banner', ['banners' => $banners,]);
+        $b=Banner::all();
+        return BannerResources::collection($b);
     }
 
     public function store(BannerRequest $request)

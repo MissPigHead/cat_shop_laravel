@@ -1,6 +1,11 @@
 @extends('layouts.frontend')
-@section('title','個人資訊')
+@section('title', '個人資訊')
 @section('content')
+@if($user)
+<pre>
+</pre>
+@else
+@endif
   <main>
     <div class="container">
       <div class="row justify-content-center">
@@ -10,11 +15,14 @@
               <h4>會員資訊</h4>
             </div>
           </div>
-          <form>
+          <form  method="post">
+          {{-- <form action="{{ route('user.update') }}" method="post"> --}}
+            @csrf
+            @method('patch')
             <div class="form-group row align-items-center">
               <label for="account" class="col-3 col-sm-2 col-form-label">帳號</label>
               <div class="col-9 col-sm-7">
-                <input type="text" class="form-control" id="account" placeholder="QiQiCat">
+                <input type="text" class="form-control" id="account" placeholder="QiQiCat" value="{{ $user->name }}">
               </div>
               <div class="d-none d-sm-inline-block col-sm-3">
                 <button type="button" class="btn btn-info w-100">刪除帳號</button>
@@ -23,16 +31,16 @@
             <div class="form-group row">
               <label for="email" class="col-3 col-sm-2 col-form-label pr-0">E-mail</label>
               <div class="col-9 col-sm-10">
-                <input type="email" class="form-control" id="email" placeholder="qiqicat20170608@testqiqi.com">
+                <input type="email" class="form-control" id="email" placeholder="qiqicat20170608@testqiqi.com" value="{{ $user->email }}">
               </div>
             </div>
             <div class="form-group row">
               <label for="email" class="col-3 col-sm-2 col-form-label">生日</label>
               <div class="col-9 col-sm-10">
-                <input type="date" class="form-control" id="birthday" value="2017-06-08">
+                <input type="date" class="form-control" id="birthday" value="{{ $user->birthday }}">
               </div>
             </div>
-            <div class="form-group row">
+            {{-- <div class="form-group row">
               <label for="password" class="col-3 col-sm-2 col-form-label">密碼</label>
               <div class="col-9 col-sm-10">
                 <input type="password" class="form-control" id="password" placeholder="************">
@@ -43,10 +51,10 @@
               <div class="col-9 col-sm-10">
                 <input type="password" class="form-control" id="password2" placeholder="************">
               </div>
-            </div>
+            </div> --}}
             <div class="row mt-5 mb-2">
               <div class="col">
-                <h4>預設收件資訊</h4>
+                <h4>收件者資訊</h4>
               </div>
             </div>
             <div class="form-group row mb-2">

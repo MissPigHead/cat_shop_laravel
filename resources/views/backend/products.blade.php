@@ -1,6 +1,12 @@
 @extends('layouts.backend')
 @section('title','商品區')
 @section('content')
+@if($data)
+OO
+{{ $data->collection }}
+@else
+XX
+@endif
       <div class="col-9 content">
 
         <!-- 選取區 -->
@@ -144,5 +150,5 @@
           </tbody>
         </table>
 
-      </div>    
+      </div>
 @endsection

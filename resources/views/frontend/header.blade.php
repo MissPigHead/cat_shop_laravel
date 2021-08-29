@@ -65,22 +65,8 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="adminDropDown">
                   <a class="dropdown-item" href="{{ route('admin') }}" target="_blank">管理後台</a>
 
-                  {{-- 登出 --}}
-                  <a class="dropdown-item" href="{{ route('logout') }}"
-                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                    <button class="btn btn-outline-pink px-2 py-1 my-sm-0" type="button">登出
-                    </button>
-                  </a>
-                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                  </form>
-                  {{-- 登出 --}}
-
-                </div>
-              </li>
-
-            @else
-              <!-- 一般使用者 -->
+                @else
+                  <!-- 一般使用者 -->
               <li class="nav-item dropdown">
                 <a id="userDropDown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                   aria-haspopup="true" aria-expanded="false" v-pre>
@@ -90,25 +76,27 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropDown">
                   <p class="px-4 my-2">Hi! {{ Auth::user()->name }}</p>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{{ route('user.show',['user',Auth::user()->id]) }}">個人資訊</a>
-                  <a class="dropdown-item" href="{{ route('cart',['id',Auth::user()->id]) }}">購物車</a>
-                  <a class="dropdown-item" href="{{ route('orders',['id',Auth::user()->id]) }}">歷史訂單</a>
+                  <a class="dropdown-item" href="{{ route('user.show', ['user'=>Auth::user()->id]) }}">個人資訊</a>
+                  <a class="dropdown-item" href="{{ route('user.cart', ['id'=>Auth::user()->id]) }}">購物車</a>
+                  <a class="dropdown-item" href="{{ route('user.orders', ['id'=>Auth::user()->id]) }}">歷史訂單</a>
                   {{-- <a class="dropdown-item" href="{{ route('') }}">收件資訊</a> --}}
 
-                  {{-- 登出 --}}
-                  <a class="dropdown-item" href="{{ route('logout') }}"
-                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                    <button class="btn btn-outline-pink px-2 py-1 my-sm-0" type="button">登出
-                    </button>
-                  </a>
-                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                  </form>
-                  {{-- 登出 --}}
 
-                </div>
-              </li>
-            @endcan
+                @endcan
+                {{-- 登出 --}}
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                  onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                  <button class="btn btn-outline-pink px-2 py-1 my-sm-0" type="button">登出
+                  </button>
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                  @csrf
+                </form>
+                {{-- 登出 --}}
+
+              </div>
+            </li>
+
 
           @endguest
         </ul>

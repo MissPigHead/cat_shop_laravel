@@ -17,7 +17,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
-        <form method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data" id="NewForm">
+        <form method="POST" action="{{ route('api.news.store') }}" enctype="multipart/form-data" id="NewForm">
           @csrf
           <div class="modal-header">
             <h5 class="modal-title" id="storeNewsLabel">新增文章</h5>
@@ -56,7 +56,7 @@
   <div class="modal fade" id="updateNews" tabindex="-1" aria-labelledby="updateNewsLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <form id="updateForm" method="POST" enctype="multipart/form-data" action="/api/news/edit">
+        <form id="updateForm" method="POST" enctype="multipart/form-data" action="{{ route('api.news.edit') }}">
           @csrf
           <div class="modal-header">
             <h5 class="modal-title" id="updateNewsLabel">編輯文章</h5>
