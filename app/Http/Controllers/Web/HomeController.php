@@ -32,14 +32,15 @@ class HomeController extends Controller
 
     public function categoryShow($id)
     {
+        $categories = CategoryResources::collection(Category::orderBy('order')->get())->groupBy('parent');
         if ($id == 'all') {
-            $categories = CategoryResources::collection(Category::orderBy('order')->get())->groupBy('parent');
-            $p = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
-            // $p = Product::with('category')->where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+            $product = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+        } else {
+            $product = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+            $cate_breadcrumb = new CategoryResources(Category::find($id));
         }
-        // return
-        $products= ProductResources::collection($p->paginate(12));
-        return view('frontend.category', ['categories' => $categories, 'products' => $products]);
+        $products = ProductResources::collection($product->paginate(12));
+        return view('frontend.category', ['categories' => $categories, 'products' => $products, 'cate_breadcrumb' => $cate_breadcrumb ?? '']);
     }
 
     public function news()
