@@ -14,10 +14,12 @@ class Category extends JsonResource
      */
     public function toArray($request)
     {
-        $request= parent::toArray($request);
-        $request['parent_name']=$this->parent_name;
-        // $request['parent_name']=Category::collection($this->parent_name);
-        // $request['parent_name']=new Category($this->parent_name);
-        return $request;
+        $arr = [
+            'id' => $this->id,
+            'title' => $this->title,
+            'parent' => $this->parent,
+            'parent_name' => $this->parent_name,
+        ];
+        return $arr;
     }
 }
