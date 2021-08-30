@@ -15,6 +15,11 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --pink00: #e4007f;
     --pink01: #f72585;
     --pink02: #d8156c;
+    --pink03: #F8BBD0;
+    --pink04: #880E4F;
+    --yellow00:#FFF9C4;
+    --orange00:#BF360C;
+    --amber00:#FFF8E1;
     --purple: #3700b3;
     --indigo01: #1A237E;
     --indigo02: #304FFE;
@@ -127,11 +132,30 @@ td {
     text-indent: 2em
 }
 
+#category a,
 #news a,
 #products a {
     text-decoration: none;
 }
 
+#category a li:hover{
+    font-weight: bold;
+}
 #products img:hover {
     opacity: 0.4;
+}
+#category .cate-all{
+    color: var(--pink04);
+    background-color:var(--pink03);
+    border: 1px solid #fcfcfcaa;
+}
+#category .cate-p{
+    color: var(--orange00);
+    background-color:var(--amber00);
+    border: 1px solid #fcfcfcaa;
+}
+#category .cate-c{
+    color: darkslategray;
+    background-color:rgb(240, 240, 235);
+    border: 1px solid #fcfcfcaa;
 }

@@ -24,7 +24,7 @@
         <div class="row">
           @foreach ($products as $product)
             <div class="col-6 col-md-4 col-lg-3 text-center product">
-              <a href="{{ route('products.show', ['product' => $product->id]) }}">
+              <a href="{{ route('product.show', [$product->category_id, $product->id]) }}">
                 <div class="owl-carousel owl-theme bg-dark">
                   @foreach ($product->image_path as $image_path)
                     <div class="item"><img src="{{ $image_path }}"></div>
@@ -49,7 +49,7 @@
           <ul class="col-12 col-md-10 list-group list-group-flush">
             @foreach ($news as $news)
               <li class="list-group-item bg-transparent py-2"><a
-                  href="{{ route('news.show', ['news' => $news->id]) }}" class="ml-md-4">{{ $news->title }}</a></li>
+                  href="{{ route('news.show', $news->id) }}" class="ml-md-4">{{ $news->title }}</a></li>
             @endforeach
           </ul>
         </div>

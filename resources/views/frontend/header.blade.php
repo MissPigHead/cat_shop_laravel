@@ -21,11 +21,11 @@
             <a class="nav-link dropdown-toggle" href="#" id="categoriesDropDown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">商品目錄</a>
             <div class="dropdown-menu" aria-labelledby="categoriesDropDown">
-              <a class="dropdown-item" href="{{ route('categories.index') }}">所有商品</a>
+              <a class="dropdown-item" href="{{ route('category.show','all') }}">所有商品</a>
               <div class="dropdown-divider"></div>
               @foreach ($mainCategories as $category)
                 <a class="dropdown-item"
-                  href="{{ route('categories.show', ['id', $category->id]) }}">{{ $category->title }}</a>
+                  href="{{ route('category.show', $category->id) }}">{{ $category->title }}</a>
               @endforeach
             </div>
           </li>
@@ -76,7 +76,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropDown">
                   <p class="px-4 my-2">Hi! {{ Auth::user()->name }}</p>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{{ route('user.show', ['user'=>Auth::user()->id]) }}">個人資訊</a>
+                  <a class="dropdown-item" href="{{ route('user.profile', ['user'=>Auth::user()->id]) }}">個人資訊</a>
                   <a class="dropdown-item" href="{{ route('user.cart', ['id'=>Auth::user()->id]) }}">購物車</a>
                   <a class="dropdown-item" href="{{ route('user.orders', ['id'=>Auth::user()->id]) }}">歷史訂單</a>
                   {{-- <a class="dropdown-item" href="{{ route('') }}">收件資訊</a> --}}
