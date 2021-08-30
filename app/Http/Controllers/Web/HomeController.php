@@ -33,11 +33,29 @@ class HomeController extends Controller
     public function categoryShow($id)
     {
         $categories = CategoryResources::collection(Category::orderBy('order')->get())->groupBy('parent');
+        // 左側目錄
         if ($id == 'all') {
             $product = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+            // 右側商品
         } else {
-            $product = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+            // return
             $cate_breadcrumb = new CategoryResources(Category::find($id));
+            // dd($cate_breadcrumb);
+            // 右側商品上的麵包屑
+            if($cate_breadcrumb->parent!=0){
+
+                $product = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+            }else{
+                $product =Product::whereHas('category',function($query) use ($id){
+                    $query->where('parent',$id);
+                })->where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
+                // $product =Product::with(['category'=>function($query) use ($id){
+                //     $query->where('parent',$id);
+                // }]);
+                // 1. $query 使用的變數需要先 function ($query) use ($var){...}
+                // 2. 關聯部分使用with 是把符合條件的關聯資料抓回，其餘不抓關聯資料，繼續往下走，沒被filter掉
+                // 3. 關聯部分使用whereHas 則是把符合條件的關聯資料抓回，其餘不抓且直接被filter掉
+            }
         }
         $products = ProductResources::collection($product->paginate(12));
         return view('frontend.category', ['categories' => $categories, 'products' => $products, 'cate_breadcrumb' => $cate_breadcrumb ?? '']);
