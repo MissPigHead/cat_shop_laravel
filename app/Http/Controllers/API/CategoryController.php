@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\Category as CategoryResources;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
-        return view('backend.category',['parentCategories' => $parentCategories]);
+        return CategoryResources::collection(Category::all());
+        // $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
+        // return view('backend.category',['parentCategories' => $parentCategories]);
     }
 
     public function store(CategoryRequest $request)

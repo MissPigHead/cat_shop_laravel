@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product as ProductResource;
+// use App\Http\Resources\ProductCollection;
 
 class ProductController extends Controller
 {
@@ -15,18 +16,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($product)
     {
-        // $ps=Product::all();
-        // return $ps->each(function ($p) {
-        //     $p->category;
-        // });
-        //
-        // ->paginate(10)
-        return ProductResource::collection(Product::with('category')->get());
-        // return $d;
-        // 使用Resource 的
-        // dd($d);
+        // return new ProductCollection($product);
+        return (ProductResource::collection($product));
     }
 
     /**
@@ -58,7 +51,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return response(new ProductResource($product), Response::HTTP_OK)
+        return response(new ProductResource($product), Response::HTTP_OK);
     }
 
     /**

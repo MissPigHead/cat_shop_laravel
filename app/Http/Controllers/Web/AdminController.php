@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\BannerController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\ProductController;

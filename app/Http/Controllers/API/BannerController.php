@@ -12,10 +12,14 @@ use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
-    public function index()
+    public function index(Banner $banner, $request)
     {
-        $b=Banner::all();
-        return BannerResources::collection($b);
+        if(!$request){
+            $b=$banner->all();
+        }else{
+            var_dump($request);
+        }
+        // return BannerResources::collection($b);
     }
 
     public function store(BannerRequest $request)

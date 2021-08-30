@@ -11,10 +11,4 @@ use App\Models\Category;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    public function __construct()
-    {
-        $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
-        view()->share('mainCategories', $categories);
-    }
 }
