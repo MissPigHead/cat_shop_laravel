@@ -16,8 +16,10 @@ class Category extends Model
     public function getParentNameAttribute()
     {
         $p_id=$this->parent;
-        $p_name=Category::find($p_id)->title;
-        return $this->attributes['parent_name'] = $p_name;
+        if($p_id!=0){
+            $p_name=Category::find($p_id)->title;
+            return $this->attributes['parent_name'] = $p_name;
+        }
     }
 
     protected function products()
