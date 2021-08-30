@@ -11,13 +11,12 @@
             @if ($news->image_path)
               <img src="{{ $news->image_path }}" class="mb-3">
             @endif
-            <p class="text-secondary text-justify newsText">
+            <p class="text-secondary text-justify">
               {{ $news->article }}
             </p>
           </div>
-          <div class="col-12 my-2">
+          <div class="col-12 py-2 py-md-4 newsList">
             <h4>育貓新知
-                {{-- <i class="fas fa-paw mx-1"></i><i class="fas fa-paw"></i><i class="fas fa-paw mx-1"></i> --}}
             </h4>
           </div>
           <!-- 清單 -->

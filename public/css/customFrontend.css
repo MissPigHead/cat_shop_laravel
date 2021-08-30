@@ -9,6 +9,7 @@ font-family: 'Permanent Marker', cursive;
 font-family: 'Noto Sans TC', sans-serif;  */
 
 :root {
+    --yellow00:#faf2e1;
     --yellow01: #fcefb4;
     --yellow02: #fefbeb;
     --gray01: #afafaf;
@@ -17,9 +18,7 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --pink02: #d8156c;
     --pink03: #F8BBD0;
     --pink04: #880E4F;
-    --yellow00:#FFF9C4;
     --orange00:#BF360C;
-    --amber00:#FFF8E1;
     --purple: #3700b3;
     --indigo01: #1A237E;
     --indigo02: #304FFE;
@@ -103,10 +102,6 @@ td {
     /* white-space: nowrap; */
 }
 
-.newsText {
-    font-weight: 300;
-}
-
 .btn-outline-pink {
     color: var(--pink01);
     border-color: var(--pink01);
@@ -129,7 +124,12 @@ td {
 }
 
 #news p {
+    font-weight: 300;
     text-indent: 2em
+}
+
+#news .newsList{
+    border-top: #fce0a099 1px solid;
 }
 
 #category a,
@@ -151,11 +151,11 @@ td {
 }
 #category .cate-p{
     color: var(--orange00);
-    background-color:var(--amber00);
+    background-color:var(--yellow00);
     border: 1px solid #fcfcfcaa;
 }
 #category .cate-c{
     color: darkslategray;
-    background-color:rgb(240, 240, 235);
+    background-color:rgb(235, 240, 240);
     border: 1px solid #fcfcfcaa;
 }
