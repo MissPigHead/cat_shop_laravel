@@ -13,28 +13,27 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::namespace('API')->name('api.')->group(function () {
 // Route::middleware('can:admin')->namespace('Backend')->group(function () {
-    Route::apiResource('news', 'NewsController')->except(['index']);
-    Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
-
-    Route::apiResource('category', 'CategoryController');
-    Route::get('category/{id}/child', 'CategoryController@child');
-    Route::patch('category/{id}/move', 'CategoryController@move');
-
-    Route::apiResource('product', 'ProductController');
-
     Route::apiResource('banner', 'BannerController');
-    Route::patch('banner/{id}/move', 'BannerController@move');
-
+    Route::apiResource('category', 'CategoryController');
+    Route::apiResource('news', 'NewsController');
+    Route::apiResource('order', 'OrderController');
+    Route::apiResource('product', 'ProductController');
+    Route::apiResource('recipient', 'RecipientController');
     Route::apiResource('user', 'UserController');
+
+    Route::patch('banner/{id}/move', 'BannerController@move')->name('banner.move');
+
+    Route::get('category/{id}/child', 'CategoryController@child');
+    Route::patch('category/{id}/move', 'CategoryController@move')->name('category.move');
+
     Route::get('user/{id}/order', 'UserController@getOrder');
 
-    Route::apiResource('order', 'OrderController');
+    Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
 
-    Route::apiResource('recipient', 'RecipientController');
 });
