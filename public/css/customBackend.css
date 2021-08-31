@@ -7,12 +7,16 @@ font-family: 'Pangolin', cursive;
 font-family: 'Permanent Marker', cursive; */
 
 :root {
+    --yellow00:#faf2e1;
     --yellow01: #fcefb4;
     --yellow02: #fefbeb;
     --gray01: #afafaf;
     --pink00: #e4007f;
     --pink01: #f72585;
     --pink02: #FF4081;
+    --pink03: #F8BBD0;
+    --pink04: #880E4F;
+    --orange00:#BF360C;
 }
 
 html {
@@ -157,4 +161,20 @@ td {
 
 .td-input:focus-visible {
     outline-color: #6cb2eb99;
+}
+
+#category .cate-all{
+    color: var(--pink04);
+    background-color:var(--pink03);
+}
+#category .cate-p{
+    color: var(--orange00);
+    background-color:var(--yellow00);
+}
+#category .cate-c{
+    color: darkslategray;
+    background-color:rgb(235, 240, 240);
+}
+#products tr[data-href] {
+    cursor: pointer;
 }
