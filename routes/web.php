@@ -13,16 +13,18 @@ Route::namespace('Web')->group(function () { // 前台
     Route::get('/', 'HomeController@main')->name('home');
 
     Route::prefix('/news')->name('news.')->group(function () { // 育貓新知
-        Route::get('/', 'HomeController@news')->name('index');
-        Route::get('/{news}', 'HomeController@newsShow')->name('show');
+        Route::get('/', function () {
+            return redirect()->to('/news/all');
+        })->name('index');
+        Route::get('/{news}', 'HomeController@news')->name('show');
     });
 
     Route::prefix('/category')->group(function () { //商品與目錄
         Route::get('/', function () {
             return redirect()->to('/category/all');
-        });
-        Route::get('/{category}', 'HomeController@categoryShow')->name('category.show'); // 該目錄下所有商品
-        Route::get('/{category}/product/{product}', 'HomeController@productShow')->name('product.show'); // 單一商品
+        })->name('category.index');
+        Route::get('/{category}', 'HomeController@category')->name('category.show'); // 該目錄下所有商品
+        Route::get('/{category}/product/{product}', 'HomeController@product')->name('product.show'); // 單一商品
     });
 
     Route::middleware('auth')->prefix('/user')->group(function () { // 使用者 購物車 訂單 收件: 這幾項需要登入授權
@@ -33,6 +35,7 @@ Route::namespace('Web')->group(function () { // 前台
     });
 });
 
+
 // ---------------------------  後台 先不用middleware 比較方便  ---------------------------------- //
 // Route::prefix('admin')->namespace('Web')->name('admin')->middleware('can:admin')->group(function () { // 後台
 Route::prefix('admin')->namespace('Web')->name('admin')->group(function () {
@@ -42,7 +45,12 @@ Route::prefix('admin')->namespace('Web')->name('admin')->group(function () {
     Route::get('/category', 'AdminController@category')->name('.category');
     Route::get('/order', 'AdminController@order')->name('.order');
     Route::get('/user', 'AdminController@user')->name('.user');
-    Route::get('/product', 'AdminController@product')->name('.product');
+    Route::prefix('/product')->name('.product')->group(function () {
+        Route::get('/', function () {
+            return redirect()->to('/admin/product/c/all');
+        });
+        Route::get('/c/{c_id}', 'AdminController@product')->name('.index');
+    });
 });
 
 

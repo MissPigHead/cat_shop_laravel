@@ -25,12 +25,12 @@ class HomeController extends Controller
     public function main()
     {
         $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get(['image_path', 'text']);
-        $news = News::where('show', 1)->orderBy('updated_at', 'desc')->get(['id', 'title']);
+        $news = News::where('show', 1)->orderBy('updated_at', 'desc')->take(6)->get(['id', 'title']);
         $products = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc')->limit(9)->get();
         return view('frontend.main', ['banners' => $banners, 'news' => $news, 'products' => $products]);
     }
 
-    public function categoryShow($id)
+    public function category($id)
     {
         $categories = CategoryResources::collection(Category::orderBy('order')->get())->groupBy('parent');
         // 左側目錄
@@ -42,12 +42,12 @@ class HomeController extends Controller
             $cate_breadcrumb = new CategoryResources(Category::find($id));
             // dd($cate_breadcrumb);
             // 右側商品上的麵包屑
-            if($cate_breadcrumb->parent!=0){
+            if ($cate_breadcrumb->parent != 0) {
 
                 $product = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
-            }else{
-                $product =Product::whereHas('category',function($query) use ($id){
-                    $query->where('parent',$id);
+            } else {
+                $product = Product::whereHas('category', function ($query) use ($id) {
+                    $query->where('parent', $id);
                 })->where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
                 // $product =Product::with(['category'=>function($query) use ($id){
                 //     $query->where('parent',$id);
@@ -61,13 +61,6 @@ class HomeController extends Controller
         return view('frontend.category', ['categories' => $categories, 'products' => $products, 'cate_breadcrumb' => $cate_breadcrumb ?? '']);
     }
 
-    public function news()
-    {
-        $newsList = News::where('show', 1)->orderBy('updated_at', 'desc')->get(['id', 'title']);
-        $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get(['image_path', 'text']);
-        return view('frontend.news', ['newsList' => $newsList, 'banners' => $banners]);
-    }
-
     public function user()
     {
         return view('frontend.personal');
@@ -78,22 +71,27 @@ class HomeController extends Controller
         return view('frontend.cart');
     }
 
-    public function orders()
+
+    public function news($id)
     {
-        return view('frontend.orderHistory');
+        if ($id == 'all') {
+            $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get(['image_path', 'text']);
+        } else {
+            $news = News::findOrFail($id);
+        }
+        $newsList = News::select(['id', 'title'])->where('show', 1)->orderBy('updated_at', 'desc')->paginate(6);
+        return view('frontend.news', ['news' => $news ?? '', 'newsList' => $newsList, 'banners' => $banners ?? '']);
     }
 
-    public function newsShow($id)
-    {
-        $news = News::findOrFail($id);
-        $newsList = News::where('show', 1)->orderBy('updated_at', 'desc')->get(['id', 'title']);
-        return view('frontend.newsDetail', ['news' => $news, 'newsList' => $newsList]);
-    }
-
-    public function productShow($id)
+    public function product($id)
     {
         // return "productDetails".$id;
         return view('frontend.product');
+    }
+
+    public function orders()
+    {
+        return view('frontend.orderHistory');
     }
 
     public function orderShow($id)

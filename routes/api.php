@@ -19,13 +19,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::namespace('API')->name('api.')->group(function () {
 // Route::middleware('can:admin')->namespace('Backend')->group(function () {
-    Route::apiResource('banner', 'BannerController');
+    Route::apiResource('banner', 'BannerController')->except('index');
     Route::apiResource('category', 'CategoryController');
     Route::apiResource('news', 'NewsController');
     Route::apiResource('order', 'OrderController');
-    Route::apiResource('product', 'ProductController');
+    Route::apiResource('product', 'ProductController')->except('index');
     Route::apiResource('recipient', 'RecipientController');
-    Route::apiResource('user', 'UserController');
+    Route::apiResource('user', 'UserController')->except('index');
 
     Route::patch('banner/{id}/move', 'BannerController@move')->name('banner.move');
 

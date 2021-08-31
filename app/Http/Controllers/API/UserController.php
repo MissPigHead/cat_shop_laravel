@@ -12,22 +12,6 @@ use App\Http\Controllers\API\OrderController;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        // $users = User::all();
-        $users = User::where('role', 'user')->orderBy('created_at', 'asc')->get();
-        $users->each(function ($user) {
-            $user->total_spent;
-        });
-        return $users;
-        // return view('backend.user', ['users' => $users]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
