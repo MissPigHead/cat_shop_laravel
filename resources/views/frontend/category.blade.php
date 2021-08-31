@@ -35,8 +35,15 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ route('category.show', 'all') }}">所有商品</a></li>
-              {{-- <li class="breadcrumb-item"><a href="#">貓砂</a></li>
-              <li class="breadcrumb-item active" aria-current="page">豆腐砂</li> --}}
+              @if ($cate_breadcrumb)
+                @if ($cate_breadcrumb->parent_name)
+                  <li class="breadcrumb-item"><a
+                      href="{{ route('category.show', $cate_breadcrumb->parent) }}">{{ $cate_breadcrumb->parent_name }}</a>
+                  </li>
+                @endif
+                <li class="breadcrumb-item active" aria-current="page">{{ $cate_breadcrumb->title }}</li>
+              @endif
+
             </ol>
           </nav>
           <div class="row" id="products">
@@ -52,12 +59,12 @@
                   <p class="my-2 text-gray">{{ $product->specification }}</p>
                   <h5 class="mb-2">{{ $product->name }}</h5>
                   <p class="font-weight-bolder text-danger">NTD {{ $product->price }}</p>
-                  </a>
+                </a>
               </div>
             @endforeach
           </div>
           <div class="row justify-content-center">
-            {{ $products->links() }}
+            {{ $products->onEachSide(2)->links() }}
           </div>
         </div>
       </div>
