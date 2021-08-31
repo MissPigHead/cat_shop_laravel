@@ -53,7 +53,6 @@
           <tr>
             <td><img src="{{ $banner->image_path }}" height="180"></td>
             <td>{{ $banner->text }}</td>
-
             <td>{{ $banner->show ? '顯示中' : '已隱藏' }}</td>
             <td>
               <button type="button" class="btn btn-outline-secondary btn-w-35-h-30 my-1"
@@ -101,6 +100,7 @@
         </div>
       </div>
     </div>
+    <div class="row justify-content-center">{{ $banners->onEachSide(2)->links() }}</div>
   </div>
   <script>
     $('[type=reset]').click(function(e) { // 顯示上傳圖片的提醒字

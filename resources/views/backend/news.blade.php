@@ -2,154 +2,149 @@
 @section('title', '育貓新知區')
 @section('content')
 
-@if ($errors->any())
-  @include('swal')
-@endif
+  @if ($errors->any())
+    @include('swal')
+  @endif
 
-<div class="col-9 content">
-  <!-- 新增區 -->
-  <div class="row justify-content-center">
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#storeNews">新增文章</button>
-  </div>
-
-  <!-- 新增用Modal -->
-  <div class="modal fade" id="storeNews" tabindex="-1" aria-labelledby="storeNewsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-
-        <form method="POST" action="{{ route('api.news.store') }}" enctype="multipart/form-data" id="NewForm">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title" id="storeNewsLabel">新增文章</h5>
-          </div>
-          <div class="modal-body">
-            <div class="form-group row">
-              <label for="title" class="col-2 col-form-label">標題</label>
-              <div class="col-9">
-                <input type="text" class="form-control" name="title" value="{{ old('title') ?: '' }}">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="article" class="col-2 col-form-label">內容</label>
-              <div class="col-9">
-                <textarea class="form-control" name="article" rows="5">{{ old('article') ?: '' }}</textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="image" class="col-2 col-form-label">圖片</label>
-              <div class="col-9">
-                <input type="file" name="image_path" id="imageNew">
-                <p class="small text-dark my-2">*可留空或選擇1張2MB以下jpg, jpeg, bmp, png 圖檔</p>
-              </div>
-            </div>
-            <img class="w-100" id="previewNew">
-          </div>
-          <div class="modal-footer">
-            <button type="submin" class="btn btn-info">上傳</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-          </div>
-        </form>
-      </div>
+  <div class="col-9 content">
+    <!-- 新增區 -->
+    <div class="row justify-content-center">
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#storeNews">新增文章</button>
     </div>
-  </div>
-  <!-- 修改用Modal -->
-  <div class="modal fade" id="updateNews" tabindex="-1" aria-labelledby="updateNewsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <form id="updateForm" method="POST" enctype="multipart/form-data" action="{{ route('api.news.edit') }}">
-          @csrf
-          <div class="modal-header">
-            <h5 class="modal-title" id="updateNewsLabel">編輯文章</h5>
-          </div>
-          <div class="modal-body">
-            <div class="form-group row">
-              <label for="title" class="col-2 col-form-label">標題</label>
-              <div class="col-9">
-                <input type="text" name="title" class="form-control" id="updateTitle">
-              </div>
+    <!-- 新增用Modal -->
+    <div class="modal fade" id="storeNews" tabindex="-1" aria-labelledby="storeNewsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{{ route('api.news.store') }}" enctype="multipart/form-data" id="NewForm">
+            @csrf
+            <div class="modal-header">
+              <h5 class="modal-title" id="storeNewsLabel">新增文章</h5>
             </div>
-            <div class="form-group row">
-              <label for="article" class="col-2 col-form-label">內容</label>
-              <div class="col-9">
-                <textarea name="article" class="form-control" id="updateArticle" rows="5"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="article" class="col-2 col-form-label">圖片</label>
-              <div class="col-9 row">
-                <button type="button" class="btn btn-info ml-3" id="chooseImage" onclick="addInput()">修改圖片</button>
-                <input type="file" class="my-2 col-12" name="image_path" id="imageUpdate">
-
-
-                <div class="btn-group-toggle ml-3" data-toggle="buttons">
-                  <label class="btn btn-light text-secondary">
-                    <input type="radio" name="original_image" id="originalImage" checked><span> 使用原存檔圖片</span>
-                  </label>
+            <div class="modal-body">
+              <div class="form-group row">
+                <label for="title" class="col-2 col-form-label">標題</label>
+                <div class="col-9">
+                  <input type="text" class="form-control" name="title" value="{{ old('title') ?: '' }}">
                 </div>
-
               </div>
+              <div class="form-group row">
+                <label for="article" class="col-2 col-form-label">內容</label>
+                <div class="col-9">
+                  <textarea class="form-control" name="article" rows="5">{{ old('article') ?: '' }}</textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="image" class="col-2 col-form-label">圖片</label>
+                <div class="col-9">
+                  <input type="file" name="image_path" id="imageNew">
+                  <p class="small text-dark my-2">*可留空或選擇1張2MB以下jpg, jpeg, bmp, png 圖檔</p>
+                </div>
+              </div>
+              <img class="w-100" id="previewNew">
             </div>
-            <img src="" class="w-100 my-2" id="previewUpdate">
-            <p id="noImageRecord"></p>
-          </div>
-          <div class="modal-footer">
-            <input type="hidden" name="id" value>
-            <button type="submin" class="btn btn-info">確認</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-          </div>
-        </form>
+            <div class="modal-footer">
+              <button type="submin" class="btn btn-info">上傳</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- 顯示區 -->
-  <table class="mt-4 table  table-bordered table-hover">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col" class="col-1">更新日期</th>
-        <th scope="col" class="col-2">標題</th>
-        <th scope="col" class="col-5">內容</th>
-        <th scope="col" class="col-2">圖片</th>
-        <th scope="col" class="col-1">狀態</th>
-        <th scope="col" class="col-1">操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach ($news as $news)
+    <!-- 修改用Modal -->
+    <div class="modal fade" id="updateNews" tabindex="-1" aria-labelledby="updateNewsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="updateForm" method="POST" enctype="multipart/form-data" action="{{ route('api.news.edit') }}">
+            @csrf
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateNewsLabel">編輯文章</h5>
+            </div>
+            <div class="modal-body">
+              <div class="form-group row">
+                <label for="title" class="col-2 col-form-label">標題</label>
+                <div class="col-9">
+                  <input type="text" name="title" class="form-control" id="updateTitle">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="article" class="col-2 col-form-label">內容</label>
+                <div class="col-9">
+                  <textarea name="article" class="form-control" id="updateArticle" rows="5"></textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="article" class="col-2 col-form-label">圖片</label>
+                <div class="col-9 row">
+                  <button type="button" class="btn btn-info ml-3" id="chooseImage" onclick="addInput()">修改圖片</button>
+                  <input type="file" class="my-2 col-12" name="image_path" id="imageUpdate">
+                  <div class="btn-group-toggle ml-3" data-toggle="buttons">
+                    <label class="btn btn-light text-secondary">
+                      <input type="radio" name="original_image" id="originalImage" checked><span> 使用原存檔圖片</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <img src="" class="w-100 my-2" id="previewUpdate">
+              <p id="noImageRecord"></p>
+            </div>
+            <div class="modal-footer">
+              <input type="hidden" name="id" value>
+              <button type="submin" class="btn btn-info">確認</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- 顯示區 -->
+    <table class="mt-4 table  table-bordered table-hover">
+      <thead class="thead-dark">
         <tr>
-          <td>{{ substr($news->updated_at, 0, 10) }}</td>
-          <td class="text-wrap text-left">{{ $news->title }}</td>
-          <td class="text-wrap text-left">{{ mb_substr($news->article, 0, 50) }}...</td>
-          <td>
-            <img src="{{ $news->image_path }}" class="w-100">
-          </td>
-
-          @if ($news->show == 1)
-            <td>已發佈</td>
-            <td>
-              <button type="button" class="btn btn-outline-secondary w-100" title="停止顯示此文章"
-                onclick="hide({{ $news->id }})">
-              @else
-            <td>隱藏中</td>
-            <td>
-              <button type="button" class="btn btn-outline-secondary w-100" title="公開發佈此文章"
-                onclick="show({{ $news->id }})">
-          @endif
-
-          <i class="far {{ $news->show == 1 ? 'fa-eye' : 'fa-eye-slash' }}"></i>
-          </button><br>
-          <button type="button" class="btn btn-outline-secondary w-100 my-1" title="修改編輯" data-toggle="modal"
-            data-target="#updateNews" onclick="getNews({{ $news->id }})">
-            <i class="fas fa-edit"></i>
-          </button><br>
-          <button type="button" class="btn btn-outline-secondary w-100" title="刪除資料"
-            onclick="deleteNews({{ $news->id }})">
-            <i class="fas fa-trash-alt"></i>
-          </button>
-          </td>
+          <th scope="col" class="col-1">更新日期</th>
+          <th scope="col" class="col-2">標題</th>
+          <th scope="col" class="col-5">內容</th>
+          <th scope="col" class="col-2">圖片</th>
+          <th scope="col" class="col-1">狀態</th>
+          <th scope="col" class="col-1">操作</th>
         </tr>
-      @endforeach
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @foreach ($news as $n)
+          <tr>
+            <td>{{ substr($n->updated_at, 0, 10) }}</td>
+            <td class="text-wrap text-left">{{ $n->title }}</td>
+            <td class="text-wrap text-left">{{ mb_substr($n->article, 0, 50) }}...</td>
+            <td>
+              <img src="{{ $n->image_path }}" class="w-100">
+            </td>
+            @if ($n->show == 1)
+              <td>已發佈</td>
+              <td>
+                <button type="button" class="btn btn-outline-secondary w-100" title="停止顯示此文章"
+                  onclick="hide({{ $n->id }})">
+                @else
+              <td>隱藏中</td>
+              <td>
+                <button type="button" class="btn btn-outline-secondary w-100" title="公開發佈此文章"
+                  onclick="show({{ $n->id }})">
+            @endif
+            <i class="far {{ $n->show == 1 ? 'fa-eye' : 'fa-eye-slash' }}"></i>
+            </button><br>
+            <button type="button" class="btn btn-outline-secondary w-100 my-1" title="修改編輯" data-toggle="modal"
+              data-target="#updateNews" onclick="getNews({{ $n->id }})">
+              <i class="fas fa-edit"></i>
+            </button><br>
+            <button type="button" class="btn btn-outline-secondary w-100" title="刪除資料"
+              onclick="deleteNews({{ $n->id }})">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+    <div class="row justify-content-center">{{ $news->onEachSide(2)->links() }}</div>
+  </div>
   <script>
     $('#imageUpdate').hide()
 
@@ -311,5 +306,4 @@
       }
     }
   </script>
-</div>
 @endsection

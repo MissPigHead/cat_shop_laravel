@@ -162,6 +162,7 @@
         @endforeach
       </tbody>
     </table>
+    <div class="row justify-content-center">{{ $users->onEachSide(2)->links() }}</div>
   </div>
   <script>
     function updateUserInfo() { // 更新會員資訊
