@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -35,7 +36,6 @@ class LoginController extends Controller
      * @return void
      */
     public function __construct()
-
     {
         $this->middleware('guest')->except('logout');
         $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get(); // 只抓主目錄
@@ -46,5 +46,17 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         return view('frontend.login');
+    }
+
+    //函式版本的優先級較高,可根據邏輯決定導到哪個網址
+    public function redirectTo()
+    {
+        if (Auth::user()->role == 'user') {
+            return '/';
+        } else if (Auth::user()->role == 'admin') {
+            return '/admin';
+        } else {
+            return '/login';
+        }
     }
 }
