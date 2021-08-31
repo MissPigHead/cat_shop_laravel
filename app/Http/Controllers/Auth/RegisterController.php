@@ -78,7 +78,6 @@ class RegisterController extends Controller
             'role' => User::ROLE_USER,  // 預設所有註冊者為一般使用者 在blade & controller 控制權限方法去看筆記
             'birthday' => $data['birthday'],
             'phone_no' => $data['phone_no'],
-            'remember_token' => Str::random(20)
         ]);
     }
 

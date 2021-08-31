@@ -24,7 +24,8 @@ class CreateUsersTable extends Migration
             $table->date('birthday')->nullable()->comment('生日');
             $table->string('phone_no')->nullable()->comment('手機號');
             $table->boolean('status')->default(0)->comment('停權');
-            $table->rememberToken()->nullable();
+            $table->string('api_token', 60)->nullable()->unique();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

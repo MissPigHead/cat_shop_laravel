@@ -17,11 +17,11 @@ class User extends Authenticatable
     const ROLE_USER = 'user';
 
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'birthday', 'phone_no', 'status'
+        'name', 'email', 'password', 'role', 'birthday', 'phone_no', 'status', 'remember_token', 'api_token'
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'api_token',
     ];
 
     protected $casts = [
