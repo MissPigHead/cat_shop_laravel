@@ -13,12 +13,13 @@
         </div>
       </div>
     </section>
-
     <section id="products">
       <div class="container my-4">
         <div class="row my-2">
           <div class="col">
-            <h4>最新商品</h4>
+            <a href="{{ route('category.index') }}">
+              <h4>最新商品</h4>
+            </a>
           </div>
         </div>
         <div class="row">
@@ -39,24 +40,24 @@
         </div>
       </div>
     </section>
-
     <section id="news">
       <div class="container my-4">
         <div class="row justify-content-center">
           <div class="col-12 my-2">
-            <h4>育貓新知</h4>
+            <a href="{{ route('news.index') }}">
+              <h4>育貓新知</h4>
+            </a>
           </div>
           <ul class="col-12 col-md-10 list-group list-group-flush">
             @foreach ($news as $news)
-              <li class="list-group-item bg-transparent py-2"><a
-                  href="{{ route('news.show', $news->id) }}" class="ml-md-4">{{ $news->title }}</a></li>
+              <li class="list-group-item bg-transparent py-2"><a href="{{ route('news.show', $news->id) }}"
+                  class="ml-md-4">{{ $news->title }}</a></li>
             @endforeach
           </ul>
         </div>
       </div>
     </section>
   </main>
-
   <script>
     // owl carousel for banner
     $('#banner .owl-carousel').owlCarousel({
