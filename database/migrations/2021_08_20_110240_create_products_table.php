@@ -16,7 +16,6 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('category_id')->comment('目錄ID');
-            $table->integer('unit_id')->comment('單位ID');
             $table->string('name')->comment('商品名稱');
             $table->integer('price')->comment('價格');
             $table->json('image_path')->nullable()->comment('圖片路徑[陣列]');

@@ -17,7 +17,7 @@ class CreateBannersTable extends Migration
             $table->bigIncrements('id');
             $table->string('text')->nullable()->comment('說明文字');
             $table->string('image_path')->comment('圖片路徑');
-            $table->string('show')->comment('是否顯示');
+            $table->string('show')->default(0)->comment('是否顯示');
             $table->integer('order')->comment('顯示順序');
             $table->timestamps();
         });
