@@ -18,7 +18,7 @@ class CreateRecipientsTable extends Migration
             $table->integer('user_id')->commet('用戶');
             $table->string('name')->commet('收件者');
             $table->string('phone_no')->commet('電話');
-            $table->string('postcode')->commet('郵遞區號');
+            $table->string('postcode_id')->commet('郵遞區號');
             $table->string('addr')->commet('地址');
         });
     }

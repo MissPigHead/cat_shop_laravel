@@ -10,7 +10,7 @@ $factory->define(Recipient::class, function (Faker $faker) {
         'user_id' => rand(1, 10),
         'name' => $faker->name,
         'phone_no' => '0' . $faker->numberBetween(900000000, 999999999),
-        'postcode' => rand(1, 368),
+        'postcode_id' => rand(1, 368),
         'addr' => $faker->streetAddress,
     ];
 });

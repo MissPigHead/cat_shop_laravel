@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\PostCode;
+use App\Models\Postcode;
 
 class City extends Model
 {
     protected $guarded = [];
 
-    protected function zip_codes()
+    protected function postcodes()
     {
-        return $this->hasMany(PostCode::class);
+        return $this->hasMany(Postcode::class);
     }
 }
