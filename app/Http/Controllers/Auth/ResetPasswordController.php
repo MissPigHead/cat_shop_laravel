@@ -7,6 +7,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\ConfirmPasswordController;
+use Illuminate\Support\Facades\Password;
 
 class ResetPasswordController extends Controller
 {
@@ -28,21 +32,28 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = "/login";
 
-    // public function showResetForm(Request $request, $token = null)
-    // {
-    //     return view('auth.passwords.reset')->with(
-    //         ['token' => $token, 'email' => $request->email]
-    //     );
-    // }
+    protected function rules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'string', 'min:8', 'max:20', 'regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{1,}$/', 'confirmed']
+        ];
+    }
 
-    // protected function rules()
-    // {
-    //     return [
-    //         'token' => 'required',
-    //         'email' => 'required|email',
-    //         'password' => 'required|confirmed|min:8',
-    //     ];
-    // }
+    public function resetPasswordWeb(Request $request)
+    {
+        $confirm = new ConfirmPasswordController;
+        $confirm->confirm($request);
+        $token = Password::broker()->createToken(Auth::user());
+        $request->merge([
+            'token' => $token,
+            'password' => $request->newPassword,
+        ]); // 用來替換Request 實例中的 request parameter
+        $this->reset($request);
+        return redirect($this->redirectPath());
+    }
 }

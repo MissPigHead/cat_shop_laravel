@@ -13,6 +13,9 @@ use App\Models\Banner;
 use App\Models\News;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\City;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ZipCode;
 
 class HomeController extends Controller
 {
@@ -63,7 +66,15 @@ class HomeController extends Controller
 
     public function user()
     {
-        return view('frontend.personal');
+        // return
+        $user = Auth::user();
+        $cities=City::get();
+        // dd($user->recipients);
+
+        // dd($zip_codes);
+        // dd($cities);
+        // return view('frontend.personal', ['user' => $user]);
+        return view('frontend.personal', ['user' => $user,'cities'=>$cities]);
     }
 
     public function cart()
@@ -89,7 +100,7 @@ class HomeController extends Controller
         return view('frontend.product');
     }
 
-    public function orders()
+    public function order()
     {
         return view('frontend.orderHistory');
     }
