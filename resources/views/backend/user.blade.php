@@ -1,9 +1,6 @@
 @extends('layouts.backend')
 @section('title', '會員區')
 @section('content')
-  @if ($errors->any())
-    @include('swal')
-  @endif
   <div class="col-9 content">
     <div class="row justify-content-center">
       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUser">手動新增會員</button>

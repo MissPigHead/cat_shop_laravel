@@ -1,9 +1,6 @@
 @extends('layouts.backend')
 @section('title', 'Banner廣告')
 @section('content')
-  @if ($errors->any())
-    @include('swal')
-  @endif
   <div class="col-9 content">
     <!--新增取區 -->
     <div class="row justify-content-center">

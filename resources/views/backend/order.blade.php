@@ -1,9 +1,6 @@
 @extends('layouts.backend')
 @section('title', '訂單區')
 @section('content')
-@if ($errors->any())
-  @include('swal')
-@endif
   <div class="col-9 content">
     <!-- 選取區 -->
     <form>

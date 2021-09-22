@@ -1,14 +1,15 @@
+@php
+$msg=isset($msg)?session($msg):'';
+@endphp
 <script>
-  let code = ''
-
+  let err = ''
   @foreach ($errors->all() as $error)
-    code=code+`<li class='text-left'>{{ $error }}</li>`;
+    err=err+`<li class='text-left'>{{ $error }}</li>`;
   @endforeach
 
   Swal.fire({
-    icon: 'error',
-    //   title: '請依照以下提示修正輸入內容',
-    text: 'Something went wrong!',
-    html: `<ul>${code}</ul>`,
+    icon: `{{ $icon }}`,
+    title: `{{ $msg }}`,
+    html: `<ul>${err}</ul>`,
   })
 </script>
