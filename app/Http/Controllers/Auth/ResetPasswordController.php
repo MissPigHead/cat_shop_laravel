@@ -54,6 +54,7 @@ class ResetPasswordController extends Controller
             'password' => $request->newPassword,
         ]); // 用來替換Request 實例中的 request parameter
         $this->reset($request);
-        return redirect($this->redirectPath());
+        Auth::logout();
+        return redirect('login')->with('msg', '密碼已變更，請重新登入！');
     }
 }

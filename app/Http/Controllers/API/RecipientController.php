@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Recipient;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RecipientRequest;
 
 
 class RecipientController extends Controller
@@ -25,9 +26,10 @@ class RecipientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RecipientRequest $request)
     {
-        //
+        Recipient::create($request->except(['city','postcode']));
+        return back()->with('msg','收件者新增成功');
     }
 
     /**

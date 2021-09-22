@@ -66,15 +66,15 @@ class HomeController extends Controller
 
     public function user()
     {
-        // return
-        $user = Auth::user();
-        $cities=City::get();
-        // dd($user->recipients);
+        $cities = City::get();
+        return view('frontend.personal', ['cities' => $cities]);
+    }
 
-        // dd($zip_codes);
-        // dd($cities);
-        // return view('frontend.personal', ['user' => $user]);
-        return view('frontend.personal', ['user' => $user,'cities'=>$cities]);
+    public function recipient()
+    {
+        $recipients = Auth::user()->recipients;
+        $cities = City::get();
+        return view('frontend.recipient', ['recipients' => $recipients, 'cities' => $cities]);
     }
 
     public function cart()
