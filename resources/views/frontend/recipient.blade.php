@@ -93,13 +93,13 @@
                   </div>
                   <div class="col-4 col-sm-3 row px-0 mx-0 justify-content-end">
                     <button type="button" class="btn btn-warning text-black-50 px-2 mr-1 eRE"
-                      onclick="enableRecipientEdit({{ $recipient->id }})">編輯</button>
+                      onclick="enableRecipientUpdate({{ $recipient->id }})">編輯</button>
                     <button type="button" class="btn btn-secondary px-2 mr-1 dR"
                       onclick="destroyRecipient({{ $recipient->id }})">刪除</button>
                     <button type="button" class="btn btn-info px-2 mr-1 uR"
                       onclick="updateRecipient({{ $recipient->id }})">確定</button>
                     <button type="button" class="btn btn-dark-gray px-2 mr-1 cUR"
-                      onclick="cancelUpdateRecipient({{ $recipient->id }})">取消</button>
+                      onclick="disableUpdateRecipient({{ $recipient->id }})">取消</button>
                   </div>
                 </div>
                 <div class="form-group row mb-2 justify-content-center">
@@ -116,7 +116,7 @@
                       <option value="{{ $city->id }}">{{ $city->city_name }}</option>
                     @endforeach
                   </select>
-                  <select name="postcode" class="col-3 pl-0 pr-1 form-control" disabled>
+                  <select name="postcode_id" class="col-3 pl-0 pr-1 form-control" disabled>
                     @foreach ($cities as $city)
                       @foreach ($city->postcodes as $postcode)
                         <option value="{{ $postcode->id }}" class="p{{ $postcode->city_id }}"
@@ -124,16 +124,15 @@
                       @endforeach
                     @endforeach
                   </select>
-                  <input type="text" class="col-3 form-control text-center" value="{{ $recipient->postcode->code }}"
-                    readonly>
+                  <input type="text" class="col-3 form-control text-center" name="postcode"
+                    value="{{ $recipient->postcode->code }}" readonly>
                   <script>
                     $('div.r{{ $recipient->id }} select[name=city]').val({{ $recipient->postcode->city_id }})
-                    $('div.r{{ $recipient->id }} select[name=postcode]').val({{ $recipient->postcode->id }})
+                    $('div.r{{ $recipient->id }} select[name=postcode_id]').val({{ $recipient->postcode->id }})
                   </script>
                   <div class="col-2"></div>
                   <div class="col-9 pl-0 pr-1 mt-1">
-                    <input type="text" class="form-control" id="addressDetail" value="{{ $recipient->addr }}"
-                      disabled>
+                    <input type="text" class="form-control" name="addr" value="{{ $recipient->addr }}" disabled>
                   </div>
                 </div>
               </div>
@@ -146,6 +145,7 @@
     </div>
   </main>
   <script>
+    // 選擇城市及區域
     $('select[name=city]').change(function(e) {
       e.preventDefault();
       let next = $(this).next()
@@ -155,8 +155,7 @@
       next.attr('disabled', false)
       next.find(`option`).hide()
       next.find(`option.p${city_id}`).show()
-      next.find(`option[value=${first_v}]`).attr('selected', true)
-      next.next().val(code)
+      next.find(`option[value=${first_v}]`).attr('selected', true)個it
     });
 
     $('select[name=postcode_id]').change(function(e) {
@@ -165,10 +164,11 @@
       $(this).next().val(code)
     });
 
+    // 控制現有收件者的編輯按鈕
     $('.uR').hide()
     $('.cUR').hide()
 
-    function enableRecipientEdit(id) {
+    function enableRecipientUpdate(id) {
       $(`div.r${id} [disabled]`).attr('disabled', false)
       $(`div.r${id} .uR`).show()
       $(`div.r${id} .cUR`).show()
@@ -176,15 +176,75 @@
       $(`div.r${id} .dR`).hide()
     }
 
+    // 更新DB內的收件者資料
     function updateRecipient(id) {
       $(`div.r${id} [disabled]`).prop('disabled', false)
+      $.ajax({
+        url: "/api/recipient/" + id,
+        method: "POST",
+        dataType: "json",
+        data: {
+          _method: 'PATCH',
+          user_id: {{ Auth::user()->id }},
+          name: $(`div.r${id} [name=name]`).val(),
+          phone_no: $(`div.r${id} [name=phone_no]`).val(),
+          postcode_id: $(`div.r${id} select[name=postcode_id]`).val(),
+          addr: $(`div.r${id} [name=addr]`).val(),
+          _token: '{{ csrf_token() }}',
+        },
+        error: function(result) {
+          if (result.status == 200) {
+            disableUpdateRecipient(id)
+          } else if (result.status == 422) {
+            let err = ''
+            $.each(result.responseJSON.errors, function(indexInArray, valueOfElement) {
+              $.each(valueOfElement, function(i, e) {
+                err = err + `<li class='text-left'>${e}</li>`
+              });
+            });
+            Swal.fire({
+              icon: 'error',
+              html: `<ul>${err}</ul>`,
+            })
+          } else {
+            console.log(result)
+          }
+        }
+      })
     }
 
-    function destoryRecipient(id) {
-
+    // 刪除收件者
+    function destroyRecipient(id) {
+      $.ajax({
+        type: 'DELETE',
+        url: '/api/recipient/' + id,
+        dataType: 'text',
+        data: {
+          _token: '{{ csrf_token() }}',
+        },
+        success: function(result) {
+          location.reload()
+        },
+        error: function(result) {
+          console.log(result)
+        }
+      })
     }
 
-    function cancelUpdateRecipient(id) {
+    // 取消編輯 恢復至該收件者的值 按鈕顯示狀態初始化
+    function disableUpdateRecipient(id) {
+      $.ajax({
+        type: 'GET',
+        url: '/api/recipient/' + id,
+        success: function(re) {
+          $(`div.r${id} [name=name]`).val(re.name)
+          $(`div.r${id} [name=phone_no]`).val(re.phone_no)
+          $(`div.r${id} select[name=city]`).val(re.postcode.city_id)
+          $(`div.r${id} select[name=postcode_id]`).val(re.postcode_id)
+          $(`div.r${id} [name=postcode]`).val(re.postcode.code)
+          $(`div.r${id} [name=addr]`).val(re.addr)
+        },
+      })
       $(`div.r${id} .uR`).hide()
       $(`div.r${id} .cUR`).hide()
       $(`div.r${id} .eRE`).show()

@@ -28,8 +28,8 @@ class RecipientController extends Controller
      */
     public function store(RecipientRequest $request)
     {
-        Recipient::create($request->except(['city','postcode']));
-        return back()->with('msg','收件者新增成功');
+        Recipient::create($request->except(['city', 'postcode']));
+        return back()->with('msg', '收件者新增成功');
     }
 
     /**
@@ -40,7 +40,8 @@ class RecipientController extends Controller
      */
     public function show($id)
     {
-        //
+        $recipient = Recipient::with('postcode')->findOrFail($id);
+        return $recipient;
     }
 
     /**
@@ -50,9 +51,10 @@ class RecipientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RecipientRequest $request, $id)
     {
-        //
+        $recipient = Recipient::find($id);
+        $recipient->update($request->all());
     }
 
     /**

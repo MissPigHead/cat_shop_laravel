@@ -117,7 +117,16 @@ td {
 .btn-outline-pink:focus-visible {
     outline: var(--pink02);
 }
-
+.btn-dark-gray{
+    color: #fff;
+    background-color: #959aa0;
+    border-color: #959aa0;
+}
+.btn-dark-gray:hover{
+    color: #fff;
+    background-color: #808598;
+    border-color: #808598;
+}
 #mainNews img {
     width: 100%;
     max-height: 400px;
@@ -165,4 +174,17 @@ td {
     color: darkslategray;
     background-color:rgb(235, 240, 240);
     border: 1px solid #fcfcfcaa;
+}
+
+.fa-12x{
+    font-size: 1.2rem;
+}
+
+#recipients label{
+    color: var(--dark);
+}
+
+#profile [readonly],#profile [disabled],#recipients [readonly],#recipients [disabled]{
+    background-color: transparent;
+    border-color: transparent;
 }
