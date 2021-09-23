@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class PostCodesTableSeeder extends Seeder
+class PostcodesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
