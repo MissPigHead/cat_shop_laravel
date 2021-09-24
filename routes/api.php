@@ -26,6 +26,7 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::apiResource('product', 'ProductController')->except('index');
     Route::apiResource('recipient', 'RecipientController');
     Route::apiResource('user', 'UserController')->except('index');
+    Route::apiResource('cart', 'CartController')->except('index');
 
     Route::patch('banner/{id}/move', 'BannerController@move')->name('banner.move');
 

@@ -25,8 +25,8 @@ Route::namespace('Web')->group(function () {
             return redirect()->to('/category/all');
         })->name('category.index');
         Route::get('/{category}', 'HomeController@category')->name('category.show'); // 該目錄下所有商品
-        Route::get('/{category}/product/{product}', 'HomeController@product')->name('product.show'); // 單一商品
     });
+    Route::get('/product/{product}', 'HomeController@product')->name('product.show'); // 單一商品
 
     Route::middleware('auth')->prefix('/user')->group(function () { // 使用者相關：這幾項需要登入授權
         Route::get('/profile', 'HomeController@user')->name('profile'); // 使用者資訊
