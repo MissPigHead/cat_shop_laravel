@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product as ProductResources;
-use App\Http\Resources\Category as CategoryResources;
 
-
-use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\News;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ZipCode;
 
 class HomeController extends Controller
 {
@@ -33,35 +29,44 @@ class HomeController extends Controller
         return view('frontend.main', ['banners' => $banners, 'news' => $news, 'products' => $products]);
     }
 
+    public function getCategories($id)
+    {
+        $categories = Category::where('show', 1)->orderBy('order')->get()->groupBy('parent');
+        if ($id == 'all') {
+            $products = Product::where([['show', 1], ['in_stock', '>', 1]])
+                ->whereIn('category_id', Category::where('show', 1)->orderBy('order')->get('id'))
+                ->orderBy('updated_at', 'desc')
+                ->paginate(12);
+            $title = '所有商品';
+        } else {
+            $cate_breadcrumb = Category::findOrFail($id);
+            if ($cate_breadcrumb->parent != 0) {
+                $products = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate(12);
+            } else {
+                $products = Product::whereHas('category', function ($query) use ($id) {
+                    $query->where('parent', $id)->where('show', '1');
+                })
+                    ->where([['show', 1], ['in_stock', '>', 1]])
+                    ->orderBy('updated_at', 'desc')
+                    ->paginate(12);
+            }
+            $title = $cate_breadcrumb->title;
+        }
+        $data = [
+            'categories' => $categories,
+            'products' => $products,
+            'cate_breadcrumb' => $cate_breadcrumb ?? '',
+            'title' => $title, 'include' => 'products'
+        ];
+        return $data;
+    }
+
     public function category($id)
     {
-        $categories = CategoryResources::collection(Category::orderBy('order')->get())->groupBy('parent');
-        // 左側目錄
-        if ($id == 'all') {
-            $product = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
-            // 右側商品
-        } else {
-            // return
-            $cate_breadcrumb = new CategoryResources(Category::find($id));
-            // dd($cate_breadcrumb);
-            // 右側商品上的麵包屑
-            if ($cate_breadcrumb->parent != 0) {
-
-                $product = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
-            } else {
-                $product = Product::whereHas('category', function ($query) use ($id) {
-                    $query->where('parent', $id);
-                })->where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc');
-                // $product =Product::with(['category'=>function($query) use ($id){
-                //     $query->where('parent',$id);
-                // }]);
-                // 1. $query 使用的變數需要先 function ($query) use ($var){...}
-                // 2. 關聯部分使用with 是把符合條件的關聯資料抓回，其餘不抓關聯資料，繼續往下走，沒被filter掉
-                // 3. 關聯部分使用whereHas 則是把符合條件的關聯資料抓回，其餘不抓且直接被filter掉
-            }
-        }
-        $products = ProductResources::collection($product->paginate(12));
-        return view('frontend.category', ['categories' => $categories, 'products' => $products, 'cate_breadcrumb' => $cate_breadcrumb ?? '']);
+        $data = $this->getCategories($id);
+        return view('frontend.category', $data);
     }
 
     public function user()
@@ -79,7 +84,8 @@ class HomeController extends Controller
 
     public function cart()
     {
-        return view('frontend.cart');
+        $items = Cart::with('product')->where('user_id', Auth::user()->id)->get();
+        return view('frontend.cart', ['items' => $items]);
     }
 
 
@@ -96,8 +102,22 @@ class HomeController extends Controller
 
     public function product($id)
     {
-        // return "productDetails".$id;
-        return view('frontend.product');
+        $product = Product::find($id);
+        if (!isset($product)) { // 商品不存在
+            return redirect('category/all')->with('msg', '無此商品');
+        } else {
+            if ($product->in_stock == 0) { // 銷售完畢暫無存貨
+                return redirect('category/all')->with('msg', '商品銷售一空，請待補貨');
+            } elseif ($product->show == 0 || $product->category->show == 0) { // 商品或目錄被下架
+                return redirect('category/all')->with('msg', '商品尚未上架');
+            } else {
+                $data = $this->getCategories($product->category_id);
+                $data['title'] = $product->name;
+                $data['product'] = $product;
+                $data['include'] = 'productDetail';
+                return view('frontend.category', $data);
+            }
+        }
     }
 
     public function order()
