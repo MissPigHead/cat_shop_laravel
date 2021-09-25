@@ -25,18 +25,20 @@ class AdminController extends Controller
 
     public function banner()
     {
-        $banners=Banner::orderBy('order','asc')->paginate(3);
+        $banners = Banner::orderBy('order', 'asc')->paginate(3);
         return view('backend.banner', ['banners' => $banners]);
     }
 
     public function category() // 資料未塞入
     {
-        return view('backend.main');
+        // return view('backend.main');
+        $parentCategories = Category::where('parent', 0)->orderBy('order', 'asc')->get();
+        return view('backend.category', ['parentCategories' => $parentCategories]);
     }
 
     public function news()
     {
-        $news=News::orderBy('updated_at','desc')->paginate(5);
+        $news = News::orderBy('updated_at', 'desc')->paginate(5);
         return view('backend.news', ['news' => $news]);
     }
 
@@ -47,18 +49,18 @@ class AdminController extends Controller
 
     public function product($c_id) // 資料未塞入
     {
-        $categories=Category::orderBy('parent')->orderBy('order')->get()->groupBy('parent');
-        if($c_id=='all'){
-            $products=Product::orderBy('category_id','asc')->orderBy('order','asc')->paginate(10);
-        }else{
-            $products=Product::where('category_id',$c_id)->orderBy('category_id','asc')->orderBy('order','asc')->paginate(10);
+        $categories = Category::orderBy('parent')->orderBy('order')->get()->groupBy('parent');
+        if ($c_id == 'all') {
+            $products = Product::orderBy('category_id', 'asc')->orderBy('order', 'asc')->paginate(10);
+        } else {
+            $products = Product::where('category_id', $c_id)->orderBy('category_id', 'asc')->orderBy('order', 'asc')->paginate(10);
         }
-        return view('backend.products', ['products'=>$products,'categories'=>$categories,'now'=>$c_id??'all']);
+        return view('backend.products', ['products' => $products, 'categories' => $categories, 'now' => $c_id ?? 'all']);
     }
 
     public function user()
     {
-        $users=User::where('role','user')->paginate(10);
+        $users = User::where('role', 'user')->paginate(10);
         return view('backend.user', ['users' => $users]);
     }
 }

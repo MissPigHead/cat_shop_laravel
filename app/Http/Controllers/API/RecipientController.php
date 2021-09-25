@@ -6,7 +6,7 @@ use App\Models\Recipient;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RecipientRequest;
-
+use Illuminate\Support\Facades\Auth;
 
 class RecipientController extends Controller
 {
