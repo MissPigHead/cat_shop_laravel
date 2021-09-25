@@ -85,12 +85,29 @@
               @if ($k != 0)
                 <hr>
               @endif
-              <div class="r{{ $recipient->id }}">
+              <div
+                class="r{{ $recipient->id }} p-1 {{ $recipient->default_r ? 'border rounded border-info bg-white' : '' }}">
                 <div class="form-group row mb-2 justify-content-center">
                   <label for="receipient" class="col-2 col-form-label pr-0">名稱</label>
                   <div class="col-5 col-sm-6 pl-0 pr-1">
                     <input type="text" class="form-control" name="name" value="{{ $recipient->name }}" disabled>
                   </div>
+                  <div class="col-4 col-sm-3 row px-0 mx-0 justify-content-end">
+                    @if ($recipient->default_r)
+                      <div class="btn bg-light-info px-2 mr-1">*預設收件者</div>
+                    @else
+                      <div class="btn btn-dark-gray px-2 mr-1 set-default" data-id="{{ $recipient->id }}">*設定為預設</div>
+                    @endif
+                  </div>
+
+                </div>
+                <div class="form-group row mb-2 justify-content-center">
+                  <label for="receipientTel" class="col-2 col-form-label pr-0">電話</label>
+                  <div class="col-5 col-sm-6 pl-0 pr-1">
+                    <input type="text" name="phone_no" class="form-control" value="{{ $recipient->phone_no }}"
+                      disabled>
+                  </div>
+
                   <div class="col-4 col-sm-3 row px-0 mx-0 justify-content-end">
                     <button type="button" class="btn btn-warning text-black-50 px-2 mr-1 eRE"
                       onclick="enableRecipientUpdate({{ $recipient->id }})">編輯</button>
@@ -101,13 +118,9 @@
                     <button type="button" class="btn btn-dark-gray px-2 mr-1 cUR"
                       onclick="disableUpdateRecipient({{ $recipient->id }})">取消</button>
                   </div>
-                </div>
-                <div class="form-group row mb-2 justify-content-center">
-                  <label for="receipientTel" class="col-2 col-form-label pr-0">電話</label>
-                  <div class="col-9 pl-0 pr-1">
-                    <input type="text" name="phone_no" class="form-control" value="{{ $recipient->phone_no }}"
-                      disabled>
-                  </div>
+
+
+
                 </div>
                 <div class="form-group row mb-2 justify-content-center">
                   <label for="addressLine1" class="col-2 col-form-label pr-0">地址</label>
@@ -145,29 +158,33 @@
     </div>
   </main>
   <script>
-    // 選擇城市及區域
+    // 先選擇城市 才能選區域 選擇城市後只顯示該區域選項 並更新區碼
     $('select[name=city]').change(function(e) {
       e.preventDefault();
       let next = $(this).next()
       let city_id = $(this).val()
       let first_v = next.find(`option.p${city_id}`).eq(0).val()
       let code = next.find(`option.p${city_id}`).eq(0).data('code')
+      console.log(next, city_id, first_v, code)
       next.attr('disabled', false)
       next.find(`option`).hide()
       next.find(`option.p${city_id}`).show()
-      next.find(`option[value=${first_v}]`).attr('selected', true)個it
+      next.val(first_v)
+      next.next().val(code)
     });
 
+    // 選區域後 更新區碼
     $('select[name=postcode_id]').change(function(e) {
       e.preventDefault();
       let code = $(this).find(':selected').data('code')
       $(this).next().val(code)
     });
 
-    // 控制現有收件者的編輯按鈕
+    // 初始化編輯按鈕
     $('.uR').hide()
     $('.cUR').hide()
 
+    // 啟用編輯現有收件者的按鈕
     function enableRecipientUpdate(id) {
       $(`div.r${id} [disabled]`).attr('disabled', false)
       $(`div.r${id} .uR`).show()
@@ -177,21 +194,25 @@
     }
 
     // 更新DB內的收件者資料
-    function updateRecipient(id) {
+    function updateRecipient(id, default_r) {
       $(`div.r${id} [disabled]`).prop('disabled', false)
+      let data = {
+        _method: 'PATCH',
+        user_id: {{ Auth::user()->id }},
+        name: $(`div.r${id} [name=name]`).val(),
+        phone_no: $(`div.r${id} [name=phone_no]`).val(),
+        postcode_id: $(`div.r${id} select[name=postcode_id]`).val(),
+        addr: $(`div.r${id} [name=addr]`).val(),
+        _token: '{{ csrf_token() }}',
+      }
+      if (default_r == 1) {
+        data.default_r = 1
+      }
       $.ajax({
         url: "/api/recipient/" + id,
         method: "POST",
+        data: data,
         dataType: "json",
-        data: {
-          _method: 'PATCH',
-          user_id: {{ Auth::user()->id }},
-          name: $(`div.r${id} [name=name]`).val(),
-          phone_no: $(`div.r${id} [name=phone_no]`).val(),
-          postcode_id: $(`div.r${id} select[name=postcode_id]`).val(),
-          addr: $(`div.r${id} [name=addr]`).val(),
-          _token: '{{ csrf_token() }}',
-        },
         error: function(result) {
           if (result.status == 200) {
             disableUpdateRecipient(id)
@@ -231,7 +252,15 @@
       })
     }
 
-    // 取消編輯 恢復至該收件者的值 按鈕顯示狀態初始化
+    // 設定預設收件者
+    $('.set-default').click(function(e) {
+      e.preventDefault();
+      let id = $(this).data('id')
+      updateRecipient(id, 1)
+      location.reload()
+    });
+
+    // 停用用編輯現有收件者的按鈕 恢復至該收件者原始資料 按鈕顯示狀態初始化
     function disableUpdateRecipient(id) {
       $.ajax({
         type: 'GET',

@@ -20,6 +20,7 @@ class CreateRecipientsTable extends Migration
             $table->string('phone_no')->commet('電話');
             $table->string('postcode_id')->commet('郵遞區號');
             $table->string('addr')->commet('地址');
+            $table->boolean('default_r')->default(0)->commet('預設收件者');
         });
     }
 

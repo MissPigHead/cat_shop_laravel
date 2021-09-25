@@ -54,6 +54,9 @@ class RecipientController extends Controller
     public function update(RecipientRequest $request, $id)
     {
         $recipient = Recipient::find($id);
+        if(isset($request->default_r)&&$request->default_r==1){
+            Recipient::where('user_id', Auth::user()->id)->update(['default_r'=>0]);
+        }
         $recipient->update($request->all());
     }
 
