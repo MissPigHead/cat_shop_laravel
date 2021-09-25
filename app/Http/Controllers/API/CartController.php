@@ -60,7 +60,11 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
         $cart = Cart::with('product')->find($id);
-        $cart->quantity = (($cart->quantity + $request->quantity) < $cart->product->in_stock) ? ($cart->quantity + $request->quantity) : $cart->product->in_stock;
+        if(isset($request->replaceQty)){ // 直接更新數量
+            $cart->quantity=$request->replaceQty;
+        }else{ // 將加入購物車的數量疊加上去
+            $cart->quantity = (($cart->quantity + $request->quantity) < $cart->product->in_stock) ? ($cart->quantity + $request->quantity) : $cart->product->in_stock;
+        }
         $cart->save();
     }
 
@@ -73,7 +77,7 @@ class CartController extends Controller
     public function destroy($id)
     {
         if (strpos($id, ',')) { // 檢查id 是單個還是多個
-            $id = explode(',', $id); //把應該是陣列的字串轉囘陣列
+            $id = explode(',', $id); // 若多個，就把應該是陣列的字串轉囘陣列
         }
         Cart::destroy($id);
     }
