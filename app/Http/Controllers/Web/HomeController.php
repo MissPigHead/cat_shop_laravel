@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Product as ProductResources;
 
 use App\Models\Banner;
@@ -11,7 +12,6 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Cart;
-use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -126,11 +126,18 @@ class HomeController extends Controller
 
     public function order()
     {
-        return view('frontend.orderHistory');
+        $items = Cart::with('product')->where('user_id', Auth::user()->id)->get();
+        // dump($items);
+        return view('frontend.order', ['items' => $items, 'total'=>0]);
     }
 
     public function orderShow($id)
     {
         return "Order" . $id;
+    }
+
+    public function orderHistory()
+    {
+        dump(Auth::user());
     }
 }

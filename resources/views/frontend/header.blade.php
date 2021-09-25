@@ -71,7 +71,7 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{{ route('profile') }}">會員資訊</a>
                   <a class="dropdown-item" href="{{ route('recipient') }}">收件者資訊</a>
-                  <a class="dropdown-item" href="{{ route('order.index') }}">歷史訂單</a>
+                  <a class="dropdown-item" href="{{ route('order.history') }}">歷史訂單</a>
                 </div>
               @endcan
             </li>

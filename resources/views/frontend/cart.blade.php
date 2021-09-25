@@ -11,7 +11,6 @@
             </div>
           </div>
           @if (count($items) != 0)
-
             @foreach ($items as $item)
               <!------------------- 一組商品 -------------------->
               <div class="row py-2 mb-2 mb-md-3 bg-white align-items-center justify-content-sm-between">
@@ -37,7 +36,6 @@
                       <i class="fas fa-trash-alt px-lg-1"></i>
                     </button>
                   </div>
-
                   <!--數量-->
                   <div class="col-8 col-sm-5 order-lg-2 col-lg-4">
                     <div class="input-group">
@@ -65,9 +63,6 @@
                 </div>
               </div>
             @endforeach
-
-
-
             <!-- 總金額 -->
             <div class="row">
               <div class="col-12 text-right">
@@ -84,7 +79,7 @@
               <button type="button" class="btn btn-secondary m-2" name="clearAll">
                 {{-- <i class="fas fa-trash-alt"></i> --}}
                 清空購物車</button>
-              <a href="order.html">
+              <a href="{{ route('order') }}">
                 <button type="button" class="btn btn-warning m-2">
                   {{-- <i class="fas fa-chevron-right"></i> --}}
                   前往結帳</button>

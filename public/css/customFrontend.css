@@ -13,6 +13,8 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --yellow01: #fcefb4;
     --yellow02: #fefbeb;
     --gray01: #afafaf;
+    --gray02: #eee;
+    --gray03: #9a9a9a;
     --pink00: #e4007f;
     --pink01: #f72585;
     --pink02: #d8156c;
@@ -24,6 +26,7 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --indigo02: #304FFE;
     --indigo03: #3F51B5;
     --blue01:#039BE5;
+    --light-info:#aee6ee;
 }
 
 html {
@@ -68,9 +71,12 @@ main {
     object-fit: cover;
     object-position: 50% 50%;
 }
+.border-gray {
+    border-color: var(--gray01) !important;
+}
 
 .text-gray {
-    color: var(--gray01);
+    color: var(--gray02);
 }
 
 .text-pink {
@@ -126,6 +132,12 @@ td {
     color: #fff;
     background-color: #808598;
     border-color: #808598;
+}
+div.btn.bg-light-info{
+    cursor: initial !important;
+    color: rgb(71, 101, 121);
+    background-color: var(--light-info);
+    border-color: var(--light-info);
 }
 button.text-pink:hover{
     color: var(--pink02);
