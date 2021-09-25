@@ -19,7 +19,6 @@
       訂購：
       <input type="number" name="quantity" value="1"
       min="1" step="1" max="{{ $product->in_stock > 999 ? 999 : $product->in_stock }}"
-      {{-- v-model="item5.OUTPUT" class="NUM-INPUT" --}}
       oninput="this.value=this.value.replace(/[^0-9.]+/g,'');">
       <button type="button" class="btn text-pink pl-0 pl-sm-2" id="addToCart">
         <i class="fas fa-cart-plus fa-12x"></i>
@@ -57,25 +56,24 @@
           error: function (response) {
             if (response.status == 200) {
                 console.log(200)
-            // } else if (result.status == 422) {
-            // let err = ''
-            // $.each(result.responseJSON.errors, function(indexInArray, valueOfElement) {
-            //   $.each(valueOfElement, function(i, e) {
-            //     err = err + `<li class='text-left'>${e}</li>`
-            //   });
-            // });
-            // Swal.fire({
-            //   icon: 'error',
-            //   html: `<ul>${err}</ul>`,
-            // })
+                Swal.fire({
+                    icon: 'success',
+                    html:'商品已加入購物車 <a href="{{ route('cart') }}"><i class="fas fa-shopping-cart"></i></a>',
+                    timer:1500,
+                })
           } else {
             console.log(response)
           }
         }
       });
     @else
-      location.replace('{{ route('login') }}')
-      console.log('no')
+        Swal.fire({
+            icon: 'warning',
+            title:'請登入會員才能選購哦！',
+            confirmButtonText: '登入去'
+        }).then((re)=>{
+              location.replace('{{ route('login') }}')
+        })
     @endif
   });
 </script>
