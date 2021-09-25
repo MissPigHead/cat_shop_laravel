@@ -25,7 +25,7 @@
         <div class="row">
           @foreach ($products as $product)
             <div class="col-6 col-md-4 col-lg-3 text-center product">
-              <a href="{{ route('product.show', [$product->category_id, $product->id]) }}">
+              <a href="{{ route('product.show', $product->id) }}">
                 <div class="owl-carousel owl-theme bg-dark">
                   @foreach ($product->image_path as $image_path)
                     <div class="item"><img src="{{ $image_path }}"></div>

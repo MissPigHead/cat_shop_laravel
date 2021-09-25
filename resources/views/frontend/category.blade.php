@@ -1,6 +1,9 @@
 @extends('layouts.frontend')
 @section('title', $title)
 @section('content')
+  @if (session('msg'))
+    @include('swal',['msg'=>'msg','icon'=>'warning'])
+  @endif
   <main>
     <div class="container">
       <div class="row my-4">
@@ -10,9 +13,9 @@
             <div class="list-group-item-danger text-center text-sm-left py-2 px-2 px-sm-3 px-md-4">所有商品
             </div>
           </a>
-          <div class="col-1 pl-0 py-2 list-group-item-danger text-center d-block d-sm-none cate-all"><i class="fas fa-caret-right"></i>
+          <div class="col-1 pl-0 py-2 list-group-item-danger text-center d-block d-sm-none cate-all"><i
+              class="fas fa-caret-right"></i>
           </div>
-          {{-- <div class="col-1 pl-0 py-2 list-group-item-danger cate-all d-block d-sm-none" onclick="toggleCategories()"><i class="fas fa-caret-down"></i></div> --}}
           <div class="w-100"></div>
           @foreach ($categories as $key => $value)
             @foreach ($categories[$key] as $cate)
@@ -29,16 +32,16 @@
                         <a href="{{ route('category.show', $cate->id) }}" class="col-4 col-sm-12 p-0 cate child p{{ $cate->parent }}">
                             <div class="list-group-item-light text-center text-sm-left py-2 px-2 px-sm-3 px-md-4">{{ $cate->title }}</div>
                         </a>
-                        `)
+                        `);
                 </script>
               @endif
             @endforeach
           @endforeach
           </ul>
         </div>
-        <!---------------------- 右側商品 ----------------------->
+        <!---------------------- 右側 ----------------------->
         <div class="col-12 col-sm-8 col-md-9 px-sm-0">
-          <!---------------------- 麵包屑 ----------------------->
+          <!---------------------- 右上麵包屑 ----------------------->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ route('category.show', 'all') }}">所有商品</a></li>
@@ -62,7 +65,7 @@
               @endif
             </ol>
           </nav>
-          <!---------------------- 商品內容 ----------------------->
+          <!---------------------- 右下商品內容 ----------------------->
           @include('frontend.'.$include)
         </div>
       </div>
@@ -85,9 +88,7 @@
       toggleCategories();
     });
     $(document).ready(showCategories());
-    $(window).resize(function(){
-        showCategories()
-    });
+    $(window).resize(()=>showCategories());
 
     function showCategories() {
       if ($('#category .cate-all').css('display') != 'none') {

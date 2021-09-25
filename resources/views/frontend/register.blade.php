@@ -1,10 +1,6 @@
 @extends('layouts.frontend')
 @section('title','會員註冊')
 @section('content')
-@if ($errors->any())
-  @include('swal')
-@endif
-
   <main>
     <div class="container">
       <div class="row justify-content-center">
@@ -14,19 +10,13 @@
               <h4>會員註冊</h4>
             </div>
           </div>
-
           <form method="POST" action="{{ route('register') }}">
             @csrf
-
             <div class="form-group row align-items-center">
               <label for="name" class="col-3 col-sm-2 col-form-label">帳號</label>
-              {{-- <div class="col-9 col-sm-7"> --}}
                 <div class="col-9 col-sm-10">
                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="英文大小寫或數字，20個字元內">
               </div>
-              {{-- <div class="d-none d-sm-inline-block col-sm-3">
-                <button type="button" class="btn btn-info w-100">檢查帳號</button>
-              </div> --}}
             </div>
             <div class="form-group row">
               <label for="email" class="col-3 col-sm-2 col-form-label pr-0">E-mail</label>

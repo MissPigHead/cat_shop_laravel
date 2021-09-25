@@ -25,13 +25,15 @@
             </div>
             <div class="form-group row mb-1 justify-content-center">
               <label for="email" class="col-3 col-sm-2 col-form-label pr-0">E-mail</label>
-              <div class="col-9 col-sm-{{ Auth::user()->email_verified_at ? 8 : 6 }}">
+              <div class="col-9 col-sm-8">
+              {{-- <div class="col-9 col-sm-{{ Auth::user()->email_verified_at ? 8 : 6 }}"> --}}
                 <input id="email" type="email" class="form-control" name="email" value="{{ Auth::user()->email }}" required
                   autocomplete="email" disabled>
               </div>
-              <div
-                class="{{ Auth::user()->email_verified_at ? 'd-none' : 'd-flex justify-content-end align-items-center' }} col-12 col-sm-2">
-                <span class="small text-danger">尚未通過驗證</span>
+              <div class="w-100"></div>
+              <div class="col-3 col-sm-2"></div>
+              <div class="{{ Auth::user()->email_verified_at ? 'd-none' : 'd-block' }} col-9 col-sm-8 mb-2">
+                <span class="small text-danger ml-3">*尚未通過驗證</span>
               </div>
             </div>
             <div class="form-group row mb-1 justify-content-center">
@@ -49,11 +51,11 @@
               </div>
             </div>
             <div class="row my-4 justify-content-center">
-              <button type="button" class="btn btn-info col-3 mx-2" data-toggle="modal"
+              <button type="button" class="btn btn-info col-3 px-2 mx-2" data-toggle="modal"
                 data-target="#updatePassword">變更密碼</button>
-              <button type="button" class="btn btn-warning text-black-50 col-3 mx-2"
+              <button type="button" class="btn btn-warning text-black-50 col-3 px-2 mx-2"
                 onclick="enableUpdateUser()">編輯資料</button>
-              <button type="button" class="btn btn-secondary col-3 mx-2" onclick="destroyUser()">註銷帳號</button>
+              <button type="button" class="btn btn-secondary col-3 px-2 mx-2" onclick="destroyUser()">註銷帳號</button>
               <button type="submit" class="btn btn-info mx-2">確認</button>
               <button type="reset" class="btn btn-secondary mx-2" onclick="disableUpdateUser()">取消</button>
             </div>
