@@ -25,7 +25,11 @@ class HomeController extends Controller
     {
         $banners = Banner::where('show', 1)->orderBy('order', 'asc')->get(['image_path', 'text']);
         $news = News::where('show', 1)->orderBy('updated_at', 'desc')->take(6)->get(['id', 'title']);
-        $products = Product::where([['show', 1], ['in_stock', '>', 1]])->orderBy('updated_at', 'desc')->limit(9)->get();
+        $products = Product::where([['show', 1], ['in_stock', '>', 1]])
+            ->whereIn('category_id', Category::where('show', 1)->orderBy('order')->get('id'))
+            ->orderBy('updated_at', 'desc')
+            ->limit(9)
+            ->get();
         return view('frontend.main', ['banners' => $banners, 'news' => $news, 'products' => $products]);
     }
 
