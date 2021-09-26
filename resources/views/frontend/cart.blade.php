@@ -39,14 +39,14 @@
                   <!--數量-->
                   <div class="col-8 col-sm-5 order-lg-2 col-lg-4">
                     <div class="input-group">
-                      <div class="input-group-prepend addQty" data-stock="{{ $item->product->in_stock }}">
-                        <span class="input-group-text px-1 px-sm-2">+</span>
+                      <div class="input-group-prepend decQty">
+                        <span class="input-group-text px-1 px-sm-2">-</span>
                       </div>
                       <input type="number" name="quantity" value="{{ $item->quantity }}" data-id="{{ $item->id }}"
                         min="0" step="1" class="form-control text-center NUM-INPUT"
                         oninput="this.value=this.value.replace(/[^0-9.]+/g,'');">
-                      <div class="input-group-append decQty">
-                        <span class="input-group-text px-1 px-sm-2">-</span>
+                      <div class="input-group-append addQty" data-stock="{{ $item->product->in_stock }}">
+                        <span class="input-group-text px-1 px-sm-2">+</span>
                       </div>
                     </div>
                   </div>
@@ -114,8 +114,8 @@
     $('input[name=quantity]').change(function(e) {
       e.preventDefault();
       let
-        id = $(this).data('id')
-      in_stock = $(this).prev().data('stock'),
+        id = $(this).data('id'),
+        in_stock = $(this).next().data('stock'),
         replaceQty = $(this).val();
       if (replaceQty > in_stock) {
         replaceQty = in_stock;
@@ -127,7 +127,7 @@
 
     // 增加數量按鈕 效果
     $('.addQty').hover(function() {
-      if ($(this).next().val() < $(this).data('stock')) {
+      if ($(this).prev().val() < $(this).data('stock')) {
         $(this).addClass('enable')
       }
     }, function() {
@@ -138,10 +138,9 @@
     $('.addQty').click(function(e) {
       e.preventDefault();
       let
-        id = $(this).next().data('id'),
-        quantity = $(this).next().val();
+        id = $(this).prev().data('id'),
+        quantity = $(this).prev().val();
       if (quantity < $(this).data('stock')) {
-        console.log('t')
         updateCart(id, 1)
       } else {
         Swal.fire({
@@ -154,7 +153,7 @@
 
     // 減少數量按鈕 效果
     $('.decQty').hover(function() {
-      if ($(this).prev().val() > 1) {
+      if ($(this).next().val() > 1) {
         $(this).addClass('enable')
       }
     }, function() {
@@ -165,8 +164,8 @@
     $('.decQty').click(function(e) {
       e.preventDefault();
       let
-        id = $(this).prev().data('id'),
-        quantity = $(this).prev().val();
+        id = $(this).next().data('id'),
+        quantity = $(this).next().val();
       if (quantity > 1) {
         updateCart(id, -1)
       } else {
@@ -213,11 +212,11 @@
         dataType: "json",
         error: function(response) {
           if (response.status == 200) {
-            if (typeof(id) == 'array') {
-              location.reload()
+            if (typeof(id) == 'number') {
+                $(`button[data-id=${id}]`).parents('.row .bg-white').remove()
+                calculate()
             } else {
-              $(`button[data-id=${id}]`).parents('.row .bg-white').remove()
-              calculate()
+                    location.reload()
             }
           } else {
             console.log(response)
@@ -246,10 +245,10 @@
         dataType: "json",
         error: function(response) {
           if (response.status == 200) { // 不要刷新頁面，直接改值
-            if (replaceQty != '') {
-              quantity = replaceQty
-            } else {
+            if (qty == 1 || qty == -1) {
               quantity = parseInt(quantity) + qty
+            } else {
+              quantity = replaceQty
             }
             input.val(quantity)
             calculate()

@@ -13,8 +13,10 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --yellow01: #fcefb4;
     --yellow02: #fefbeb;
     --gray01: #afafaf;
-    --gray02: #eee;
-    --gray03: #9a9a9a;
+    --gray03: #9a9fa9;
+    --gray04: #959aa0;
+    --gray05: #808598;
+
     --pink00: #e4007f;
     --pink01: #f72585;
     --pink02: #d8156c;
@@ -76,7 +78,7 @@ main {
 }
 
 .text-gray {
-    color: var(--gray02);
+    color: var(--gray01);
 }
 
 .text-pink {
@@ -125,13 +127,13 @@ td {
 }
 .btn-dark-gray{
     color: #fff;
-    background-color: #959aa0;
-    border-color: #959aa0;
+    background-color: var(--gray04);
+    border-color: var(--gray04);
 }
 .btn-dark-gray:hover{
     color: #fff;
-    background-color: #808598;
-    border-color: #808598;
+    background-color: var(--gray05);
+    border-color: var(--gray05);
 }
 div.btn.bg-light-info{
     cursor: initial !important;
