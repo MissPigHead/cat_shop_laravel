@@ -28,6 +28,7 @@ font-family: 'Noto Sans TC', sans-serif;  */
     --indigo02: #304FFE;
     --indigo03: #3F51B5;
     --blue01:#039BE5;
+    --bluegray01:#455A64;
     --light-info:#aee6ee;
 }
 
@@ -38,7 +39,8 @@ html {
 body {
     margin: 0;
     padding: 0;
-    color: var(--indigo01);
+    /* color: var(--indigo01); */
+    color: var(--bluegray01);
     background: #f4f5f6;
     font-family: "Cairo", 'Noto Sans TC', sans-serif;
     ;
@@ -111,6 +113,22 @@ td {
     /* white-space: nowrap; */
 }
 
+.btn-pink {
+    color: #fff;
+    background-color: var(--pink02);
+    border-color: var(--pink02);
+}
+
+.btn-pink:hover {
+    color: #fff;
+    background-color: var(--pink01);
+    border-color: var(--pink01);
+    transition: all 0.2 ease-in-out;
+}
+
+.btn-pink:focus-visible {
+    outline: var(--pink03);
+}
 .btn-outline-pink {
     color: var(--pink01);
     border-color: var(--pink01);

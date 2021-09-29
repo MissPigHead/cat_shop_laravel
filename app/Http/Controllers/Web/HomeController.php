@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Resources\Product as ProductResources;
 
 use App\Models\Banner;
@@ -81,9 +82,8 @@ class HomeController extends Controller
 
     public function recipient()
     {
-        $recipients = Auth::user()->recipients;
         $cities = City::get();
-        return view('frontend.recipient', ['recipients' => $recipients, 'cities' => $cities]);
+        return view('frontend.recipient', ['cities' => $cities]);
     }
 
     public function cart()
@@ -126,9 +126,11 @@ class HomeController extends Controller
 
     public function order()
     {
-        $items = Cart::with('product')->where('user_id', Auth::user()->id)->get();
-        // dump($items);
-        return view('frontend.order', ['items' => $items, 'total'=>0]);
+        return view('frontend.orderConfirm');
+    }
+    public function checkout()
+    {
+        echo "待串金流，確定付款完成就將 DB 中的 cart 內容轉存到 order";
     }
 
     public function orderShow($id)
