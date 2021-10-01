@@ -11,7 +11,7 @@ class PostcodesTableSeeder extends Seeder
      */
     public function run()
     {
-        $url = base_path() . '/app/Custom/SQL/postcodes.sql';
+        $url = app_path() . '/SQL/postcodes.sql';
         $sql_file = file_get_contents($url);
         DB::unprepared($sql_file);
     }

@@ -17,7 +17,9 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id')->commet('訂購者');
             $table->integer('recipient_id')->commet('收件者');
-            $table->integer('status')->default(1)->commet('狀態'); // 1:未出貨 2:已出貨 3:未出貨取消訂單 4:出貨後退貨
+            $table->string('ECPay_MerchantTradeNo')->commet('ECPay訂單編號'); // 0:未付款 1:已付款
+            $table->boolean('payment')->default(0)->commet('付款狀態'); // 0:未付款 1:已付款
+            $table->integer('status')->default(1)->commet('出貨狀態'); // 1:未出貨 2:已出貨 3:未出貨取消訂單 4:出貨後退貨
             $table->integer('amount_raw')->commet('原始金額');
             // $table->integer('invoice_type')->commet('發票類型');
             // $table->string('uniform_no')->commet('發票統編');

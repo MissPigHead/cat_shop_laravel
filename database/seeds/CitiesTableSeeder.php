@@ -11,7 +11,7 @@ class CitiesTableSeeder extends Seeder
      */
     public function run()
     {
-        $url = base_path() . '/app/Custom/SQL/cities.sql';
+        $url = app_path() . '/SQL/cities.sql';
         $sql_file = file_get_contents($url);
         DB::unprepared($sql_file);
     }
