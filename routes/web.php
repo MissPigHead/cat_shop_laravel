@@ -27,6 +27,7 @@ Route::namespace('Web')->group(function () {
         Route::get('/{category}', 'HomeController@category')->name('category.show'); // 該目錄下所有商品
     });
     Route::get('/product/{product}', 'HomeController@product')->name('product.show'); // 單一商品
+    Route::get('/rules', 'HomeController@rules')->name('rules'); // 購物須知
 
     // Route::middleware('auth')->prefix('/user')->group(function () { // 使用者相關：這幾項需要登入授權
     Route::middleware('auth')->group(function () { // 使用者相關：這幾項需要登入授權
@@ -36,12 +37,11 @@ Route::namespace('Web')->group(function () {
 
         Route::prefix('/order')->group(function () { // 訂單
             Route::get('/', 'HomeController@order')->name('order'); // 待結帳訂單
+            Route::get('/checkout', 'HomeController@checkout')->name('checkout'); // 訂單付款，接金流端
+            Route::get('/order/paid', 'HomeController@paid')->name('order.paid'); // 已確認金流付款完成訂單
             Route::get('/order/history', 'HomeController@orderHistory')->name('order.history'); // 全部歷史訂單
             Route::get('/order/history/{order}', 'HomeController@orderShow')->name('order.show'); // 單一歷史訂單細節
         });
-        // Route::get('/order', 'HomeController@order')->name('order'); // 待結帳訂單
-        // Route::get('/order/all', 'HomeController@orderHistory')->name('order.history'); // 歷史訂單
-        // Route::get('/order/{order}', 'HomeController@orderShow')->name('order.show'); // 單一歷史訂單細節
     });
 });
 
@@ -63,3 +63,29 @@ Route::prefix('admin')->namespace('Web')->name('admin')->group(function () {
         Route::get('/c/{c_id}', 'AdminController@product')->name('.index');
     });
 });
+
+use App\Models\Cart;
+use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+Route::get('/test', function () {
+    $id1=substr(Str::uuid(),4,24);
+    $id2=Str::uuid();
+    $id3=Str::uuid();
+    dump($id1);
+    dump($id2);
+    dump($id3);
+
+    echo  strlen($id1);
+    $carts=Auth::user()->carts;
+    dump($carts);
+    echo '<hr>';
+    echo '<hr>';
+    echo base_path();
+    // $order=Order::create(); // 建立訂單
+    // dd($order);
+});
+
+
+Route::get('/ecpay', 'Web\HomeController@ecpay'); // ECPay
+Route::post('/ecpay', 'API\OrderController@ECPay'); // ECPay

@@ -26,9 +26,11 @@
                 <div class="col-8 col-sm-9 row align-items-center justify-content-end px-0 px-sm-3 mr-sm-0 text-secondary">
                   <!--名字-->
                   <div class="col-9 col-md-10 col-lg-12 py-lg-2 order-lg-1 h6">
+                      <a href="{{ route('product.show', $item->product->id) }}">
                     {{ $item->product->name }}
-                    <input type="hidden" name="cart_id" value="{{ $item->id }}">
-                  </div>
+                </a>
+                        <input type="hidden" name="cart_id" value="{{ $item->id }}">
+                    </div>
                   <!--刪除icon-->
                   <div class="col-3 col-md-2 order-lg-5 pl-0 pr-0 text-right">
                     <button type="button" class="btn btn-outline-secondary px-2 py-1 py-lg-2"

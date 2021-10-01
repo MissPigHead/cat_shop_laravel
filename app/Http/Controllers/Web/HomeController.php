@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\Product as ProductResources;
+use Illuminate\Support\Str;
 
 use App\Models\Banner;
 use App\Models\News;
@@ -13,6 +14,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Cart;
+use App\Models\Order;
 
 class HomeController extends Controller
 {
@@ -100,7 +102,8 @@ class HomeController extends Controller
         } else {
             $news = News::findOrFail($id);
         }
-        $newsList = News::select(['id', 'title'])->where('show', 1)->orderBy('updated_at', 'desc')->paginate(6);
+        $newsList = News::where('show', 1)->orderBy('updated_at', 'desc')->paginate(6);
+        // $newsList = News::select(['id', 'title'])->where('show', 1)->orderBy('updated_at', 'desc')->paginate(6);
         return view('frontend.news', ['news' => $news ?? '', 'newsList' => $newsList, 'banners' => $banners ?? '']);
     }
 
@@ -128,9 +131,15 @@ class HomeController extends Controller
     {
         return view('frontend.orderConfirm');
     }
+
+    public function paid()
+    {
+        return view('frontend.confirmed');
+    }
+
     public function checkout()
     {
-        echo "待串金流，確定付款完成就將 DB 中的 cart 內容轉存到 order";
+        return view('frontend.test');
     }
 
     public function orderShow($id)
@@ -140,6 +149,19 @@ class HomeController extends Controller
 
     public function orderHistory()
     {
-        dump(Auth::user());
+        $orders=Order::where('user_id',Auth::user()->id)->get();
+        dump($orders);
+        echo "資料未接入";
+        return view('frontend.orderHistory');
+    }
+
+    public function rules()
+    {
+        return view('frontend.purchaseRules');
+    }
+
+    public function ecpay()
+    {
+        // return view('frontend.test');
     }
 }

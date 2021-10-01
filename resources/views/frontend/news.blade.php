@@ -3,7 +3,7 @@
 @section('content')
   <main>
     <!-- 最上層沒有選文章時 顯示 banner -->
-    @if ($banners)
+    {{-- @if ($banners)
       <section id="banner">
         <div class="container my-3">
           <div class="row justify-content-center">
@@ -15,7 +15,31 @@
           </div>
         </div>
       </section>
+    @endif --}}
+    <!-- 最上層沒有選文章時 顯示 news的圖片 沒有news圖片才顯示banner-->
+    {{-- @if (count($newsList) < 3) --}}
+    @if($banners)
+    <section id="newsCarousel">
+      <div class="container my-3">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 col-xl-6 px-0 owl-carousel owl-theme">
+            @foreach ($newsList as $n)
+              <div class="item"><img src="{{ $n->image_path }}" alt="{{ $n->title }}"
+                  onclick='to("{{ route('news.show', $n->id) }}")'></div>
+            @endforeach
+            @if (count($newsList) < 4)
+              @foreach ($banners as $k => $banner)
+                @if ($k < 3)
+                  <div class="item"><img src="{{ $banner->image_path }}" alt="{{ $banner->text }}"></div>
+                @endif
+              @endforeach
+            @endif
+          </div>
+        </div>
+      </div>
+    </section>
     @endif
+    {{-- @endif --}}
     <!-- 目前文章內容 -->
     @if ($news)
       <section id="mainNews">
@@ -66,5 +90,9 @@
       items: 1,
       animateOut: 'fadeOut',
     });
+
+    function to(url) {
+      location.href = url;
+    }
   </script>
 @endsection

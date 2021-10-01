@@ -28,7 +28,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('home') }}">購物說明</a>
+            <a class="nav-link" href="{{ route('rules') }}">購物說明</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('news.index') }}">育貓新知</a>
