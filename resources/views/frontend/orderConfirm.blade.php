@@ -10,6 +10,8 @@
               <h4>確認訂單</h4>
             </div>
           </div>
+          <form action="{{ route('api.order.store')}}" method="post">
+            @csrf
           <!-- 商品清單 -->
           @php
             $total = 0;
@@ -48,6 +50,7 @@
         <div class="row my-2">
           <div class="col-12 text-right">
             <p class="h5">總金額：<span class="text-pink" id="amount_total">{{ $total }}</span></p>
+            <input type="hidden" name="amount_total" value="{{ $total }}">
           </div>
         </div>
         <hr>
@@ -119,14 +122,22 @@
             <input type="checkbox" name="purchaserule2" class="mr-1">
             房屋具體生態無數圖形外資從而屬於觀點程度有一些能力，瀏覽器距離中港路努力突出您現在這麼多楠雅，眼睛委託減肥隊伍財經，當前位置空氣普遍適合出售隨意掌握勝利結婚，告訴你自由考生一身內心後果似乎熟悉就不不肯，民國一番作為，今天才是明星卻是不行說到，威脅不然，不。
           </div>
+          <div class="col-12 my-2" style="text-align: justify;text-justify:inter-ideograph;">
+            <input type="checkbox" name="purchaserule3" class="mr-1">
+            請使用以下測試資料：<br>
+            卡號：4311-9522-2222-2222<br>
+            日期：12/22 &nbsp;&nbsp;&nbsp;&nbsp; 安全碼：222<br>
+          </div>
         </div>
         <!-- 結帳 -->
         <div class="row my-2 justify-content-center" id="checkout">
           <a href="{{ route('category.index') }}">
             <button type="button" class="btn btn-info m-2">繼續購物</button>
           </a>
-          <button type="button" name="checkout" class="btn btn-warning m-2">前往付款</button>
+          <button type="submit" class="btn btn-warning m-2">前往付款</button>
         </div>
+
+        </form>
       </div>
     </div>
     </div>
@@ -150,44 +161,46 @@
     });
 
     // 轉入付款頁面，記得將備註加入訂單！
-    $('button[name=checkout]').click(function(e) {
-      e.preventDefault();
-      let data = {
-        _token: '{{ csrf_token() }}',
-        amount_total: $('#amount_total').text(),
-        recipient_id: $('input[name=recipient_id]').val(),
-        description: $('textarea[name=description]').val()
-      }
-      $.ajax({
-        type: "POST",
-        url: "/api/order",
-        data: data,
-        dataType: "json",
-        error: function(result) {
-          if (result.status == 200) {
-            // 綠界付款這頁應該放在哪裡？
-            // 購物車轉訂單 -> 綠界付款 -> 付款成功或失敗 -> 歷史訂單
-            location.replace("{{ route('checkout') }}");
-          } else if (result.status == 422) {
-            let err = ''
-            $.each(result.responseJSON.errors, function(indexInArray, valueOfElement) {
-              $.each(valueOfElement, function(i, e) {
-                err = err + `<li class='text-left'>${e}</li>`
-              });
-            });
-            Swal.fire({
-              icon: 'error',
-              html: `<ul>${err}</ul>`,
-            })
-          } else {
-            console.log(result)
-            console.log('status', result.status)
-            console.log('statusText', result.statusText)
-            console.log('responseJSON', result.responseJSON)
-            console.log('responseText', result.responseText)
-          }
-        }
-      });
-    });
+    // $('button[name=checkout]').click(function(e) {
+    //   e.preventDefault();
+    //   let data = {
+    //     _token: '{{ csrf_token() }}',
+    //     amount_total: $('#amount_total').text(),
+    //     recipient_id: $('input[name=recipient_id]').val(),
+    //     description: $('textarea[name=description]').val()
+    //   }
+    //   $.ajax({
+    //     type: "POST",
+    //     url: "/api/order",
+    //     data: data,
+    //     dataType: "json",
+    //     error: function(result) {
+    //       if (result.status == 200) {
+    //         // 綠界付款這頁應該放在哪裡？
+    //         // 購物車轉訂單 -> 綠界付款 -> 付款成功或失敗 -> 歷史訂單
+    //         location.replace("{{ route('checkout') }}");
+    //       } else if (result.status == 422) {
+    //         let err = ''
+    //         $.each(result.responseJSON.errors, function(indexInArray, valueOfElement) {
+    //           $.each(valueOfElement, function(i, e) {
+    //             err = err + `<li class='text-left'>${e}</li>`
+    //           });
+    //         });
+    //         Swal.fire({
+    //           icon: 'error',
+    //           html: `<ul>${err}</ul>`,
+    //         })
+    //       } else {
+    //         console.log(result)
+    //         console.log('status', result.status)
+    //         console.log('statusText', result.statusText)
+    //         console.log('responseJSON', result.responseJSON)
+    //         console.log('responseText', result.responseText)
+    //       }
+    //     }
+    //   });
+    // });
+
+
   </script>
 @endsection

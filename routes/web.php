@@ -45,6 +45,9 @@ Route::namespace('Web')->group(function () {
     });
 });
 
+Route::post('/payment/callback', 'API\OrderController@callback')->name('callback'); // test for ecpay
+Route::get('/payment/success', 'API\ECPayController@success')->name('success'); // test for ecpay
+
 Route::post('password/reset/web', 'Auth\ResetPasswordController@resetPasswordWeb')->name('password.reset.web'); // 登入後變更密碼（非忘記密碼）
 
 // ---------------------------  後台 先不用middleware 比較方便  ---------------------------------- //
@@ -85,7 +88,3 @@ Route::get('/test', function () {
     // $order=Order::create(); // 建立訂單
     // dd($order);
 });
-
-
-Route::get('/ecpay', 'Web\HomeController@ecpay'); // ECPay
-Route::post('/ecpay', 'API\OrderController@ECPay'); // ECPay

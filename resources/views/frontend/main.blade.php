@@ -1,6 +1,9 @@
 @extends('layouts.frontend')
 @section('title', '喵喵商城首頁')
 @section('content')
+@if (session('pay_success'))
+    @include('swal',['msg'=>'pay_success','icon'=>'success'])
+@endif
   <main>
     <section id="banner">
       <div class="container my-3">
@@ -69,7 +72,7 @@
       animateOut: 'fadeOut',
     });
 
-    // owl carousel for product
+    // owl carousel for portfolio
     $('#products .owl-carousel').owlCarousel({
       loop: true,
       dots: false,

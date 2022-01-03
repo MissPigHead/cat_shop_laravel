@@ -41,8 +41,10 @@
         },
         "classmap": [
             "database/seeds",
-            "database/factories",
-            "app/ECPaySDK"
+            "database/factories"
+        ],
+        "files": [
+            "app/ECPay.Payment.Integration.php"
         ]
     },
     "autoload-dev": {

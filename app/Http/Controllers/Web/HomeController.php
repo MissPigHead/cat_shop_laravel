@@ -20,6 +20,7 @@ class HomeController extends Controller
 {
     public function __construct()
     {
+        // layout 中 header 共用的資料
         $categories = Category::where([['show', 1], ['parent', 0]])->orderBy('order', 'asc')->get();
         view()->share('mainCategories', $categories);
     }
@@ -38,20 +39,33 @@ class HomeController extends Controller
 
     public function getCategories($id)
     {
-        $categories = Category::where('show', 1)->orderBy('order')->get()->groupBy('parent');
+        // 目錄：排除隱藏的子目錄 + 排除parent被隱藏的子目錄
+        $categories = Category::where('show', 1)
+        ->whereIn('id', Category::where('show', 1)->orderBy('order')->get('id'))
+        ->orderBy('order')->get()->groupBy('parent');
+
+        // 商品：排除隱藏商品 + 排除無庫存商品 + 排除所在目錄被隱藏的商品 + 依照 目錄的顯示順序 商品更新時間 排序
         if ($id == 'all') {
             $products = Product::where([['show', 1], ['in_stock', '>', 1]])
                 ->whereIn('category_id', Category::where('show', 1)->orderBy('order')->get('id'))
+                ->orderBy('updated_at', 'desc')
+                ->paginate(12);
+            $products = Product::whereHas('category', function ($query) use ($id) {
+                $query->where('show', '1');
+            })
+                ->where([['show', 1], ['in_stock', '>', 1]])
                 ->orderBy('updated_at', 'desc')
                 ->paginate(12);
             $title = '所有商品';
         } else {
             $cate_breadcrumb = Category::findOrFail($id);
             if ($cate_breadcrumb->parent != 0) {
+            // 子目錄：直接抓該子目錄下商品
                 $products = Product::where([['show', 1], ['category_id', $id], ['in_stock', '>', 1]])
                     ->orderBy('updated_at', 'desc')
                     ->paginate(12);
             } else {
+            // 主目錄：抓該主目錄下，可顯示的子目錄下 可顯示的商品
                 $products = Product::whereHas('category', function ($query) use ($id) {
                     $query->where('parent', $id)->where('show', '1');
                 })
@@ -68,6 +82,7 @@ class HomeController extends Controller
             'title' => $title, 'include' => 'products'
         ];
         return $data;
+    // dump($data);
     }
 
     public function category($id)

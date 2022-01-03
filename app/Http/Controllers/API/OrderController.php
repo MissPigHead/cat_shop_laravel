@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use ECPay_AllInOne;
 
 
 class OrderController extends Controller
@@ -51,17 +52,11 @@ class OrderController extends Controller
     }
 
 
-
-    function ECPay()
+    function ECPay_Credit($order, $items)
     {
-        /**
-         *    Credit信用卡付款產生訂單範例
-         */
-
-        //載入SDK(路徑可依系統規劃自行調整)
         try {
 
-            $obj = new \ECPay_AllInOne();
+            $obj = new ECPay_AllInOne();
 
             //服務參數
             $obj->ServiceURL  = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";   //服務位置
@@ -70,34 +65,21 @@ class OrderController extends Controller
             $obj->MerchantID  = '2000132';                                                     //測試用MerchantID，請自行帶入ECPay提供的MerchantID
             $obj->EncryptType = '1';                                                           //CheckMacValue加密類型，請固定填入1，使用SHA256加密
 
-
             //基本參數(請依系統規劃自行調整)
-            $MerchantTradeNo = "QiQiCat" . time(); // 訂單號碼！？？？？
-            $obj->Send['ReturnURL']         = "http://www.ecpay.com.tw/receive.php";    //付款完成通知回傳的網址
-            $obj->Send['MerchantTradeNo']   = $MerchantTradeNo;                          //訂單編號
-            $obj->Send['MerchantTradeDate'] = date('Y/m/d H:i:s');                       //交易時間
-            $obj->Send['TotalAmount']       = 32100;                                      //交易金額
-            $obj->Send['TradeDesc']         = "喵喵商城測試付款";                          //交易描述
-            $obj->Send['ChoosePayment']     = \ECPay_PaymentMethod::Credit;              //付款方式:Credit
-            $obj->Send['IgnorePayment']     = \ECPay_PaymentMethod::GooglePay;           //不使用付款方式:GooglePay
+            $obj->Send['ReturnURL']         = "https://f8c7-1-164-139-98.ngrok.io/payment/callback";           //付款完成通知回傳的網址
+            $obj->Send['ClientBackURL']     = "https://f8c7-1-164-139-98.ngrok.io/payment/success";           //Client端返回特店的按鈕連結(付款成功後下方按鈕)
+
+            $obj->Send['MerchantTradeNo']   = $order->ECPay_MerchantTradeNo;                    //訂單編號
+            $obj->Send['MerchantTradeDate'] = date('Y/m/d H:i:s');                              //交易時間
+            $obj->Send['TotalAmount']       = $order->amount_total;                             //交易金額
+            $obj->Send['TradeDesc']         = "喵喵商城信用卡付款測試頁面";                       //交易描述
+            $obj->Send['ChoosePayment']     = \ECPay_PaymentMethod::Credit;                    //付款方式:Credit
+            $obj->Send['IgnorePayment']     = \ECPay_PaymentMethod::GooglePay;                 //不使用付款方式:GooglePay
 
             //訂單的商品資料
-            array_push(
-                $obj->Send['Items'],
-                array(
-                    'Name' => "歐付寶", 'Price' => (int)"100",
-                    'Currency' => "元", 'Quantity' => (int) "1", 'URL' => "dedwed"
-                ),
-                array(
-                    'Name' => "黑芝麻豆漿", 'Price' => (int)"2000",
-                    'Currency' => "元", 'Quantity' => (int) "1", 'URL' => "dedwed"
-                ),
-                array(
-                    'Name' => "豆漿", 'Price' => (int)"30000",
-                    'Currency' => "元", 'Quantity' => (int) "1", 'URL' => "dedwed"
-                )
-            );
-
+            foreach ($items as $item) {
+                array_push($obj->Send['Items'], $item);
+            }
 
             //Credit信用卡分期付款延伸參數(可依系統需求選擇是否代入)
             //以下參數不可以跟信用卡定期定額參數一起設定
@@ -115,24 +97,23 @@ class OrderController extends Controller
 
             # 電子發票參數
             /*
-        $obj->Send['InvoiceMark'] = ECPay_InvoiceState::Yes;
-        $obj->SendExtend['RelateNumber'] = "Test".time();
-        $obj->SendExtend['CustomerEmail'] = 'test@ecpay.com.tw';
-        $obj->SendExtend['CustomerPhone'] = '0911222333';
-        $obj->SendExtend['TaxType'] = ECPay_TaxType::Dutiable;
-        $obj->SendExtend['CustomerAddr'] = '台北市南港區三重路19-2號5樓D棟';
-        $obj->SendExtend['InvoiceItems'] = array();
-        // 將商品加入電子發票商品列表陣列
-        foreach ($obj->Send['Items'] as $info)
-        {
-            array_push($obj->SendExtend['InvoiceItems'],array('Name' => $info['Name'],'Count' =>
-                $info['Quantity'],'Word' => '個','Price' => $info['Price'],'TaxType' => ECPay_TaxType::Dutiable));
-        }
-        $obj->SendExtend['InvoiceRemark'] = '測試發票備註';
-        $obj->SendExtend['DelayDay'] = '0';
-        $obj->SendExtend['InvType'] = ECPay_InvType::General;
-        */
-
+            $obj->Send['InvoiceMark'] = ECPay_InvoiceState::Yes;
+            $obj->SendExtend['RelateNumber'] = "Test".time();
+            $obj->SendExtend['CustomerEmail'] = 'test@ecpay.com.tw';
+            $obj->SendExtend['CustomerPhone'] = '0911222333';
+            $obj->SendExtend['TaxType'] = ECPay_TaxType::Dutiable;
+            $obj->SendExtend['CustomerAddr'] = '台北市南港區三重路19-2號5樓D棟';
+            $obj->SendExtend['InvoiceItems'] = array();
+            // 將商品加入電子發票商品列表陣列
+            foreach ($obj->Send['Items'] as $info)
+            {
+                array_push($obj->SendExtend['InvoiceItems'],array('Name' => $info['Name'],'Count' =>
+                    $info['Quantity'],'Word' => '個','Price' => $info['Price'],'TaxType' => ECPay_TaxType::Dutiable));
+            }
+            $obj->SendExtend['InvoiceRemark'] = '測試發票備註';
+            $obj->SendExtend['DelayDay'] = '0';
+            $obj->SendExtend['InvType'] = ECPay_InvType::General;
+            */
 
             //產生訂單(auto submit至ECPay)
             $obj->CheckOut();
@@ -140,6 +121,23 @@ class OrderController extends Controller
             echo $e->getMessage();
         }
     }
+
+    public function callback(Request $request)
+    {
+        
+        dump($request);
+        $order = Orders::where('ECPay_MerchantTradeNo', '=', $request->MerchantTradeNo)->firstOrFail();
+        $order->payment = !$order->payment;
+        $order->save();
+    }
+
+    public function success()
+    {
+        session()->flash('pay_success', 'Order success!');
+        return redirect('/cart');
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -149,17 +147,21 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $carts = Auth::user()->carts;
+
+        // 1.購物車轉訂單
         if (count($carts) != 0) {
-            // 購物車有商品就將購物車轉訂單
-            $order = Order::make($request->all());
+            $order = Order::make($request->except('purchaserule1', 'purchaserule2', 'purchaserule3'));
             $order->user_id = Auth::user()->id;
             $order->amount_raw = $request->amount_total;
-            $order->ECPay_MerchantTradeNo = substr(Str::uuid(), 4, 24);
+            $order->ECPay_MerchantTradeNo = Str::random(6) . date('YmdHis', time());
             $order->save();
 
+            // 2.購物車商品轉訂單商品項目
+            // 3.付款頁面的訂單商品項目
+            $items = [];
             foreach ($carts as $cart) {
-                // 購物車商品轉訂單細節商品
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'product_id' => $cart->product_id,
@@ -167,11 +169,24 @@ class OrderController extends Controller
                     'price' => $cart->product->price,
                     'amount' => $cart->product->price * $cart->quantity,
                 ]);
-                Cart::destroy($cart->id);
+
+                $items[] = [
+                    'Name' => $cart->product->name,
+                    'Price' => $cart->product->price,
+                    'Currency' => '元',
+                    'Quantity' => $cart->quantity,
+                    'URL' => 'dedweb'
+                ];
+
+                // Cart::destroy($cart->id);
             }
-            print_r($order);
-            //此時訂單狀態為：訂單成立 + 未付款 + 未出貨
-            // 將訂單資料拋到綠界進行支付程序
+            // dump($order);
+            // dump($items);
+            // 此時訂單狀態為：訂單成立 + payment:0未付款 + status:1未出貨
+
+            // 4. 將訂單資料拋到綠界進行支付程序
+            $this->ECPay_Credit($order, $items);
+
             // 確認付款完成
             // 扣庫存
             // 更改訂單狀態
