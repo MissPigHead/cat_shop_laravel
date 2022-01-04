@@ -12,6 +12,6 @@ $factory->define(News::class, function (Faker $faker) {
         'image_path' => $faker->imageUrl(640, 480),
         'show' => $faker->boolean($chanceOfGettingTrue = 90),
         'created_at' => "2020-06-20 19:12:54",
-        'updated_at' => $faker->dateTimeThisYear('2021-06-30', 'Asia/Taipei'),
+        'updated_at' => $faker->dateTimeThisYear('2022-06-30', 'Asia/Taipei'),
     ];
 });
