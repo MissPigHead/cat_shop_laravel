@@ -59,22 +59,22 @@ class OrderController extends Controller
             $obj = new ECPay_AllInOne();
 
             //服務參數
-            $obj->ServiceURL  = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";   //服務位置
-            $obj->HashKey     = '5294y06JbISpM5x9';                                           //測試用Hashkey，請自行帶入ECPay提供的HashKey
-            $obj->HashIV      = 'v77hoKGq4kWxNNIS';                                           //測試用HashIV，請自行帶入ECPay提供的HashIV
-            $obj->MerchantID  = '2000132';                                                     //測試用MerchantID，請自行帶入ECPay提供的MerchantID
-            $obj->EncryptType = '1';                                                           //CheckMacValue加密類型，請固定填入1，使用SHA256加密
+            $obj->ServiceURL  = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";    //服務位置
+            $obj->HashKey     = '5294y06JbISpM5x9';                                             //測試用Hashkey，請自行帶入ECPay提供的HashKey
+            $obj->HashIV      = 'v77hoKGq4kWxNNIS';                                             //測試用HashIV，請自行帶入ECPay提供的HashIV
+            $obj->MerchantID  = '2000132';                                                      //測試用MerchantID，請自行帶入ECPay提供的MerchantID
+            $obj->EncryptType = '1';                                                            //CheckMacValue加密類型，請固定填入1，使用SHA256加密
 
             //基本參數(請依系統規劃自行調整)
-            $obj->Send['ReturnURL']         = "https://f8c7-1-164-139-98.ngrok.io/payment/callback";           //付款完成通知回傳的網址
-            $obj->Send['ClientBackURL']     = "https://f8c7-1-164-139-98.ngrok.io/payment/success";           //Client端返回特店的按鈕連結(付款成功後下方按鈕)
+            $obj->Send['ReturnURL']         = "https://shop.misspighead.xyz/api/order/credit_success";    //付款完成通知回傳的網址
+            $obj->Send['ClientBackURL']     = "https://shop.misspighead.xyz/order/paid";        //Client端返回特店的按鈕連結(付款成功後下方按鈕)
 
             $obj->Send['MerchantTradeNo']   = $order->ECPay_MerchantTradeNo;                    //訂單編號
             $obj->Send['MerchantTradeDate'] = date('Y/m/d H:i:s');                              //交易時間
             $obj->Send['TotalAmount']       = $order->amount_total;                             //交易金額
-            $obj->Send['TradeDesc']         = "喵喵商城信用卡付款測試頁面";                       //交易描述
-            $obj->Send['ChoosePayment']     = \ECPay_PaymentMethod::Credit;                    //付款方式:Credit
-            $obj->Send['IgnorePayment']     = \ECPay_PaymentMethod::GooglePay;                 //不使用付款方式:GooglePay
+            $obj->Send['TradeDesc']         = "喵喵商城信用卡付款測試頁面";                          //交易描述
+            $obj->Send['ChoosePayment']     = \ECPay_PaymentMethod::Credit;                     //付款方式:Credit
+            $obj->Send['IgnorePayment']     = \ECPay_PaymentMethod::GooglePay;                  //不使用付款方式:GooglePay
 
             //訂單的商品資料
             foreach ($items as $item) {
@@ -122,20 +122,20 @@ class OrderController extends Controller
         }
     }
 
-    public function callback(Request $request)
+    public function credit_success(Request $request)
     {
-        
+
         dump($request);
         $order = Orders::where('ECPay_MerchantTradeNo', '=', $request->MerchantTradeNo)->firstOrFail();
-        $order->payment = !$order->payment;
+        $order->payment = 1;
         $order->save();
     }
 
-    public function success()
-    {
-        session()->flash('pay_success', 'Order success!');
-        return redirect('/cart');
-    }
+    // public function paid()
+    // {
+    //     session()->flash('pay_success', 'Order success!');
+    //     return redirect('/cart');
+    // }
 
 
 
@@ -182,7 +182,7 @@ class OrderController extends Controller
             }
             // dump($order);
             // dump($items);
-            // 此時訂單狀態為：訂單成立 + payment:0未付款 + status:1未出貨
+            // 此時訂單狀態為：訂單成立 + payment:0未付款,1已付款 + status:0未出貨, 1已出貨
 
             // 4. 將訂單資料拋到綠界進行支付程序
             $this->ECPay_Credit($order, $items);

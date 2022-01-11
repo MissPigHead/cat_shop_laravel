@@ -36,5 +36,6 @@ Route::namespace('API')->name('api.')->group(function () {
     Route::get('user/{id}/order', 'UserController@getOrder');
 
     Route::post('news/edit', 'NewsController@updateWithFile')->name('news.edit');
+    Route::post('order/credit_success', 'OrderController@credit_success');
 
 });

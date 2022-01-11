@@ -1,5 +1,5 @@
 @extends('layouts.frontend')
-@section('title','購物完成')
+@section('title','付款成功')
 @section('content')
   <main>
     <div class="container">
@@ -23,6 +23,5 @@
         </div>
       </div>
     </div>
-
   </main>
 @endsection

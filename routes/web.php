@@ -38,9 +38,9 @@ Route::namespace('Web')->group(function () {
         Route::prefix('/order')->group(function () { // 訂單
             Route::get('/', 'HomeController@order')->name('order'); // 待結帳訂單
             Route::get('/checkout', 'HomeController@checkout')->name('checkout'); // 訂單付款，接金流端
-            Route::get('/order/paid', 'HomeController@paid')->name('order.paid'); // 已確認金流付款完成訂單
-            Route::get('/order/history', 'HomeController@orderHistory')->name('order.history'); // 全部歷史訂單
-            Route::get('/order/history/{order}', 'HomeController@orderShow')->name('order.show'); // 單一歷史訂單細節
+            Route::get('/paid', 'HomeController@paid')->name('order.paid'); // 已確認金流付款完成訂單
+            Route::get('/history', 'HomeController@orderHistory')->name('order.history'); // 全部歷史訂單
+            Route::get('/history/{order}', 'HomeController@orderShow')->name('order.show'); // 單一歷史訂單細節
         });
     });
 });

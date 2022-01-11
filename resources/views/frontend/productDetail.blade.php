@@ -1,3 +1,4 @@
+
 <div class="row" id="products">
   <div class="col-12 col-md-10 text-center my-3 topic">{{ $product->name }}</div>
   <div class="col-6 col-md-5">
