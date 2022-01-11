@@ -16,6 +16,6 @@ $factory->define(Product::class, function (Faker $faker) {
         'in_stock' => rand(0, 200),
         'show' => $faker->boolean($chanceOfGettingTrue = 90),
         'created_at' => "2020-06-20 19:12:54",
-        'updated_at' => $faker->dateTimeThisYear('2021-06-30', 'Asia/Taipei'),
+        'updated_at' => $faker->dateTimeThisYear('2022-06-30', 'Asia/Taipei'),
     ];
 });
